@@ -1650,6 +1650,16 @@ export const AdminPortal: React.FC = () => {
         }));
         if (selectedUserForDetails && selectedUserForDetails.id === empId) {
           setSelectedUserForDetails(prev => prev ? { ...prev, referralCommissionRate: rateNum, resellerMargin: rateNum } : null);
+          const referredDownline = getResellerDownlines(selectedUserForDetails, employees);
+          setEditingMemberRates(prev => {
+            const next = { ...prev };
+            referredDownline.forEach(d => {
+              if (!selectedUserForDetails.downlineCustomRates || selectedUserForDetails.downlineCustomRates[d.id] === undefined) {
+                next[d.id] = String(rateNum);
+              }
+            });
+            return next;
+          });
         }
         await loadAdminData();
         showToast(lang === 'bn' ? `রেফারেল সর্বোচ্চ বোনাস লিমিট সফলভাবে ৳${rateNum} নির্ধারণ করা হয়েছে (সকল রেফারেল অ্যাকাউন্টের পাইকারি মূল্যে কার্যকর)` : `Referral bonus limit set to ৳${rateNum}`);

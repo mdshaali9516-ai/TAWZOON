@@ -1,6 +1,6 @@
 {
-  "summary": "Updated implementation plan to reflect the requirement of disabling automatic margin propagation across the reseller tree. Each reseller's margin settings will now be managed independently.",
-  "updatedAt": "2026-10-16T04:06:55.509696757Z",
+  "summary": "Implementation plan for propagating upline Referral Max Bonus Limit changes to all direct downline reseller accounts (unless custom override exists), updating their resellerMargin and wholesale prices instantly.",
+  "updatedAt": "2026-10-16T06:06:27.101656811Z",
   "requestFeedback": true,
   "userFacing": true
 }

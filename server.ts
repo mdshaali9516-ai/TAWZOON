@@ -100,6 +100,29 @@ function getClientIp(req: Request): string {
   return (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || '127.0.0.1';
 }
 
+async function callGeminiWithModelFallback(ai: any, params: { contents: any; config?: any }) {
+  const candidateModels = ['gemini-3.1-flash-lite', 'gemini-flash-latest', 'gemini-3.8-flash'];
+  let lastErr: any = null;
+  for (const modelName of candidateModels) {
+    try {
+      const response = await ai.models.generateContent({
+        model: modelName,
+        contents: params.contents,
+        config: params.config
+      });
+      if (response && response.text) {
+        return response;
+      }
+    } catch (err: any) {
+      lastErr = err;
+      console.warn(`[Gemini API Warning on model ${modelName}]:`, err?.message || err);
+    }
+  }
+  if (lastErr) throw lastErr;
+  throw new Error('All Gemini model fallbacks exhausted.');
+}
+
+
 function verifyAdmin(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -540,8 +563,7 @@ app.post('/api/public/visual-search', async (req: Request, res: Response) => {
           }
         }
       });
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.8-flash',
+      const response = await callGeminiWithModelFallback(ai, {
         contents: [
           {
             role: 'user',
@@ -2911,10 +2933,25 @@ app.put('/api/admin/employees/:id', verifyAdmin, (req: Request, res: Response) =
       emp.resellerMargin = newRate;
     }
 
-    // Propagation to downline removed as per user requirement: individual reseller settings must remain independent.
+    // Automatically propagate referral commission rate to direct downline members under this upline (unless custom override exists)
+    const refCode = emp.referenceCode || '';
+    const downlineMembers = state.employees.filter(e => 
+      e.referralOwnerId === emp.id || 
+      (refCode && e.referredBy && e.referredBy.trim().toUpperCase() === refCode.trim().toUpperCase()) ||
+      e.referredBy === emp.id ||
+      (e.reference && refCode && e.reference.trim().toUpperCase() === refCode.trim().toUpperCase())
+    );
+
+    for (const member of downlineMembers) {
+      const hasCustom = emp.downlineCustomRates && emp.downlineCustomRates[member.id] !== undefined;
+      if (!hasCustom) {
+        member.referralCommissionRate = newRate;
+        member.resellerMargin = newRate;
+        db.syncEntityDirect('employees', member).catch(() => {});
+      }
+    }
   }
-    // Propagation to downline removed as per user requirement: individual reseller settings must remain independent.
-    // Downline updates for members should be managed individually on their own profiles.
+
 
   if (status && ['APPROVED', 'REJECTED', 'SUSPENDED', 'ARCHIVED', 'PENDING'].includes(status)) {
     emp.status = status;
@@ -4250,8 +4287,7 @@ Generate strictly valid JSON:
   ]
 }`;
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.8-flash',
+      const response = await callGeminiWithModelFallback(ai, {
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
         config: { responseMimeType: 'application/json' }
       });
@@ -4312,8 +4348,7 @@ Create a structured video storyboard script in JSON format with:
 
 Output strictly valid JSON only.`;
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.8-flash',
+      const response = await callGeminiWithModelFallback(ai, {
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
         config: { responseMimeType: 'application/json' }
       });
@@ -4351,8 +4386,7 @@ Create an AI visual composition plan in JSON format with:
 
 Output strictly valid JSON only.`;
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.8-flash',
+      const response = await callGeminiWithModelFallback(ai, {
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
         config: { responseMimeType: 'application/json' }
       });
@@ -4437,8 +4471,7 @@ Output valid JSON only.`;
         }
       }
     });
-    const response = await ai.models.generateContent({
-      model: 'gemini-3.8-flash',
+    const response = await callGeminiWithModelFallback(ai, {
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       config: { responseMimeType: 'application/json' }
     });
