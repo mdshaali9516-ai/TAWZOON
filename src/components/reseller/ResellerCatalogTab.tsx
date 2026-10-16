@@ -29,7 +29,7 @@ import { Product } from '../../types/index.js';
 import { HeroSection } from '../HeroSection.js';
 import { ResellerProductPreviewModal } from './ResellerProductPreviewModal.js';
 import { isCategoryMatch } from '../ShopCategoryPage.js';
-import { getAdjustedSellingPrice, getAdjustedRegularPrice, getResellerProfitPerUnit } from '../../utils/pricing.js';
+import { getAdjustedSellingPrice, getAdjustedRegularPrice, getResellerProfitPerUnit, getResellerWholesalePrice } from '../../utils/pricing.js';
 
 interface ResellerCatalogTabProps {
   productsList: Product[];
@@ -387,9 +387,7 @@ ${desc ? `\n📝 পণ্যের বিবরণ:\n${desc}\n` : ''}
     const commission = getResellerProfitPerUnit(product, employee, brandSettings);
     const sellingPrice = getAdjustedSellingPrice(product, employee, brandSettings);
     const regularPrice = getAdjustedRegularPrice(product, employee, brandSettings);
-    const baseCostPrice = product.originalPrice !== undefined && product.originalPrice !== null
-      ? Number(product.originalPrice)
-      : Math.max(0, sellingPrice - commission);
+    const baseCostPrice = getResellerWholesalePrice(product, employee, brandSettings);
 
     const primaryImg =
       product.images?.find((img) => img.isPrimary)?.url ||

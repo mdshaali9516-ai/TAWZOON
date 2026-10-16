@@ -38,6 +38,7 @@ import { ResellerWebsiteGeneratorTab } from './ResellerWebsiteGeneratorTab.js';
 import { ResellerCartTab } from './ResellerCartTab.js';
 import { ResellerReferralTab } from './ResellerReferralTab.js';
 import { UserBottomNav } from '../UserBottomNav.js';
+import { useRealtimeEvents } from '../../hooks/useRealtimeEvents.js';
 
 export const ResellerPortal: React.FC = () => {
   const {
@@ -54,6 +55,7 @@ export const ResellerPortal: React.FC = () => {
     setActivePortal,
     setPublicCategory,
     brandSettings,
+    refreshEmployeeProfile,
   } = useApp();
 
   // Auth fields
@@ -101,6 +103,16 @@ export const ResellerPortal: React.FC = () => {
       fetchAllData();
     }
   }, [isEmployeeAuthenticated, employeeToken]);
+
+  // Real-time listener: immediately sync margin, bonuses, and catalog updates
+  useRealtimeEvents((event) => {
+    if (event.type === 'RESELLER_MARGIN_UPDATED' || event.type === 'STATE_UPDATED' || event.type === 'COMMISSION_UPDATED') {
+      refreshEmployeeProfile();
+      if (isEmployeeAuthenticated && employeeToken) {
+        fetchAllData();
+      }
+    }
+  });
 
   // Login handler
   const handleLogin = async (e: React.FormEvent) => {

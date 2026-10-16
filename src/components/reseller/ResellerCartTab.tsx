@@ -91,21 +91,10 @@ export const ResellerCartTab: React.FC<ResellerCartTabProps> = ({ onOrderSuccess
     }
   };
 
-  // Helper to calculate reseller commission per item (Module 1, Rule 3: Fixed Payout Engine)
+  // Helper to calculate reseller commission per item (with 100 Tk profit limit rule)
   const getItemCommission = (product: Product, sellingPrice: number): number => {
     if (!employee) return 0;
-    const isOfficial = employee.isOfficialReferral === true || employee.reference === 'TAWZOON9516';
-    const fixedPayout = getResellerProfitPerUnit(product, employee, brandSettings);
-    if (!isOfficial) {
-      // Strictly fixed payout equal to the admin defined margin per unit
-      return fixedPayout;
-    }
-    if (employee.customCommissionRate && employee.customCommissionRate > 0) {
-      const baseCost = Math.round((product.sellingPrice * (100 - employee.customCommissionRate)) / 100);
-      return Math.max(0, sellingPrice - baseCost);
-    }
-    const baseCost = Math.max(0, product.sellingPrice - (product.commissionRate || Math.round(product.sellingPrice * 0.1)));
-    return Math.max(0, sellingPrice - baseCost);
+    return getResellerProfitPerUnit(product, employee, brandSettings, sellingPrice);
   };
 
   // Filter selected items

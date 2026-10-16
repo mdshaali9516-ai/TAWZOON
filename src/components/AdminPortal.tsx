@@ -64,6 +64,7 @@ import { extractYouTubeId, getYouTubeThumbnail, getYouTubeEmbedUrl } from '../ut
 import { ProductCard } from './ProductCard.js';
 import { ProductDetailsPage } from './ProductDetailsPage.js';
 import { useRealtimeEvents } from '../hooks/useRealtimeEvents.js';
+import { isOfficialReferenceCode } from '../utils/pricing.js';
 
 const AUTHORIZED_ADMIN_EMAIL = 'mdshaali9516@gmail.com';
 
@@ -529,8 +530,7 @@ export const AdminPortal: React.FC = () => {
       const ref = (e.reference || (e as any).referredBy || '').trim().toUpperCase();
       if (!ref) return false;
 
-      const officialKeywords = ['TAWZOON9516'];
-      if (officialKeywords.includes(ref)) {
+      if (ref === 'TAWZOON9516' || isOfficialReferenceCode(ref)) {
         return false;
       }
 
@@ -797,6 +797,9 @@ export const AdminPortal: React.FC = () => {
           : `⚡ New Order: ${event.data.orderCode} (৳${event.data.totalAmount})`,
         'info'
       );
+      loadAdminData();
+      refreshBootstrap();
+    } else if (event.type === 'EMPLOYEE_REGISTERED' || event.type === 'STATE_UPDATED' || event.type === 'RESELLER_MARGIN_UPDATED') {
       loadAdminData();
       refreshBootstrap();
     }
@@ -1112,10 +1115,21 @@ export const AdminPortal: React.FC = () => {
       cleanCode = `SKU-${cleanCode.replace(/^sku-?/i, '')}`;
     }
 
+    const stars = Number(productForm.starRating || 5);
+    const starDiscount = stars === 4 ? 15 : stars === 3 ? 20 : stars === 2 ? 25 : stars === 1 ? 30 : 10;
+    const sellPrice = parseFloat(String(productForm.sellingPrice)) || 0;
+    const autoRegular = Math.round(sellPrice / (1 - starDiscount / 100));
+    const finalRegularPrice = productForm.regularPrice && productForm.regularPrice > sellPrice
+      ? productForm.regularPrice
+      : autoRegular;
+
     // Auto-fallback English fields to Bangla fields to satisfy secure server validation rules
     const finalForm = {
       ...productForm,
       productCode: cleanCode,
+      sellingPrice: sellPrice,
+      regularPrice: finalRegularPrice,
+      starRating: stars,
       nameEn: productForm.nameEn || productForm.nameBn,
       shortDescEn: productForm.shortDescEn || productForm.shortDescBn,
       fullDescEn: productForm.fullDescEn || productForm.fullDescBn,
@@ -1532,7 +1546,7 @@ export const AdminPortal: React.FC = () => {
       setIsEditMarginModalOpen(false);
       await loadAdminData();
       if (selectedUserForDetails && selectedUserForDetails.id === selectedMarginEmp.id) {
-        setSelectedUserForDetails(prev => prev ? { ...prev, resellerMargin: num, referralCommissionRate: num } : null);
+        setSelectedUserForDetails(prev => prev ? { ...prev, resellerMargin: num } : null);
       }
     } catch (err: any) {
       showToast(err.message || 'Margin update failed', 'error');
@@ -1597,7 +1611,10 @@ export const AdminPortal: React.FC = () => {
   const handleOpenUserDetails = (emp: Employee) => {
     setSelectedUserForDetails(emp);
     setUserDetailsActiveTab('profile');
-    setModalReferralRateInput(String(emp.referralCommissionRate !== undefined ? emp.referralCommissionRate : 10));
+    const defaultBonus = (emp.referralCommissionRate !== undefined && Number(emp.referralCommissionRate) > 0)
+      ? Number(emp.referralCommissionRate)
+      : 10;
+    setModalReferralRateInput(String(defaultBonus));
     const initialRates: Record<string, string> = {};
     if (emp.downlineCustomRates) {
       Object.entries(emp.downlineCustomRates).forEach(([k, v]) => {
@@ -1610,19 +1627,28 @@ export const AdminPortal: React.FC = () => {
   const handleSaveReferralCommissionRate = async (empId: string, rateValue: number | string) => {
     if (!adminToken) return;
     const rateNum = typeof rateValue === 'string' ? parseFloat(rateValue) : rateValue;
-    if (isNaN(rateNum) || rateNum < 0 || rateNum > 100) {
-      showToast(lang === 'bn' ? 'অনুগ্রহ করে সঠিক কমিশন রেট (০-১০০) দিন' : 'Please provide a valid rate (0-100)', 'error');
+    if (isNaN(rateNum) || rateNum < 0 || rateNum > 1000) {
+      showToast(lang === 'bn' ? 'অনুগ্রহ করে সঠিক বোনাস লিমিট (০-১০০০ টাকা) দিন' : 'Please provide a valid bonus limit (0-1000)', 'error');
       return;
     }
     setIsSavingModalReferralRate(true);
     try {
       const res = await api.adminUpdateEmployeeProfile(adminToken, empId, { referralCommissionRate: rateNum });
       if (res.success) {
-        setEmployees(prev => prev.map(e => e.id === empId ? { ...e, referralCommissionRate: rateNum } : e));
+        setEmployees(prev => prev.map(e => {
+          if (e.id === empId) {
+            return { ...e, referralCommissionRate: rateNum };
+          }
+          const isDownline = e.referralOwnerId === empId || e.reference === empId || (selectedUserForDetails?.referenceCode && (e.referredBy === selectedUserForDetails.referenceCode || e.reference === selectedUserForDetails.referenceCode));
+          if (isDownline && (!selectedUserForDetails?.downlineCustomRates || selectedUserForDetails.downlineCustomRates[e.id] === undefined)) {
+            return { ...e, referralCommissionRate: rateNum };
+          }
+          return e;
+        }));
         if (selectedUserForDetails && selectedUserForDetails.id === empId) {
           setSelectedUserForDetails(prev => prev ? { ...prev, referralCommissionRate: rateNum } : null);
         }
-        showToast(lang === 'bn' ? `রেফারেল কমিশন সফলভাবে ${rateNum}% (প্রতি ১০০ তে ৳${rateNum}) নির্ধারণ করা হয়েছে` : `Referral commission set to ${rateNum}%`);
+        showToast(lang === 'bn' ? `রেফারেল সর্বোচ্চ বোনাস লিমিট সফলভাবে ৳${rateNum} নির্ধারণ করা হয়েছে (সকল রেফারেল অ্যাকাউন্টে কার্যকর)` : `Referral bonus limit set to ৳${rateNum}`);
       }
     } catch (err: any) {
       showToast(err.message || 'কমিশন রেট সংরক্ষণ ব্যর্থ হয়েছে', 'error');
@@ -1634,8 +1660,8 @@ export const AdminPortal: React.FC = () => {
   const handleSaveMemberCustomRate = async (parentEmpId: string, memberEmpId: string, rateVal: string | number) => {
     if (!adminToken) return;
     const rateNum = typeof rateVal === 'string' ? parseFloat(rateVal) : rateVal;
-    if (isNaN(rateNum) || rateNum < 0 || rateNum > 100) {
-      showToast(lang === 'bn' ? 'অনুগ্রহ করে সঠিক কমিশন রেট (০-১০০) দিন' : 'Please provide a valid rate (0-100)', 'error');
+    if (isNaN(rateNum) || rateNum < 0 || rateNum > 1000) {
+      showToast(lang === 'bn' ? 'অনুগ্রহ করে সঠিক বোনাস লিমিট (০-১০০০ টাকা) দিন' : 'Please provide a valid rate (0-1000)', 'error');
       return;
     }
     setSavingMemberRateId(memberEmpId);
@@ -1651,10 +1677,10 @@ export const AdminPortal: React.FC = () => {
         if (selectedUserForDetails && selectedUserForDetails.id === parentEmpId) {
           setSelectedUserForDetails(prev => prev ? { ...prev, downlineCustomRates: updatedCustomRates } : null);
         }
-        showToast(lang === 'bn' ? `এই মেম্বারের জন্য রেফারেল লাভ ${rateNum}% (প্রতি ১০০ তে ৳${rateNum}) নির্ধারণ করা হয়েছে` : `Custom rate set to ${rateNum}%`);
+        showToast(lang === 'bn' ? `এই মেম্বারের জন্য রেফারেল সর্বোচ্চ বোনাস ৳${rateNum} নির্ধারণ করা হয়েছে` : `Custom bonus limit set to ৳${rateNum}`);
       }
     } catch (err: any) {
-      showToast(err.message || 'কমিশন রেট সংরক্ষণ ব্যর্থ হয়েছে', 'error');
+      showToast(err.message || 'বোনাস লিমিট সংরক্ষণ ব্যর্থ হয়েছে', 'error');
     } finally {
       setSavingMemberRateId(null);
     }
@@ -3843,17 +3869,6 @@ export const AdminPortal: React.FC = () => {
                     className="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:border-[#009245] outline-none shadow-2xs"
                   />
                 </div>
-
-                <button
-                  type="button"
-                  onClick={handlePurgeAllResellers}
-                  disabled={isPurgingResellers || employees.length === 0}
-                  className="px-2.5 py-1.5 bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 font-bold text-[10px] sm:text-xs rounded-xl shadow-3xs cursor-pointer flex items-center justify-center gap-1 transition-all disabled:opacity-40 shrink-0 whitespace-nowrap"
-                  title="Purge all test reseller accounts"
-                >
-                  <Trash2 className="w-3 h-3 text-rose-600" />
-                  <span>{isPurgingResellers ? (lang === 'bn' ? 'মুছে ফেলা হচ্ছে...' : 'Purging...') : (lang === 'bn' ? 'টেস্ট রিসেলার মুছুন' : 'Purge Test Accounts')}</span>
-                </button>
               </div>
             </div>
 
@@ -3968,20 +3983,23 @@ export const AdminPortal: React.FC = () => {
                   
                   // Referrer / Upline Lookup
                   const ref = emp.reference || (emp as any).referredBy || (emp as any).upline;
-                  const isOfficial = Boolean(
-                    emp.isOfficialReferral ||
-                    ref === 'TAWZOON9516' ||
-                    (emp as any).referredBy === 'TAWZOON9516'
-                  );
-                  const parentEmp = emp.referralOwnerId
+                  const parentEmp = emp.referralOwnerId && emp.referralOwnerId !== 'OFFICIAL_TAWZOON'
                     ? employees.find(e => e.id === emp.referralOwnerId)
-                    : (ref && !isOfficial ? employees.find(e => 
+                    : (ref ? employees.find(e => 
                         e.id === ref || 
-                        e.referenceCode === ref || 
-                        `TN-REF-${e.id.replace('emp-', '').slice(0, 5).toUpperCase()}` === ref ||
-                        (e.phone && e.phone.replace(/[^0-9]/g, '') === ref.replace(/[^0-9]/g, '')) ||
-                        e.name.toLowerCase() === ref.toLowerCase()
+                        (e.referenceCode && e.referenceCode.toUpperCase() === String(ref).toUpperCase()) || 
+                        `TN-REF-${e.id.replace('emp-', '').slice(0, 5).toUpperCase()}` === String(ref).toUpperCase() ||
+                        (e.phone && e.phone.replace(/[^0-9]/g, '') === String(ref).replace(/[^0-9]/g, '')) ||
+                        (e.name && e.name.trim().toLowerCase() === String(ref).trim().toLowerCase())
                       ) : null);
+
+                  const isOfficial = !parentEmp && Boolean(
+                    emp.referralOwnerId === 'OFFICIAL_TAWZOON' ||
+                    ref === 'TAWZOON9516' ||
+                    isOfficialReferenceCode(ref) ||
+                    isOfficialReferenceCode((emp as any).referredBy) ||
+                    (emp.isOfficialReferral && !emp.referralOwnerId)
+                  );
                   const referrerName = isOfficial
                     ? 'তাওজুন অফিসিয়াল (TAWZOON9516)'
                     : (parentEmp ? parentEmp.name : (emp.referralOwnerName || (ref ? ref : 'মেইন একাউন্ট')));
@@ -4082,14 +4100,6 @@ export const AdminPortal: React.FC = () => {
                             className="px-2.5 py-1 text-[11px] font-bold bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-lg cursor-pointer"
                           >
                             পাসওয়ার্ড
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleOpenEditMargin(emp)}
-                            className="px-2.5 py-1 text-[11px] font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg cursor-pointer flex items-center gap-1 transition-all"
-                            title="Edit Commission / Margin (Fixed Payout)"
-                          >
-                            <span>💰</span> {lang === 'bn' ? `মার্জিন (৳${emp.resellerMargin !== undefined ? emp.resellerMargin : (emp.isOfficialReferral || emp.reference === 'TAWZOON9516' ? 0 : 10)})` : `Margin (৳${emp.resellerMargin !== undefined ? emp.resellerMargin : (emp.isOfficialReferral || emp.reference === 'TAWZOON9516' ? 0 : 10)})`}
                           </button>
                         </div>
                         <button
@@ -7706,58 +7716,97 @@ export const AdminPortal: React.FC = () => {
                 </div>
 
                 {/* SECTION 4: Star Rating & Discount */}
-                <div className="p-5 bg-white rounded-xl border border-slate-200 space-y-4 shadow-2xs">
-                  <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-900 flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-lg bg-[#009245] text-white flex items-center justify-center text-xs font-black">৪</span>
-                    <span>{lang === 'bn' ? 'রেটিং ও ডিসকাউন্ট' : 'Rating & Discount'}</span>
-                  </h4>
+                {(() => {
+                  const formStars = Number(productForm.starRating || 5);
+                  const formDiscount = formStars === 4 ? 15 : formStars === 3 ? 20 : formStars === 2 ? 25 : formStars === 1 ? 30 : 10;
+                  const formSellPrice = parseFloat(String(productForm.sellingPrice)) || 0;
+                  const formCalcRegular = Math.round(formSellPrice / (1 - formDiscount / 100));
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-800 block">
-                        {lang === 'bn' ? 'স্টার রেটিং *' : 'Star Rating *'}
-                      </label>
-                      <select
-                        value={productForm.starRating || 5}
-                        onChange={(e) => setProductForm({ ...productForm, starRating: parseInt(e.target.value, 10) || 5 })}
-                        className="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg font-bold text-amber-600 outline-none"
-                      >
-                        <option value={5}>⭐⭐⭐⭐⭐ 5 স্টার (খুব ভালো)</option>
-                        <option value={4}>⭐⭐⭐⭐ 4 স্টার (ভালো)</option>
-                        <option value={3}>⭐⭐⭐ 3 স্টার (মাঝারি)</option>
-                        <option value={2}>⭐⭐ 2 স্টার (কম)</option>
-                      </select>
-                    </div>
+                  return (
+                    <div className="p-5 bg-white rounded-xl border border-slate-200 space-y-4 shadow-2xs">
+                      <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-900 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-6 h-6 rounded-lg bg-[#009245] text-white flex items-center justify-center text-xs font-black">৪</span>
+                          <span>{lang === 'bn' ? 'রেটিং ও ডিসকাউন্ট সেটিং' : 'Rating & Discount Setting'}</span>
+                        </div>
+                        <span className="text-[11px] font-bold text-rose-600 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full">
+                          -{formDiscount}% ডিসকাউন্ট সক্রিয়
+                        </span>
+                      </h4>
 
-                    <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center justify-between text-xs font-bold text-emerald-900">
-                      <span>৫ স্টার পণ্যের জন্য ডিসকাউন্ট (উদাহরণ)</span>
-                      <span className="font-mono text-sm bg-white px-2 py-0.5 rounded border border-emerald-300">10 %</span>
-                    </div>
-                  </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-800 block">
+                            {lang === 'bn' ? 'স্টার রেটিং নির্ধারণ করুন *' : 'Select Star Rating *'}
+                          </label>
+                          <select
+                            value={formStars}
+                            onChange={(e) => {
+                              const selected = parseInt(e.target.value, 10) || 5;
+                              const disc = selected === 4 ? 15 : selected === 3 ? 20 : selected === 2 ? 25 : selected === 1 ? 30 : 10;
+                              const reg = Math.round((parseFloat(String(productForm.sellingPrice)) || 0) / (1 - disc / 100));
+                              setProductForm(prev => ({
+                                ...prev,
+                                starRating: selected,
+                                regularPrice: reg > (prev.sellingPrice || 0) ? reg : undefined
+                              }));
+                            }}
+                            className="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg font-bold text-amber-600 outline-none"
+                          >
+                            <option value={5}>⭐⭐⭐⭐⭐ 5 স্টার (১০% ডিসকাউন্ট)</option>
+                            <option value={4}>⭐⭐⭐⭐ 4 স্টার (১৫% ডিসকাউন্ট)</option>
+                            <option value={3}>⭐⭐⭐ 3 স্টার (২০% ডিসকাউন্ট)</option>
+                            <option value={2}>⭐⭐ 2 স্টার (২৫% ডিসকাউন্ট)</option>
+                            <option value={1}>⭐ 1 স্টার (৩০% ডিসকাউন্ট)</option>
+                          </select>
+                        </div>
 
-                  {/* Star Rating Discount Setting Table */}
-                  <div className="space-y-1.5">
-                    <span className="text-[11px] font-bold text-slate-600 block">স্টার রেটিং অনুযায়ী ডিসকাউন্ট সেটিং</span>
-                    <div className="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden text-xs font-medium">
-                      <div className="grid grid-cols-2 p-2 border-b border-slate-200 bg-slate-100 font-bold text-slate-700">
-                        <span>⭐⭐⭐⭐⭐ 5 স্টার (খুব ভালো)</span>
-                        <span className="text-right font-mono text-emerald-700">10 %</span>
+                        {/* Live Price & Discount Indicator */}
+                        <div className="p-3 bg-emerald-50/80 border border-emerald-200 rounded-lg flex flex-col justify-center space-y-1 text-xs">
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-slate-600">পাবলিক বিক্রয়মূল্য:</span>
+                            <span className="font-mono font-extrabold text-[#009245] text-sm">৳{formSellPrice.toLocaleString()}</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-slate-500">পূর্বের ক্রস মূল্য (Regular):</span>
+                            <span className="font-mono text-slate-400 line-through">৳{formCalcRegular.toLocaleString()}</span>
+                          </div>
+                          <div className="flex items-center justify-between text-[11px] font-bold text-rose-600">
+                            <span>পাবলিক পেজে ডিসকাউন্ট ব্যাজ:</span>
+                            <span className="bg-rose-600 text-white px-1.5 py-0.2 rounded font-mono font-bold">-{formDiscount}%</span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="grid grid-cols-2 p-2 border-b border-slate-200">
-                        <span>⭐⭐⭐⭐ 4 স্টার (ভালো)</span>
-                        <span className="text-right font-mono text-emerald-700">15 %</span>
-                      </div>
-                      <div className="grid grid-cols-2 p-2 border-b border-slate-200">
-                        <span>⭐⭐⭐ 3 স্টার (মাঝারি)</span>
-                        <span className="text-right font-mono text-emerald-700">20 %</span>
-                      </div>
-                      <div className="grid grid-cols-2 p-2">
-                        <span>⭐⭐ 2 স্টার (কম)</span>
-                        <span className="text-right font-mono text-emerald-700">25 %</span>
+
+                      {/* Star Rating Discount Setting Reference Table */}
+                      <div className="space-y-1.5">
+                        <span className="text-[11px] font-bold text-slate-600 block">স্টার রেটিং অনুযায়ী ডিসকাউন্ট তালিকা</span>
+                        <div className="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden text-xs font-medium">
+                          <div className={`grid grid-cols-2 p-2 border-b border-slate-200 ${formStars === 5 ? 'bg-amber-100/60 font-bold text-amber-900' : 'bg-slate-100 text-slate-700'}`}>
+                            <span>⭐⭐⭐⭐⭐ 5 স্টার (খুব ভালো)</span>
+                            <span className="text-right font-mono text-emerald-700 font-bold">10 % ডিসকাউন্ট</span>
+                          </div>
+                          <div className={`grid grid-cols-2 p-2 border-b border-slate-200 ${formStars === 4 ? 'bg-amber-100/60 font-bold text-amber-900' : ''}`}>
+                            <span>⭐⭐⭐⭐ 4 স্টার (ভালো)</span>
+                            <span className="text-right font-mono text-emerald-700 font-bold">15 % ডিসকাউন্ট</span>
+                          </div>
+                          <div className={`grid grid-cols-2 p-2 border-b border-slate-200 ${formStars === 3 ? 'bg-amber-100/60 font-bold text-amber-900' : ''}`}>
+                            <span>⭐⭐⭐ 3 স্টার (মাঝারি)</span>
+                            <span className="text-right font-mono text-emerald-700 font-bold">20 % ডিসকাউন্ট</span>
+                          </div>
+                          <div className={`grid grid-cols-2 p-2 border-b border-slate-200 ${formStars === 2 ? 'bg-amber-100/60 font-bold text-amber-900' : ''}`}>
+                            <span>⭐⭐ 2 স্টার (কম)</span>
+                            <span className="text-right font-mono text-emerald-700 font-bold">25 % ডিসকাউন্ট</span>
+                          </div>
+                          <div className={`grid grid-cols-2 p-2 ${formStars === 1 ? 'bg-amber-100/60 font-bold text-amber-900' : ''}`}>
+                            <span>⭐ 1 স্টার (ন্যূনতম)</span>
+                            <span className="text-right font-mono text-emerald-700 font-bold">30 % ডিসকাউন্ট</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  );
+                })()}
 
               </div>
 
@@ -8391,20 +8440,23 @@ export const AdminPortal: React.FC = () => {
 
         // Referrer / Upline Lookup
         const ref = emp.reference || (emp as any).referredBy || (emp as any).upline;
-        const isOfficial = Boolean(
-          emp.isOfficialReferral ||
-          ref === 'TAWZOON9516' ||
-          (emp as any).referredBy === 'TAWZOON9516'
-        );
-        const parentEmp = emp.referralOwnerId
+        const parentEmp = emp.referralOwnerId && emp.referralOwnerId !== 'OFFICIAL_TAWZOON'
           ? employees.find(e => e.id === emp.referralOwnerId)
-          : (ref && !isOfficial ? employees.find(e => 
+          : (ref ? employees.find(e => 
               e.id === ref || 
-              e.referenceCode === ref || 
-              `TN-REF-${e.id.replace('emp-', '').slice(0, 5).toUpperCase()}` === ref ||
-              (e.phone && e.phone.replace(/[^0-9]/g, '') === ref.replace(/[^0-9]/g, '')) ||
-              e.name.toLowerCase() === ref.toLowerCase()
+              (e.referenceCode && e.referenceCode.toUpperCase() === String(ref).toUpperCase()) || 
+              `TN-REF-${e.id.replace('emp-', '').slice(0, 5).toUpperCase()}` === String(ref).toUpperCase() ||
+              (e.phone && e.phone.replace(/[^0-9]/g, '') === String(ref).replace(/[^0-9]/g, '')) ||
+              (e.name && e.name.trim().toLowerCase() === String(ref).trim().toLowerCase())
             ) : null);
+
+        const isOfficial = !parentEmp && Boolean(
+          emp.referralOwnerId === 'OFFICIAL_TAWZOON' ||
+          ref === 'TAWZOON9516' ||
+          isOfficialReferenceCode(ref) ||
+          isOfficialReferenceCode((emp as any).referredBy) ||
+          (emp.isOfficialReferral && !emp.referralOwnerId)
+        );
         const referrerName = isOfficial
           ? 'তাওজুন অফিসিয়াল (Headquarters)'
           : (parentEmp ? parentEmp.name : (emp.referralOwnerName || (ref ? ref : 'মেইন / সরাসরি (কোন আপলাইন নেই)')));
@@ -8425,7 +8477,9 @@ export const AdminPortal: React.FC = () => {
         const totalDownlineCommissionGenerated = downlineSales.reduce((sum, s) => sum + (s.commissionAmount || 0), 0);
 
         // Current Referral Commission Rate / Max Bonus Limit (default ৳10)
-        const currentReferralRate = emp.referralCommissionRate !== undefined ? emp.referralCommissionRate : 10;
+        const currentReferralRate = (emp.referralCommissionRate !== undefined && Number(emp.referralCommissionRate) > 0)
+          ? Number(emp.referralCommissionRate)
+          : 10;
         const estimatedReferralBonus = Math.round(downlineSales.reduce((sum, s) => sum + Math.min((s.commissionAmount || 0) * 0.1, currentReferralRate), 0));
 
         // Real active downline members list strictly without fake accounts
@@ -8497,15 +8551,6 @@ export const AdminPortal: React.FC = () => {
                 >
                   <Edit2 className="w-3 h-3 text-slate-700" />
                   {lang === 'bn' ? 'এডিট' : 'Edit'}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleOpenEditMargin(emp)}
-                  className="px-2.5 py-1 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-lg transition-all flex items-center gap-1 cursor-pointer shrink-0"
-                  title="রিসেলার মার্জিন ও ফিক্সড পেআউট এডিট করুন"
-                >
-                  <span>💰</span> {lang === 'bn' ? `মার্জিন (৳${emp.resellerMargin !== undefined ? emp.resellerMargin : (emp.isOfficialReferral || emp.reference === 'TAWZOON9516' ? 0 : 10)})` : `Margin (৳${emp.resellerMargin !== undefined ? emp.resellerMargin : (emp.isOfficialReferral || emp.reference === 'TAWZOON9516' ? 0 : 10)})`}
                 </button>
 
                 <button
@@ -8704,43 +8749,55 @@ export const AdminPortal: React.FC = () => {
                         </div>
                       </div>
 
-                      {isOfficial ? (
-                        <div className="p-3 bg-emerald-50/70 rounded-xl border border-emerald-200 space-y-2 text-xs">
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="text-emerald-800 font-bold shrink-0">টাইপ:</span>
-                            <span className="font-black text-emerald-950 flex items-center gap-1">
-                              👑 তাওজুন অফিসিয়াল রেফারেল (হাই প্রায়োরিটি)
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between gap-2 pt-1 border-t border-emerald-200/60">
-                            <span className="text-emerald-800 font-bold shrink-0">রেফারেল কোড:</span>
-                            <strong className="font-mono font-black text-emerald-950 text-sm">TAWZOON9516</strong>
-                          </div>
-                          <div className="flex items-center justify-between gap-2 pt-1 border-t border-emerald-200/60">
-                            <span className="text-emerald-800 font-bold shrink-0">ফি ও বোনাস কর্তন:</span>
-                            <span className="font-bold text-emerald-800 bg-white px-2 py-0.5 rounded border border-emerald-300 text-[11px]">
-                              সম্পূর্ণ মুক্ত (০% কর্তন, কোনো ফি নেই)
-                            </span>
-                          </div>
+                      <div className={`p-3.5 rounded-xl border space-y-2 text-xs ${
+                        isOfficial ? 'bg-emerald-50/70 border-emerald-200' : 'bg-slate-50 border-slate-200/90'
+                      }`}>
+                        {/* 1. Type */}
+                        <div className="flex items-center justify-between gap-2">
+                          <span className={`${isOfficial ? 'text-emerald-800' : 'text-slate-600'} font-bold shrink-0`}>টাইপ:</span>
+                          <span className={`font-black flex items-center gap-1 ${isOfficial ? 'text-emerald-950' : 'text-slate-900'}`}>
+                            {isOfficial ? '👑 তাওজুন অফিসিয়াল রেফারেল (হাই প্রায়োরিটি)' : '🤝 পার্সোনাল রিসেলার রেফারেল'}
+                          </span>
                         </div>
-                      ) : (
-                        <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-2 text-xs">
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="text-slate-500 font-medium shrink-0">নাম:</span>
-                            <strong className="font-extrabold text-slate-900 truncate text-right">{referrerName}</strong>
-                          </div>
-                          <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
-                            <span className="text-slate-500 font-medium shrink-0">মোবাইল:</span>
-                            <strong className="font-mono font-bold text-emerald-800 shrink-0">{referrerPhone}</strong>
-                          </div>
-                          {referrerCode && referrerCode !== 'N/A' && (
-                            <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
-                              <span className="text-slate-500 font-medium shrink-0">কোড:</span>
-                              <span className="font-mono font-bold text-slate-700 shrink-0">{referrerCode}</span>
-                            </div>
-                          )}
+
+                        {/* 2. Referrer Name */}
+                        <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
+                          <span className={`${isOfficial ? 'text-emerald-800' : 'text-slate-600'} font-bold shrink-0`}>রেফারারের নাম:</span>
+                          <strong className="font-extrabold text-slate-900 truncate text-right">{referrerName}</strong>
                         </div>
-                      )}
+
+                        {/* 3. Mobile Number */}
+                        <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
+                          <span className={`${isOfficial ? 'text-emerald-800' : 'text-slate-600'} font-bold shrink-0`}>মোবাইল নম্বর:</span>
+                          <strong className="font-mono font-bold text-emerald-800 shrink-0">{referrerPhone}</strong>
+                        </div>
+
+                        {/* 4. Referral Code */}
+                        <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
+                          <span className={`${isOfficial ? 'text-emerald-800' : 'text-slate-600'} font-bold shrink-0`}>রেফারেল কোড:</span>
+                          <span className="font-mono font-black text-slate-800 shrink-0">{referrerCode}</span>
+                        </div>
+
+                        {/* 5. Fee Deduction */}
+                        <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
+                          <span className={`${isOfficial ? 'text-emerald-800' : 'text-slate-600'} font-bold shrink-0`}>ফি কর্তন:</span>
+                          <span className={`font-bold px-2 py-0.5 rounded text-[11px] ${
+                            isOfficial 
+                              ? 'text-emerald-800 bg-white border border-emerald-300' 
+                              : 'text-amber-800 bg-amber-50 border border-amber-200'
+                          }`}>
+                            {isOfficial ? 'সম্পূর্ণ মুক্ত (০% কর্তন, কোনো ফি নেই)' : 'রেফারেল ফি কর্তন প্রযোজ্য (সিস্টেম নির্ধারিত ফি)'}
+                          </span>
+                        </div>
+
+                        {/* 6. Referral Max Bonus Limit */}
+                        <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
+                          <span className={`${isOfficial ? 'text-emerald-800' : 'text-slate-600'} font-bold shrink-0`}>সর্বোচ্চ বোনাস লিমিট:</span>
+                          <span className="font-mono font-black text-emerald-900 bg-emerald-100 px-2.5 py-0.5 rounded border border-emerald-200 text-xs">
+                            ৳{currentReferralRate} টাকা প্রতি ১০০ টাকায় (১০০ টাকাতে ৳{currentReferralRate} প্রফিট)
+                          </span>
+                        </div>
+                      </div>
                     </div>
 
                     {/* 2. রেফারেল কমিশন কন্ট্রোল (ডিফল্ট ৫% বা কাস্টমাইজ) */}
@@ -8828,8 +8885,8 @@ export const AdminPortal: React.FC = () => {
                         const memberSalesAmount = memberSales.reduce((sum, s) => sum + (s.totalAmount || 0), 0);
                         
                         // Member-specific rate or parent default rate
-                        const memberSavedRate = emp.downlineCustomRates?.[member.id] !== undefined 
-                          ? emp.downlineCustomRates[member.id] 
+                        const memberSavedRate = (emp.downlineCustomRates?.[member.id] !== undefined && Number(emp.downlineCustomRates[member.id]) > 0)
+                          ? Number(emp.downlineCustomRates[member.id])
                           : currentReferralRate;
                         
                         const isInputActive = editingMemberRates[member.id] !== undefined;
@@ -8875,17 +8932,17 @@ export const AdminPortal: React.FC = () => {
 
                             {/* Right: Referral Profit Controller for this specific member in One Compact Group */}
                             <div className="flex items-center gap-1 sm:gap-1.5 bg-white p-1 sm:p-1.5 rounded-lg border border-slate-200 shrink-0 shadow-3xs">
-                              <div className="relative w-11 sm:w-14">
+                              <div className="relative w-12 sm:w-16">
                                 <input
                                   type="number"
                                   min="0"
-                                  max="100"
-                                  step="0.5"
+                                  max="1000"
+                                  step="1"
                                   value={inputVal}
                                   onChange={(e) => setEditingMemberRates(prev => ({ ...prev, [member.id]: e.target.value }))}
-                                  className="w-full pr-2.5 sm:pr-3 pl-1 py-0.5 text-xs bg-slate-50 border border-slate-200 rounded font-mono font-bold text-center focus:bg-white focus:border-emerald-500 outline-none"
+                                  className="w-full pr-3.5 pl-1.5 py-0.5 text-xs bg-slate-50 border border-slate-200 rounded font-mono font-bold text-center focus:bg-white focus:border-emerald-500 outline-none"
                                 />
-                                <span className="absolute right-0.5 top-0.5 text-[8px] sm:text-[9px] font-bold text-slate-400">%</span>
+                                <span className="absolute right-1 top-0.5 text-[9px] font-bold text-slate-400">৳</span>
                               </div>
 
                               <button
@@ -8897,8 +8954,8 @@ export const AdminPortal: React.FC = () => {
                                 {savingMemberRateId === member.id ? '..' : 'সেভ'}
                               </button>
 
-                              <span className="text-[10px] sm:text-[11px] font-mono text-emerald-900 bg-emerald-50 px-1 py-0.5 rounded font-bold border border-emerald-200 hidden xs:inline shrink-0">
-                                ৳{memberSavedRate}/১০০
+                              <span className="text-[10px] sm:text-[11px] font-mono text-emerald-900 bg-emerald-50 px-1.5 py-0.5 rounded font-bold border border-emerald-200 hidden xs:inline shrink-0">
+                                ৳{memberSavedRate} লিমিট
                               </span>
                             </div>
                           </div>
@@ -9208,12 +9265,12 @@ export const AdminPortal: React.FC = () => {
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-slate-500 font-medium">{lang === 'bn' ? 'অ্যাকাউন্টের ধরণ:' : 'Account Type:'}</span>
                   <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
-                    selectedMarginEmp.isOfficialReferral || selectedMarginEmp.reference === 'TAWZOON9516'
+                    selectedMarginEmp.isOfficialReferral || selectedMarginEmp.reference === 'TAWZOON9516' || isOfficialReferenceCode(selectedMarginEmp.reference)
                       ? 'bg-blue-50 text-blue-700 border border-blue-200'
                       : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                   }`}>
-                    {selectedMarginEmp.isOfficialReferral || selectedMarginEmp.reference === 'TAWZOON9516'
-                      ? 'অফিসিয়াল রেফারেল (Official)'
+                    {selectedMarginEmp.isOfficialReferral || selectedMarginEmp.reference === 'TAWZOON9516' || isOfficialReferenceCode(selectedMarginEmp.reference)
+                      ? 'অফিসিয়াল রেফারেল (TAWZOON9516)'
                       : 'সাধারণ রিসেলার (Referral Reseller)'}
                   </span>
                 </div>
@@ -9221,7 +9278,7 @@ export const AdminPortal: React.FC = () => {
 
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-800 block">
-                  {lang === 'bn' ? 'অ্যাডমিন নির্ধারিত মার্জিন (টাকা - Fixed Payout):' : 'Admin Defined Margin (TK - Fixed Payout):'}
+                  {lang === 'bn' ? 'পাইকারি মার্জিন / রেফারেল মার্কআপ (টাকা):' : 'Wholesale Margin / Referral Markup (TK):'}
                 </label>
                 <div className="relative">
                   <span className="absolute left-3.5 top-2.5 text-sm font-bold text-slate-400">৳</span>
@@ -9241,17 +9298,17 @@ export const AdminPortal: React.FC = () => {
               {/* Strict Formula Explanation */}
               <div className="p-3 bg-emerald-50/60 rounded-xl border border-emerald-150 text-[11px] text-emerald-950 space-y-1 leading-relaxed">
                 <p className="font-bold flex items-center gap-1">
-                  <span>ℹ️</span> {lang === 'bn' ? 'স্বয়ংক্রিয় প্রাইসিং ও ফিক্সড পেআউট নিয়ম:' : 'Pricing & Payout Rules:'}
+                  <span>ℹ️</span> {lang === 'bn' ? 'রেফারেন্স প্রাইসিং ও প্রফিট লিমিট নিয়ম:' : 'Reference Pricing & Profit Rules:'}
                 </p>
                 <p className="text-[10.5px] text-emerald-900">
                   {lang === 'bn' 
-                    ? `১. এই রিসেলার এবং তার লিংকে রেজিস্ট্রেশন করা সকল ইউজারের পেজে: Product Price = Admin Base Price + ৳${marginInput || 0}।` 
-                    : `1. Display Price = Admin Base Price + ৳${marginInput || 0} for this reseller and all downlines.`}
+                    ? `১. এই রেফারেন্স কোড দিয়ে যারা অ্যাকাউন্ট খুলবে, তাদের পাইকারি মূল্যের সাথে স্বয়ংক্রিয়ভাবে ৳${marginInput || 0} যোগ হবে (ডিফল্ট ১০ টাকা, এখানে ২০ দিলে তাদের পাইকারি মূল্যে ২০ টাকা অ্যাড হবে)।` 
+                    : `1. Wholesale price markup = +৳${marginInput || 0} for all accounts registered under this reference.`}
                 </p>
                 <p className="text-[10.5px] text-emerald-900">
                   {lang === 'bn' 
-                    ? `২. পণ্য বিক্রয়কালে রিসেলার বিক্রয়মূল্য যতই নির্ধারণ করুক না কেন, রিসেলার প্রতি পিসে ঠিক ৳${marginInput || 0} ফিক্সড রেট লাভ পাবে।` 
-                    : `2. Reseller receives strictly ৳${marginInput || 0} fixed payout per unit sale, regardless of final price.`}
+                    ? `২. রিসেলার পণ্য বিক্রি করলে লাভের ১০% কমিশন পাবে (সর্বোচ্চ ১০০ টাকা পর্যন্ত লাভের অংশ কার্যকর থাকবে; অর্থাৎ ৫০ টাকা লাভে ৫ টাকা, ১০০ টাকা লাভে ১০ টাকা এবং ২০০/৩০০/৫০০ টাকা লাভ করলেও সর্বোচ্চ ১০ টাকা পাবে)।` 
+                    : `2. Reseller earns 10% of profit capped at 100 Tk profit limit (max 10 Tk per item sale).`}
                 </p>
               </div>
 

@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext.js';
 import { Product } from '../../types/index.js';
-import { getAdjustedSellingPrice, getAdjustedRegularPrice, getResellerProfitPerUnit } from '../../utils/pricing.js';
+import { getAdjustedSellingPrice, getAdjustedRegularPrice, getResellerProfitPerUnit, getResellerWholesalePrice } from '../../utils/pricing.js';
 import { ResellerOrderCheckoutModal } from './ResellerOrderCheckoutModal.js';
 
 interface ResellerProductPreviewModalProps {
@@ -95,9 +95,7 @@ export const ResellerProductPreviewModal: React.FC<ResellerProductPreviewModalPr
   };
   const displayCategoryBadge = getFormattedCategoryBadge(rawCategoryName);
 
-  const baseCostPrice = product.originalPrice !== undefined && product.originalPrice !== null
-    ? Number(product.originalPrice)
-    : Math.max(0, adjustedSellingPrice - commission);
+  const baseCostPrice = getResellerWholesalePrice(product, employee, brandSettings);
 
   const starCount = product.starRating || 5;
   const regularPrice = adjustedRegularPrice > adjustedSellingPrice ? adjustedRegularPrice : Math.round(adjustedSellingPrice * 1.25);
@@ -112,9 +110,8 @@ export const ResellerProductPreviewModal: React.FC<ResellerProductPreviewModalPr
     : adjustedSellingPrice;
   const isPriceValid = livePrice >= baseCostPrice;
 
-  // Module 1, Rule 3: Fixed Payout Engine
-  const isOfficial = employee?.isOfficialReferral === true || employee?.reference === 'TAWZOON9516';
-  const liveProfit = isOfficial ? Math.max(0, livePrice - baseCostPrice) : commission;
+  // Reseller profit calculation (বিক্রয়মূল্য - পাইকারি মূল্য)
+  const liveProfit = Math.max(0, livePrice - baseCostPrice);
 
   // Copy Shareable Link
   const handleCopyShareableLink = () => {

@@ -85,7 +85,7 @@ export const ResellerReferralTab: React.FC = () => {
 
   const refCode = referralData?.referenceCode || employee.referenceCode || `REF-${(employee.phone ? employee.phone.slice(-5) : employee.id.slice(-5)).toUpperCase()}`;
   const origin = typeof window !== 'undefined' ? window.location.origin : 'https://tawzoonnexus.com';
-  const referralLink = `${origin}/?ref=${refCode}`;
+  const referralLink = `${origin}/?portal=reseller&ref=${encodeURIComponent(refCode)}`;
   const whatsappMessage = `আসসালামু আলাইকুম! তাওজুন (Tawzoon) প্ল্যাটফর্মে রিসেলার হিসেবে যুক্ত হয়ে ঘরে বসে চমৎকার কমিশন আয় করুন। কোনো প্রকার ইনভেস্টমেন্ট ছাড়াই শুরু করুন আপনার অনলাইন রিসেলিং ব্যবসা।\n\n📌 আমার রেফারেন্স কোড: ${refCode}\n🔗 সরাসরি রেজিস্ট্রেশন লিংক: ${referralLink}`;
   const whatsappShareUrl = `https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`;
 
@@ -546,6 +546,40 @@ export const ResellerReferralTab: React.FC = () => {
             {/* Modal Body (Scrollable, Ultra-Clean & Compact) */}
             <div className="flex-1 overflow-y-auto p-3.5 sm:p-5 space-y-3.5 text-slate-800 text-xs">
                
+               {/* 0. Unified Reference Profile Card */}
+               <div className="p-3 bg-emerald-50/70 rounded-xl border border-emerald-200/90 space-y-1.5 text-xs">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-emerald-800 font-bold shrink-0">টাইপ:</span>
+                    <span className="font-black text-emerald-950 flex items-center gap-1">
+                      🤝 পার্সোনাল রিসেলার রেফারেল
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 pt-1 border-t border-emerald-200/60">
+                    <span className="text-emerald-800 font-bold shrink-0">রেফারার নাম:</span>
+                    <strong className="font-extrabold text-slate-900 truncate text-right">
+                      {employee.name}
+                    </strong>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 pt-1 border-t border-emerald-200/60">
+                    <span className="text-emerald-800 font-bold shrink-0">রেফারেল কোড:</span>
+                    <span className="font-mono font-black text-slate-800 shrink-0">
+                      {refCode}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 pt-1 border-t border-emerald-200/60">
+                    <span className="text-emerald-800 font-bold shrink-0">ফি কর্তন:</span>
+                    <span className="font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 text-[11px]">
+                      রেফারেল ফি কর্তন প্রযোজ্য (সিস্টেম নির্ধারিত ফি)
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 pt-1 border-t border-emerald-200/60">
+                    <span className="text-emerald-800 font-bold shrink-0">সর্বোচ্চ বোনাস লিমিট:</span>
+                    <span className="font-mono font-black text-emerald-900 bg-emerald-100 px-2.5 py-0.5 rounded border border-emerald-200 text-xs">
+                      ৳{employee.referralCommissionRate || 10} টাকা প্রতি ১০০ টাকায় (১০০ টাকাতে ৳{employee.referralCommissionRate || 10} প্রফিট)
+                    </span>
+                  </div>
+               </div>
+
                {/* 1. Contact & Location Info */}
                <div className="grid grid-cols-2 gap-2">
                   <div className="p-2.5 bg-slate-50/90 rounded-xl border border-slate-200/80">

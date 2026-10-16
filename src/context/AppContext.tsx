@@ -191,12 +191,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const search = new URLSearchParams(window.location.search);
         const refParam = search.get('ref') || search.get('referral');
         if (refParam) {
-          sessionStorage.setItem('tawzoon_invite_ref', refParam.toUpperCase().trim());
+          const cleanRef = refParam.toUpperCase().trim();
+          sessionStorage.setItem('tawzoon_invite_ref', cleanRef);
+          localStorage.setItem('tawzoon_invite_ref', cleanRef);
         }
         const portalParam = search.get('portal');
         if (portalParam === 'employee' || portalParam === 'reseller') return 'employee';
         if (portalParam === 'admin') return 'admin';
         if (portalParam === 'public') return 'public';
+        if (refParam) return 'employee';
       } catch {
         // Safe ignore
       }

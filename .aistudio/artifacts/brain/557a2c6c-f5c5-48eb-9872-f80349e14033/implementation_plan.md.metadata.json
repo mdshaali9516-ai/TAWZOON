@@ -1,6 +1,6 @@
 {
-  "summary":  "Implementation plan for fixing product deletion resurrection and official reference pricing alignment between backend and frontend.",
-  "updatedAt":  "2026-10-10T14:01:18.984231336Z",
-  "requestFeedback":  true,
-  "userFacing":  true
+  "summary": "Implementation plan for ensuring permanent storage, reliable persistence, and live real-time sync of reseller accounts and referral settings without data loss or reset.",
+  "updatedAt": "2026-10-13T02:24:08.747919513Z",
+  "requestFeedback": true,
+  "userFacing": true
 }

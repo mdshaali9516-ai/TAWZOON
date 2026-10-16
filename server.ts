@@ -164,19 +164,15 @@ function isOfficialReferralCode(code?: string | null): boolean {
   if (!code) return false;
   const clean = code.trim().toUpperCase().replace(/[\s\-_]/g, '');
   return (
-    clean === 'TAUZON9516' ||
-    clean === 'TAUZON' ||
     clean === 'TAWZOON9516' ||
+    clean === 'TAUZON9516' ||
     clean === 'TAWZOON' ||
+    clean === 'TAUZON' ||
     clean === 'OFFICIAL' ||
-    clean === '9516' ||
-    clean === '1095' ||
-    clean === 'TAWZOON95' ||
-    clean === 'TAUZON95' ||
     clean === 'OFFICIALTAWZOON' ||
     clean === 'TAWZOONOFFICIAL' ||
+    clean.includes('TAWZOON') ||
     clean.includes('TAUZON') ||
-    clean.includes('9516') ||
     clean.includes('OFFICIAL')
   );
 }
@@ -195,11 +191,6 @@ function getEmployeeReferralMarkup(employee?: Employee | null, state?: any): num
   if (!employee) return 10;
   if (isOfficialEmployee(employee)) return 0;
 
-  // 1. Direct admin defined margin on this reseller
-  if (employee.resellerMargin !== undefined && employee.resellerMargin !== null) {
-    return Number(employee.resellerMargin);
-  }
-
   const st = state || db.getState();
   const ref = (employee.reference || (employee as any).referredBy || (employee as any).upline || '').trim().toUpperCase();
   const parentEmp = (employee.referralOwnerId && employee.referralOwnerId !== 'OFFICIAL_TAWZOON' && employee.referralOwnerId !== 'COMPANY')
@@ -212,87 +203,63 @@ function getEmployeeReferralMarkup(employee?: Employee | null, state?: any): num
         (e.name && e.name.toLowerCase() === ref.toLowerCase())
       ) : null);
 
-  // 2. If registered under an upline reseller, inherit the upline reseller's admin-defined margin
-  if (parentEmp) {
-    if (parentEmp.resellerMargin !== undefined && parentEmp.resellerMargin !== null) {
-      return Number(parentEmp.resellerMargin);
-    }
-    if (parentEmp.referralCommissionRate !== undefined) {
-      return Number(parentEmp.referralCommissionRate);
-    }
+  // 1. Direct admin defined margin on this reseller (if strictly > 0)
+  if (employee.resellerMargin !== undefined && employee.resellerMargin !== null && Number(employee.resellerMargin) > 0) {
+    return Number(employee.resellerMargin);
   }
 
-  if ((employee as any).referralMarkup !== undefined) {
-    return Number((employee as any).referralMarkup);
-  }
-
-  return 10;
+  // 2. Fallback default wholesale markup for all non-official accounts (+10 TK)
+  const brandSettings = st.brandSettings;
+  return Number(brandSettings?.nonOfficialMarkup || 10);
 }
 
 // Helper to compute effective product with dynamic referral wholesale price markup
 function getProductForEmployee(product: Product, employee?: Employee | null, explicitRef?: string | null): any {
   const sanitized = sanitizeProduct(product);
-  const officialCode = 'TAWZOON9516';
   const cleanRef = explicitRef ? explicitRef.trim().toUpperCase().replace(/[\s\-_]/g, '') : null;
-  const isOfficial = (employee && isOfficialEmployee(employee)) || (cleanRef === officialCode || (cleanRef && isOfficialReferralCode(cleanRef)));
+  const isOfficial = (employee && isOfficialEmployee(employee)) || (cleanRef && isOfficialReferralCode(cleanRef));
 
   const baseOrig = product.originalPrice !== undefined && product.originalPrice !== null ? Number(product.originalPrice) : Number(product.sellingPrice);
   const baseSell = Number(product.sellingPrice || 0);
-  const baseReg = product.regularPrice && product.regularPrice > baseSell ? Number(product.regularPrice) : baseSell;
 
-  // 1. Official Referral: TAWZOON9516 / Official code accounts see EXACT Admin prices (0 markup)
-  if (isOfficial) {
-    const regular = (sanitized.regularPrice && sanitized.regularPrice > (sanitized.sellingPrice || 0))
-      ? sanitized.regularPrice
-      : (sanitized.sellingPrice || 0);
+  // Compute regularPrice from starRating discount setting (5-star=10%, 4-star=15%, 3-star=20%, 2-star=25%, 1-star=30%)
+  const stars = Number(product.starRating || 5);
+  const starDiscount = stars === 4 ? 15 : stars === 3 ? 20 : stars === 2 ? 25 : stars === 1 ? 30 : 10;
+  const autoRegular = Math.round(baseSell / (1 - starDiscount / 100));
+  const baseReg = (product.regularPrice && Number(product.regularPrice) > baseSell)
+    ? Number(product.regularPrice)
+    : (autoRegular > baseSell ? autoRegular : Math.round(baseSell * 1.15));
+
+  // 1. Official Referral (TAWZOON9516, etc.) or Public Store Visitor (no reseller upline):
+  if (isOfficial || !employee) {
     return {
       ...sanitized,
-      originalPrice: baseOrig,
+      starRating: stars,
+      originalPrice: baseOrig, // Exact Admin Wholesale Price (0 markup)
       isOfficialReferral: true,
       referralMarkup: 0,
       baseSellingPrice: baseSell,
-      baseRegularPrice: regular,
-      sellingPrice: baseSell,
-      regularPrice: regular,
+      baseRegularPrice: baseReg,
+      sellingPrice: baseSell, // Exact Admin Selling Price on public store
+      regularPrice: baseReg,  // Exact Regular Price with discount badge
     };
   }
 
-  // 2. Reseller Referral OR Default Visitor (without referral):
-  // User_Display_Price = Admin_Base_Price + Reseller_Margin (default 10 Tk, or Admin defined margin)
-  let referralMarkup = 10;
+  // 2. Logged-in Reseller registered under a non-official upline:
+  // Automatically add default +10 TK wholesale markup, or admin configured markup (e.g. 20 TK)
   const st = db.getState();
-  if (employee) {
-    referralMarkup = getEmployeeReferralMarkup(employee, st);
-  } else if (cleanRef) {
-    // Visitor browsing through a reseller's referral link
-    const parentEmp = st.employees.find((e: any) =>
-      e.id.toUpperCase() === cleanRef ||
-      (e.referenceCode && e.referenceCode.toUpperCase() === cleanRef) ||
-      `TN-REF-${e.id.replace('emp-', '').slice(0, 5).toUpperCase()}` === cleanRef ||
-      (e.phone && e.phone.replace(/[^0-9]/g, '') === cleanRef.replace(/[^0-9]/g, ''))
-    );
-    if (parentEmp) {
-      referralMarkup = parentEmp.resellerMargin !== undefined ? Number(parentEmp.resellerMargin) : (parentEmp.referralCommissionRate ?? 10);
-    }
-  }
-
-  const baseSelling = sanitized.sellingPrice || 0;
-  const baseRegular = (sanitized.regularPrice && sanitized.regularPrice > baseSelling)
-    ? sanitized.regularPrice
-    : baseSelling;
-
-  // 100 Tk+ products get full margin (e.g. 10 Tk), 50 Tk products get half margin (e.g. 5 Tk)
-  const finalMarkup = baseSelling <= 50 ? Math.max(2, Math.round(referralMarkup * 0.5)) : referralMarkup;
+  const referralMarkup = getEmployeeReferralMarkup(employee, st);
 
   return {
     ...sanitized,
-    originalPrice: baseOrig + finalMarkup,
+    starRating: stars,
+    originalPrice: baseOrig + referralMarkup, // Wholesale price for this reseller (+10 TK default, or +20 TK if admin set)
     isOfficialReferral: false,
-    referralMarkup: finalMarkup,
-    baseSellingPrice: baseSelling,
-    baseRegularPrice: baseRegular,
-    sellingPrice: baseSelling, // Selling price remains admin selling price; only original price increases by markup
-    regularPrice: baseRegular, // Regular price remains admin regular price
+    referralMarkup: referralMarkup,
+    baseSellingPrice: baseSell,
+    baseRegularPrice: baseReg,
+    sellingPrice: baseSell, // Selling price remains exact admin selling price
+    regularPrice: baseReg,  // Regular price remains exact regular price
   };
 }
 
@@ -875,6 +842,9 @@ app.post('/api/auth/employee/register', (req: Request, res: Response) => {
   // Handle Referral Code & Owner Relationship:
   // - Official code (TAWZOON9516, etc.): original price (0 markup, 0 deductions)
   // - Reseller code: +10 TK markup, 10% profit sharing on sales
+  // Handle Referral Code & Owner Relationship:
+  // - Official code (TAWZOON9516): original price (0 markup, 0 deductions)
+  // - Reseller code: +10 TK markup (or upline reseller margin override)
   // - Without referral code: +10 TK markup as company bonus, assigned to COMPANY
   const rawRef = (reference || '').trim().toUpperCase();
   const isOfficial = isOfficialReferralCode(rawRef);
@@ -907,6 +877,12 @@ app.post('/api/auth/employee/register', (req: Request, res: Response) => {
 
   const generatedRefCode = `TN-REF-${cleanPhone.slice(-5).toUpperCase()}`;
 
+  const initialMargin = isOfficial
+    ? 0
+    : (parentEmp && parentEmp.resellerMargin !== undefined && Number(parentEmp.resellerMargin) > 0
+        ? Number(parentEmp.resellerMargin)
+        : 10);
+
   const newEmployee = {
     id: 'emp-' + crypto.randomUUID().slice(0, 8),
     name: name.trim(),
@@ -917,11 +893,15 @@ app.post('/api/auth/employee/register', (req: Request, res: Response) => {
     referenceCode: generatedRefCode,
     reference: cleanRef,
     isOfficialReferral: isOfficial,
+    resellerMargin: initialMargin,
+    referralCommissionRate: (parentEmp && parentEmp.referralCommissionRate !== undefined && Number(parentEmp.referralCommissionRate) > 0)
+      ? Number(parentEmp.referralCommissionRate)
+      : 10,
     referralOwnerId: isOfficial
       ? 'OFFICIAL_TAWZOON'
       : (parentEmp ? parentEmp.id : 'COMPANY'),
     referralOwnerName: isOfficial
-      ? 'তাওজুন অফিসিয়াল (Headquarters)'
+      ? 'তাওজুন অফিসিয়াল (Headquarters - TAWZOON9516)'
       : (parentEmp ? parentEmp.name : 'তাওজুন কোম্পানি (Direct)'),
     referralOwnerPhone: isOfficial ? undefined : (parentEmp ? parentEmp.phone : undefined),
     referredBy: isOfficial
@@ -945,6 +925,18 @@ app.post('/api/auth/employee/register', (req: Request, res: Response) => {
   state.employees.push(newEmployee);
   db.save();
   db.syncEntityDirect('employees', newEmployee).catch(e => console.error('[Persistence] Employee background sync error:', e));
+
+  // Live broadcast to admin and all connected dashboards
+  broadcastRealtimeEvent('STATE_UPDATED', {
+    type: 'EMPLOYEE_REGISTERED',
+    employeeId: newEmployee.id
+  });
+  broadcastRealtimeEvent('EMPLOYEE_REGISTERED', {
+    id: newEmployee.id,
+    name: newEmployee.name,
+    phone: newEmployee.phone,
+    status: newEmployee.status
+  });
 
   // If referred by an existing reseller, notify the parent reseller in their dashboard notifications!
   if (parentEmp) {
@@ -1386,35 +1378,18 @@ app.post('/api/employee/sales', verifyEmployee, (req: Request, res: Response) =>
 
   // Reseller effective product with personal wholesale markup (+10 TK if non-official, original if official)
   const effectiveProduct = getProductForEmployee(product, emp);
-
-  // Fixed Payout Engine (Module 1, Rule 3):
-  // Reseller profit must NOT be calculated proportionally; it must follow a FIXED rate logic set by the admin margin.
-  // Scenario Example: If Admin Margin for Reseller A is set to 20 Tk:
-  // If the reseller sells the product making 100 Tk total profit, Reseller A receives EXACTLY 20 Tk.
-  // If total profit is 101, 120, or 200 Tk, Reseller A STILL receives EXACTLY 20 Tk.
-  // The margin set by the Admin is a FIXED payout per product sale, regardless of how high the reseller inflates the final selling price.
-  const isOfficial = isOfficialEmployee(emp);
-  const resellerMargin = getEmployeeReferralMarkup(emp, state);
-
-  let unitCommission = 0;
-  if (isOfficial) {
-    if (emp.customCommissionRate && emp.customCommissionRate > 0) {
-      unitCommission = (product.sellingPrice * emp.customCommissionRate) / 100;
-    } else if (product.commissionType === 'percentage') {
-      unitCommission = (product.sellingPrice * (product.commissionRate || 10)) / 100;
-    } else {
-      unitCommission = product.commissionRate || 10;
-    }
-  } else {
-    // Strictly fixed rate payout equal to admin defined margin per unit
-    unitCommission = resellerMargin;
-  }
+  const wholesalePrice = Number(effectiveProduct.originalPrice || 0);
 
   // Final selling price & commission logic
   const parsedSalePrice = Number(actualSalePrice);
   const finalUnitPrice = (!isNaN(parsedSalePrice) && parsedSalePrice > 0)
     ? parsedSalePrice
     : effectiveProduct.sellingPrice;
+
+  // Reseller Profit & Commission Rule:
+  // Profit = finalUnitPrice - wholesalePrice
+  const profitPerUnit = Math.max(0, finalUnitPrice - wholesalePrice);
+  const unitCommission = profitPerUnit;
 
   const totalSellingAmount = finalUnitPrice * qty;
   const totalCommission = Math.max(0, Math.round(unitCommission * qty));
@@ -2023,6 +1998,14 @@ app.post('/api/admin/products', verifyAdmin, async (req: Request, res: Response)
     }];
   }
 
+  const numericSell = parseFloat(sellingPrice) || 0;
+  const numericStars = req.body.starRating ? parseInt(req.body.starRating, 10) : 5;
+  const starDiscount = numericStars === 4 ? 15 : numericStars === 3 ? 20 : numericStars === 2 ? 25 : numericStars === 1 ? 30 : 10;
+  const calcRegular = Math.round(numericSell / (1 - starDiscount / 100));
+  const finalRegular = req.body.regularPrice && parseFloat(req.body.regularPrice) > numericSell
+    ? parseFloat(req.body.regularPrice)
+    : calcRegular;
+
   const newProduct: Product = {
     id: 'prod-' + crypto.randomUUID().slice(0, 8),
     productCode: finalProductCode,
@@ -2032,7 +2015,9 @@ app.post('/api/admin/products', verifyAdmin, async (req: Request, res: Response)
     subcategoryBn: (subcategoryBn || '').trim(),
     subcategoryEn: (subcategoryEn || '').trim(),
     originalPrice: parseFloat(originalPrice) || 0,
-    sellingPrice: parseFloat(sellingPrice) || 0,
+    sellingPrice: numericSell,
+    regularPrice: finalRegular,
+    starRating: numericStars,
     commissionType: commissionType === 'fixed' ? 'fixed' : 'percentage',
     commissionRate: parseFloat(commissionRate) || 0,
     shortDescBn: (shortDescBn || '').trim(),
@@ -2106,6 +2091,14 @@ app.put('/api/admin/products/:id', verifyAdmin, async (req: Request, res: Respon
     }
   }
 
+  const updatedSellingPrice = req.body.sellingPrice !== undefined ? parseFloat(req.body.sellingPrice) : oldProduct.sellingPrice;
+  const updatedStars = req.body.starRating !== undefined ? parseInt(req.body.starRating, 10) : (oldProduct.starRating || 5);
+  const updatedStarDiscount = updatedStars === 4 ? 15 : updatedStars === 3 ? 20 : updatedStars === 2 ? 25 : updatedStars === 1 ? 30 : 10;
+  const updatedCalcRegular = Math.round(updatedSellingPrice / (1 - updatedStarDiscount / 100));
+  const updatedRegularPrice = req.body.regularPrice !== undefined && parseFloat(req.body.regularPrice) > updatedSellingPrice
+    ? parseFloat(req.body.regularPrice)
+    : (oldProduct.regularPrice && oldProduct.regularPrice > updatedSellingPrice ? oldProduct.regularPrice : updatedCalcRegular);
+
   const updated: Product = {
     ...oldProduct,
     ...req.body,
@@ -2116,7 +2109,9 @@ app.put('/api/admin/products/:id', verifyAdmin, async (req: Request, res: Respon
     videoUrl,
     youtubeId,
     originalPrice: req.body.originalPrice !== undefined ? parseFloat(req.body.originalPrice) : oldProduct.originalPrice,
-    sellingPrice: req.body.sellingPrice !== undefined ? parseFloat(req.body.sellingPrice) : oldProduct.sellingPrice,
+    sellingPrice: updatedSellingPrice,
+    regularPrice: updatedRegularPrice,
+    starRating: updatedStars,
     commissionRate: req.body.commissionRate !== undefined ? parseFloat(req.body.commissionRate) : oldProduct.commissionRate,
     updatedAt: new Date().toISOString()
   };
@@ -2819,19 +2814,8 @@ app.patch('/api/admin/employees/:id/margin', verifyAdmin, async (req: Request, r
 
   const prev = emp.resellerMargin !== undefined ? emp.resellerMargin : (isOfficialEmployee(emp) ? 0 : 10);
   emp.resellerMargin = numMargin;
-  emp.referralCommissionRate = numMargin;
 
-  // Also update downline accounts that registered under this reseller so their display price and payout inherit the new margin
-  const downlineMembers = state.employees.filter(e =>
-    e.referralOwnerId === emp.id ||
-    (emp.referenceCode && e.referredBy === emp.referenceCode) ||
-    e.reference === emp.id
-  );
-
-  for (const m of downlineMembers) {
-    m.resellerMargin = numMargin;
-    db.syncEntityDirect('employees', m).catch(() => {});
-  }
+  // Each reseller's margin/limit is strictly personal and independent; do not automatically overwrite downline members.
 
   db.logAudit(
     'RESELLER_MARGIN_OVERRIDE',
@@ -2844,6 +2828,8 @@ app.patch('/api/admin/employees/:id/margin', verifyAdmin, async (req: Request, r
 
   db.save();
   await db.syncEntityDirect('employees', emp).catch(e => console.warn('Reseller margin sync warning:', e));
+
+  const downlineMembers = state.employees.filter(e => e.referredBy === emp.referenceCode || e.referredBy === emp.id);
 
   // Broadcast real-time SSE event to all connected dashboards and client apps
   broadcastRealtimeEvent('RESELLER_MARGIN_UPDATED', {
@@ -2920,7 +2906,22 @@ app.put('/api/admin/employees/:id', verifyAdmin, (req: Request, res: Response) =
     emp.customCommissionRate = customCommissionRate ? parseFloat(customCommissionRate) : undefined;
   }
   if (referralCommissionRate !== undefined) {
-    emp.referralCommissionRate = referralCommissionRate !== null && referralCommissionRate !== '' ? parseFloat(referralCommissionRate) : undefined;
+    const newRate = referralCommissionRate !== null && referralCommissionRate !== '' ? parseFloat(referralCommissionRate) : 10;
+    emp.referralCommissionRate = newRate;
+
+    // Instantly update downline accounts under this upline that don't have individual custom override
+    const downlineMembers = state.employees.filter(e =>
+      e.referralOwnerId === emp.id ||
+      (emp.referenceCode && (e.referredBy === emp.referenceCode || e.reference === emp.referenceCode)) ||
+      e.reference === emp.id
+    );
+
+    for (const m of downlineMembers) {
+      if (!emp.downlineCustomRates || emp.downlineCustomRates[m.id] === undefined) {
+        m.referralCommissionRate = newRate;
+        db.syncEntityDirect('employees', m).catch(() => {});
+      }
+    }
   }
   if (downlineCustomRates !== undefined) {
     emp.downlineCustomRates = typeof downlineCustomRates === 'object' && downlineCustomRates !== null ? downlineCustomRates : emp.downlineCustomRates || {};
@@ -2958,6 +2959,20 @@ app.put('/api/admin/employees/:id', verifyAdmin, (req: Request, res: Response) =
 
   db.save();
   db.syncEntityDirect('employees', emp).catch(e => console.warn('Employee profile sync warning:', e));
+
+  // Broadcast real-time SSE events so open dashboards update immediately
+  broadcastRealtimeEvent('RESELLER_MARGIN_UPDATED', {
+    employeeId: emp.id,
+    margin: emp.resellerMargin,
+    referralCommissionRate: emp.referralCommissionRate,
+    timestamp: Date.now()
+  });
+  broadcastRealtimeEvent('STATE_UPDATED', {
+    type: 'EMPLOYEE_UPDATED',
+    employeeId: emp.id,
+    timestamp: Date.now()
+  });
+
   const { passwordHash, ...safeEmp } = emp;
   res.json({ success: true, employee: safeEmp });
 });

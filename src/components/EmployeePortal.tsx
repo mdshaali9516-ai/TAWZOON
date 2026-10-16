@@ -69,26 +69,32 @@ export const EmployeePortal: React.FC = () => {
   const [showRegPassword, setShowRegPassword] = useState(false);
   const [regDistrict, setRegDistrict] = useState('');
   const [regThana, setRegThana] = useState('');
-  const [regReference, setRegReference] = useState('');
-  const [isRefLocked, setIsRefLocked] = useState(false);
-  const [regConfirmPassword, setRegConfirmPassword] = useState('');
-  const [showRegConfirmPassword, setShowRegConfirmPassword] = useState(false);
-
-  // Auto-detect referral code from URL query parameter ?ref=CODE or ?referral=CODE or sessionStorage
-  useEffect(() => {
+  const getInitialInviteRef = () => {
     if (typeof window !== 'undefined') {
       try {
         const params = new URLSearchParams(window.location.search);
-        const refParam = params.get('ref') || params.get('referral') || sessionStorage.getItem('tawzoon_invite_ref');
-        if (refParam) {
-          const cleanRef = refParam.toUpperCase().trim();
-          setRegReference(cleanRef);
-          setIsRefLocked(true);
-          setAuthMode('register');
-        }
-      } catch (err) {
+        const refParam = params.get('ref') || params.get('referral') || sessionStorage.getItem('tawzoon_invite_ref') || localStorage.getItem('tawzoon_invite_ref');
+        if (refParam) return refParam.toUpperCase().trim();
+      } catch {
         // Safe ignore
       }
+    }
+    return '';
+  };
+
+  const initialInvite = getInitialInviteRef();
+  const [regReference, setRegReference] = useState(initialInvite);
+  const [isRefLocked, setIsRefLocked] = useState(Boolean(initialInvite));
+  const [regConfirmPassword, setRegConfirmPassword] = useState('');
+  const [showRegConfirmPassword, setShowRegConfirmPassword] = useState(false);
+
+  // Auto-detect referral code from URL query parameter ?ref=CODE or ?referral=CODE or sessionStorage/localStorage
+  useEffect(() => {
+    const invite = getInitialInviteRef();
+    if (invite) {
+      setRegReference(invite);
+      setIsRefLocked(true);
+      setAuthMode('register');
     }
   }, []);
 
@@ -454,7 +460,7 @@ export const EmployeePortal: React.FC = () => {
                         setRegReference(e.target.value.toUpperCase().trim());
                       }
                     }}
-                    placeholder={lang === 'bn' ? 'রেফারেল কোড (যদি থাকে)' : 'Referral code (if any)'}
+                    placeholder={lang === 'bn' ? 'রেফারেল কোড (যদি থাকে)' : 'Referral code (Optional)'}
                     className={`w-full px-3.5 py-2.5 text-xs rounded-xl font-mono font-bold uppercase tracking-wider outline-none transition-all ${
                       isRefLocked
                         ? 'bg-[#eafff3]/80 border-2 border-emerald-300 text-emerald-900 cursor-not-allowed select-none pl-8.5'

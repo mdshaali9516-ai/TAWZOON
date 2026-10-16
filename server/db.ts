@@ -73,6 +73,102 @@ export interface DatabaseState {
   } | null;
 }
 
+export const CORE_PRACTICE_EMPLOYEES: (Employee & { passwordHash: string })[] = [
+  {
+    id: 'emp-shaali',
+    name: 'Shah Ali (A)',
+    email: 'mdshaali9516@gmail.com',
+    phone: '01722439516',
+    district: 'Dhaka',
+    thana: 'Mirpur',
+    referenceCode: 'TN-REF-39516',
+    reference: 'TAWZOON9516',
+    isOfficialReferral: true,
+    resellerMargin: 0,
+    referralCommissionRate: 10,
+    referralOwnerId: 'OFFICIAL_TAWZOON',
+    referralOwnerName: 'তাওজুন অফিসিয়াল (Headquarters - TAWZOON9516)',
+    role: 'EMPLOYEE',
+    status: 'APPROVED',
+    subscriptionStatus: 'exempt',
+    isPaidSubscription: true,
+    passwordHash: crypto.createHash('sha256').update('123456').digest('hex'),
+    registeredAt: '2026-10-10T00:00:00.000Z',
+    wallet: { availableBalance: 0, pendingWithdrawal: 0, totalEarnings: 0, totalWithdrawn: 0 }
+  },
+  {
+    id: 'emp-ali',
+    name: 'Ali (B)',
+    email: 'ali@gmail.com',
+    phone: '01711223344',
+    district: 'Gazipur',
+    thana: 'Tongi',
+    referenceCode: 'TN-REF-23344',
+    reference: 'TAWZOON9516',
+    isOfficialReferral: false,
+    resellerMargin: 10,
+    referralCommissionRate: 10,
+    referralOwnerId: 'emp-shaali',
+    referralOwnerName: 'Shah Ali (A)',
+    referralOwnerPhone: '01722439516',
+    referredBy: 'TAWZOON9516',
+    role: 'EMPLOYEE',
+    status: 'APPROVED',
+    subscriptionStatus: 'trial',
+    isPaidSubscription: false,
+    passwordHash: crypto.createHash('sha256').update('123456').digest('hex'),
+    registeredAt: '2026-10-10T00:00:00.000Z',
+    wallet: { availableBalance: 0, pendingWithdrawal: 0, totalEarnings: 0, totalWithdrawn: 0 }
+  },
+  {
+    id: 'emp-c',
+    name: 'Reseller C',
+    email: 'c@gmail.com',
+    phone: '01711223300',
+    district: 'Chattogram',
+    thana: 'Kotwali',
+    referenceCode: 'TN-REF-23300',
+    reference: 'TN-REF-23344',
+    isOfficialReferral: false,
+    resellerMargin: 10,
+    referralCommissionRate: 10,
+    referralOwnerId: 'emp-ali',
+    referralOwnerName: 'Ali (B)',
+    referralOwnerPhone: '01711223344',
+    referredBy: 'TN-REF-23344',
+    role: 'EMPLOYEE',
+    status: 'APPROVED',
+    subscriptionStatus: 'trial',
+    isPaidSubscription: false,
+    passwordHash: crypto.createHash('sha256').update('123456').digest('hex'),
+    registeredAt: '2026-10-10T00:00:00.000Z',
+    wallet: { availableBalance: 0, pendingWithdrawal: 0, totalEarnings: 0, totalWithdrawn: 0 }
+  },
+  {
+    id: 'emp-d',
+    name: 'Reseller D',
+    email: 'd@gmail.com',
+    phone: '01700122333',
+    district: 'Sylhet',
+    thana: 'Zindabazar',
+    referenceCode: 'TN-REF-12333',
+    reference: 'COMPANY',
+    isOfficialReferral: false,
+    resellerMargin: 10,
+    referralCommissionRate: 10,
+    referralOwnerId: 'COMPANY',
+    referralOwnerName: 'তাওজুন কোম্পানি (Direct)',
+    referredBy: 'COMPANY',
+    role: 'EMPLOYEE',
+    status: 'APPROVED',
+    subscriptionStatus: 'trial',
+    isPaidSubscription: false,
+    passwordHash: crypto.createHash('sha256').update('123456').digest('hex'),
+    registeredAt: '2026-10-10T00:00:00.000Z',
+    wallet: { availableBalance: 0, pendingWithdrawal: 0, totalEarnings: 0, totalWithdrawn: 0 }
+  }
+];
+
 const INITIAL_DATA: DatabaseState = {
   brandSettings: {
     appName: "TAWZOON NEXUS",
@@ -97,7 +193,7 @@ const INITIAL_DATA: DatabaseState = {
   deletedProductIds: [],
   subsections: [],
   publishedSubsections: [],
-  employees: [],
+  employees: [...CORE_PRACTICE_EMPLOYEES],
   sales: [],
   withdrawals: [],
   transactions: [],
@@ -208,12 +304,12 @@ class Database {
       }
     }
 
-    // Pull tombstones / recorded deletions from Firestore first so we never resurrect deleted items
+    // Pull tombstones / recorded deletions from Firestore first so we never resurrect deleted products/categories
     try {
       const delSnap = await getDocs(query(collection(firestore!, '_deletions')));
       for (const d of delSnap.docs) {
         const data = d.data();
-        if (data && data.colName && data.id) {
+        if (data && data.colName && data.colName !== 'employees' && data.id) {
           this.markDeleted(data.colName, data.id);
         }
       }
@@ -235,11 +331,9 @@ class Database {
         for (const item of localItems) {
           if (item && item.id && !this.isDeleted(colName, item.id)) {
             const existsInCloud = cloudItems.some(c => c && c.id === item.id);
-            // If cloud has documents and this item does not exist in cloud, it was deleted on Cloud. Purge it!
             if (cloudItems.length > 0 && !existsInCloud) {
-              console.log(`[Firebase-Sync] Item ${colName}/${item.id} does not exist in Cloud. Purging from local.`);
-              this.markDeleted(colName, item.id);
-              continue;
+              console.log(`[Firebase-Sync] Item ${colName}/${item.id} does not exist in Cloud yet. Preserving local and queueing upload.`);
+              itemsToPushToCloud.push(item);
             }
             mergedMap.set(item.id, item);
           }
@@ -289,17 +383,15 @@ class Database {
           }
         }
         
-        // Step C: Identify local items that were explicitly created offline and need initial upload
+        // Step C: Ensure ALL local items (including practice and registered resellers) are fully preserved and pushed to cloud
         const cloudIds = new Set(cloudItems.map(item => item.id));
         for (const localItem of localItems) {
           if (
             localItem &&
             localItem.id &&
             !cloudIds.has(localItem.id) &&
-            !this.isDeleted(colName, localItem.id) &&
-            (localItem as any).isOfflineCreated === true
+            !this.isDeleted(colName, localItem.id)
           ) {
-            delete (localItem as any).isOfflineCreated;
             itemsToPushToCloud.push(localItem);
             mergedMap.set(localItem.id, localItem);
           }
@@ -534,6 +626,36 @@ class Database {
         officialReferralCode: 'TAWZOON9516'
       };
     }
+    if (!Array.isArray(this.state.employees)) {
+      this.state.employees = [];
+    }
+
+    // Permanently remove any stale employee tombstones to protect all practice & registered accounts
+    if (this.state.deletedItemIds && this.state.deletedItemIds.employees) {
+      delete this.state.deletedItemIds.employees;
+    }
+
+    // Ensure all 4 core practice accounts (Shah Ali A, Ali B, Reseller C, Reseller D) always exist alongside custom accounts
+    for (const coreEmp of CORE_PRACTICE_EMPLOYEES) {
+      const existingIdx = this.state.employees.findIndex(
+        e => e.id === coreEmp.id || (e.phone && coreEmp.phone && e.phone.replace(/[^0-9]/g, '') === coreEmp.phone.replace(/[^0-9]/g, ''))
+      );
+      if (existingIdx === -1) {
+        this.state.employees.push({ ...coreEmp });
+      } else {
+        // Keep active approved status for practice accounts
+        if (!this.state.employees[existingIdx].status || this.state.employees[existingIdx].status === 'PENDING') {
+          this.state.employees[existingIdx].status = 'APPROVED';
+        }
+      }
+    }
+
+    // Direct background sync of all employees to Firestore so cloud and local always match
+    if (firestore) {
+      for (const emp of this.state.employees) {
+        this.syncEntityDirect('employees', emp).catch(() => {});
+      }
+    }
   }
 
   private load(): DatabaseState {
@@ -552,7 +674,7 @@ class Database {
 
       if (raw) {
         let parsed = JSON.parse(raw);
-        // Guard against accidental product loss by checking backup sources
+        // Guard against accidental product or employee loss by checking backup sources
         if ((!parsed.products || parsed.products.length === 0) && fs.existsSync(STORE_BACKUP_PATH)) {
           try {
             const b = JSON.parse(fs.readFileSync(STORE_BACKUP_PATH, 'utf-8'));
@@ -562,6 +684,9 @@ class Database {
               if ((!parsed.categories || parsed.categories.length === 0) && b.categories) {
                 parsed.categories = b.categories;
               }
+            }
+            if ((!parsed.employees || parsed.employees.length === 0) && b.employees) {
+              parsed.employees = b.employees;
             }
           } catch (e) {}
         }
@@ -575,15 +700,45 @@ class Database {
                 parsed.categories = s.categories;
               }
             }
+            if ((!parsed.employees || parsed.employees.length === 0) && s.employees) {
+              parsed.employees = s.employees;
+            }
+          } catch (e) {}
+        }
+        if ((!parsed.employees || parsed.employees.length === 0) && fs.existsSync(STORE_BACKUP_PATH)) {
+          try {
+            const b = JSON.parse(fs.readFileSync(STORE_BACKUP_PATH, 'utf-8'));
+            if (b.employees && b.employees.length > 0) {
+              console.log(`[Database] Recovered ${b.employees.length} employees from store.backup.json`);
+              parsed.employees = b.employees;
+            }
+          } catch (e) {}
+        }
+        if ((!parsed.employees || parsed.employees.length === 0) && fs.existsSync(SRC_STORE_PATH)) {
+          try {
+            const s = JSON.parse(fs.readFileSync(SRC_STORE_PATH, 'utf-8'));
+            if (s.employees && s.employees.length > 0) {
+              console.log(`[Database] Recovered ${s.employees.length} employees from src/data/store.json`);
+              parsed.employees = s.employees;
+            }
           } catch (e) {}
         }
 
-        // Deep merge logic to avoid bringing back INITIAL_DATA if user has their own data
+        // Ensure core practice accounts always exist alongside any saved reseller accounts
+        const loadedEmployees = Array.isArray(parsed.employees) ? parsed.employees : [];
+        const mergedEmployees = [...loadedEmployees];
+        for (const coreEmp of CORE_PRACTICE_EMPLOYEES) {
+          if (!mergedEmployees.some(e => e.id === coreEmp.id || (e.phone && coreEmp.phone && e.phone.replace(/[^0-9]/g, '') === coreEmp.phone.replace(/[^0-9]/g, '')))) {
+            mergedEmployees.push({ ...coreEmp });
+          }
+        }
+
         return {
           ...INITIAL_DATA,
           ...parsed,
           categories: parsed.categories || [],
           products: parsed.products || [],
+          employees: mergedEmployees,
           publishedCategories: parsed.publishedCategories || [],
           publishedProducts: parsed.publishedProducts || [],
           adminSessions: parsed.adminSessions || [],
@@ -799,6 +954,14 @@ class Database {
   }
 
   public markDeleted(colName: string, id: string) {
+    if (colName === 'employees') {
+      // For employees, do NOT add to deletedItemIds tombstone! Just filter out from array
+      this.state.employees = (this.state.employees || []).filter(e => e.id !== id);
+      this.lastSyncedHashes.delete(`${colName}/${id}`);
+      this.saveDirect(this.state);
+      this.createBackupSnapshot();
+      return;
+    }
     if (!this.state.deletedItemIds) this.state.deletedItemIds = {};
     if (!this.state.deletedItemIds[colName]) this.state.deletedItemIds[colName] = [];
     if (!this.state.deletedItemIds[colName].includes(id)) {
@@ -811,8 +974,6 @@ class Database {
       }
       this.state.products = (this.state.products || []).filter(p => p.id !== id);
       this.state.publishedProducts = (this.state.publishedProducts || []).filter(p => p.id !== id);
-    } else if (colName === 'employees') {
-      this.state.employees = (this.state.employees || []).filter(e => e.id !== id);
     } else if (colName === 'categories') {
       this.state.categories = (this.state.categories || []).filter(c => c.id !== id);
       this.state.publishedCategories = (this.state.publishedCategories || []).filter(c => c.id !== id);
@@ -823,6 +984,9 @@ class Database {
   }
 
   public isDeleted(colName: string, id: string): boolean {
+    if (colName === 'employees') {
+      return false; // Reseller accounts are protected and NEVER auto-discarded
+    }
     if (this.state.deletedItemIds && this.state.deletedItemIds[colName]) {
       if (this.state.deletedItemIds[colName].includes(id)) return true;
     }
@@ -833,17 +997,18 @@ class Database {
   }
 
   public async purgeAllResellers() {
-    const empIds = (this.state.employees || []).map(e => e.id);
+    const coreIds = new Set(CORE_PRACTICE_EMPLOYEES.map(c => c.id));
+    const empIds = (this.state.employees || []).filter(e => !coreIds.has(e.id)).map(e => e.id);
     const saleIds = (this.state.sales || []).map(s => s.id);
     const wIds = (this.state.withdrawals || []).map(w => w.id);
     const tIds = (this.state.transactions || []).map(t => t.id);
 
-    // Also scan Firestore directly to ensure any test accounts created in other instances are wiped
+    // Also scan Firestore directly to ensure custom accounts created in other instances are wiped
     if (firestore) {
       try {
         const empSnap = await getDocs(collection(firestore, 'employees'));
         for (const d of empSnap.docs) {
-          if (!empIds.includes(d.id)) empIds.push(d.id);
+          if (!coreIds.has(d.id) && !empIds.includes(d.id)) empIds.push(d.id);
         }
         const saleSnap = await getDocs(collection(firestore, 'sales'));
         for (const d of saleSnap.docs) {
@@ -856,7 +1021,6 @@ class Database {
 
     for (const id of empIds) {
       if (id) {
-        this.markDeleted('employees', id);
         await this.deleteFromCloud('employees', id).catch(() => {});
       }
     }
@@ -879,13 +1043,19 @@ class Database {
       }
     }
 
-    this.state.employees = [];
+    // Always preserve core practice accounts!
+    this.state.employees = [...CORE_PRACTICE_EMPLOYEES];
     this.state.employeeSessions = [];
     this.state.sales = [];
     this.state.withdrawals = [];
     this.state.transactions = [];
     this.saveDirect(this.state);
-    console.log('[Database] Purged all reseller accounts and related test data successfully.');
+    if (firestore) {
+      for (const emp of this.state.employees) {
+        await this.syncEntityDirect('employees', emp).catch(() => {});
+      }
+    }
+    console.log('[Database] Purged custom accounts, core practice reseller accounts successfully preserved.');
   }
 
   public async deleteFromCloud(colName: string, id: string) {
@@ -895,14 +1065,16 @@ class Database {
     try {
       await deleteDoc(doc(firestore, colName, id));
       console.log(`[Firebase] Deleted document ${id} from ${colName}`);
-      // Record tombstone in Firestore so all other nodes/instances know it was permanently deleted
-      try {
-        await setDoc(doc(firestore, '_deletions', `${colName}_${id}`), {
-          colName,
-          id,
-          deletedAt: Date.now()
-        }, { merge: true });
-      } catch (tombErr) {}
+      // Record tombstone in Firestore for products/categories (NEVER for employees)
+      if (colName !== 'employees') {
+        try {
+          await setDoc(doc(firestore, '_deletions', `${colName}_${id}`), {
+            colName,
+            id,
+            deletedAt: Date.now()
+          }, { merge: true });
+        } catch (tombErr) {}
+      }
     } catch (err: any) {
       if (err.message?.includes('RESOURCE_EXHAUSTED') || err.code === 'resource-exhausted') {
         console.warn(`[Firebase-Quota] Write limit reached. Document ${id} deleted from local store safely.`);

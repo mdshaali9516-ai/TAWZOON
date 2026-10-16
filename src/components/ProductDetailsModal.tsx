@@ -26,6 +26,9 @@ export const ProductDetailsModal: React.FC = () => {
   const subcat = lang === 'bn' ? selectedProduct.subcategoryBn : selectedProduct.subcategoryEn;
   const sellingPrice = getAdjustedSellingPrice(selectedProduct, employee, brandSettings);
   const regularPrice = getAdjustedRegularPrice(selectedProduct, employee, brandSettings);
+  const discountPercent = regularPrice > sellingPrice
+    ? Math.round(((regularPrice - sellingPrice) / regularPrice) * 100)
+    : 0;
   const shortDesc = lang === 'bn' ? selectedProduct.shortDescBn : selectedProduct.shortDescEn;
   const fullDesc = lang === 'bn' ? selectedProduct.fullDescBn : selectedProduct.fullDescEn;
 
@@ -154,7 +157,14 @@ export const ProductDetailsModal: React.FC = () => {
               {/* Pricing & Commission Card */}
               <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                 <div>
-                  <span className="text-xs text-slate-500 font-medium block">{t.sellingPrice}</span>
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <span className="text-xs text-slate-500 font-medium block">{t.sellingPrice}</span>
+                    {discountPercent > 0 && (
+                      <span className="text-[10px] font-bold text-white bg-rose-600 px-1.5 py-0.2 rounded-md leading-none">
+                        -{discountPercent}%
+                      </span>
+                    )}
+                  </div>
                   <div className="flex items-baseline gap-2">
                     <span className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tabular-nums">
                       ৳{sellingPrice.toLocaleString()}
