@@ -28,6 +28,7 @@ import { ResellerCampaignsHub } from './reseller/campaigns/ResellerCampaignsHub.
 import { ResellerWebsiteGeneratorTab } from './reseller/ResellerWebsiteGeneratorTab.js';
 import { BilingualLocationInput } from './common/BilingualLocationInput.js';
 import { searchBilingualDistricts, searchBilingualThanas } from '../data/bdLocations.js';
+import { useRealtimeEvents } from '../hooks/useRealtimeEvents.js';
 
 export const EmployeePortal: React.FC = () => {
   const {
@@ -41,7 +42,23 @@ export const EmployeePortal: React.FC = () => {
     resellerTab,
     setResellerTab,
     setSelectedProduct,
+    refreshEmployeeProfile,
   } = useApp();
+
+  // Instant live sync on server events (bonus limit changes, margin updates, approval)
+  useRealtimeEvents((event) => {
+    if (
+      event.type === 'RESELLER_MARGIN_UPDATED' ||
+      event.type === 'STATE_UPDATED' ||
+      event.type === 'EMPLOYEE_UPDATED' ||
+      event.type === 'COMMISSION_UPDATED'
+    ) {
+      refreshEmployeeProfile();
+      if (isEmployeeAuthenticated && employeeToken) {
+        loadEmployeeDashboard();
+      }
+    }
+  });
 
   // Auth mode: 'login' | 'register'
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');

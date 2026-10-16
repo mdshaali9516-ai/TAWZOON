@@ -166,21 +166,19 @@ function isOfficialReferralCode(code?: string | null): boolean {
   return (
     clean === 'TAWZOON9516' ||
     clean === 'TAUZON9516' ||
-    clean === 'TAWZOON' ||
-    clean === 'TAUZON' ||
-    clean === 'OFFICIAL' ||
+    clean === 'OFFICIAL_TAWZOON' ||
     clean === 'OFFICIALTAWZOON' ||
-    clean === 'TAWZOONOFFICIAL' ||
-    clean.includes('TAWZOON') ||
-    clean.includes('TAUZON') ||
-    clean.includes('OFFICIAL')
+    clean === 'TAWZOONOFFICIAL'
   );
 }
 
 // Helper to determine if an employee is registered under official referral
 function isOfficialEmployee(employee?: Employee | null): boolean {
   if (!employee) return false;
-  if (employee.isOfficialReferral) return true;
+  // If explicitly flagged as non-official, or has a specific reseller upline, NOT official!
+  if (employee.isOfficialReferral === false) return false;
+  if (employee.referralOwnerId && employee.referralOwnerId !== 'OFFICIAL_TAWZOON') return false;
+  if (employee.isOfficialReferral === true) return true;
   if (employee.referralOwnerId === 'OFFICIAL_TAWZOON') return true;
   const ref = (employee.reference || (employee as any).referredBy || (employee as any).upline || '').trim().toUpperCase();
   return isOfficialReferralCode(ref);
@@ -192,25 +190,25 @@ function getEmployeeReferralMarkup(employee?: Employee | null, state?: any): num
   if (isOfficialEmployee(employee)) return 0;
 
   const st = state || db.getState();
-  const ref = (employee.reference || (employee as any).referredBy || (employee as any).upline || '').trim().toUpperCase();
-  const parentEmp = (employee.referralOwnerId && employee.referralOwnerId !== 'OFFICIAL_TAWZOON' && employee.referralOwnerId !== 'COMPANY')
-    ? st.employees.find((e: any) => e.id === employee.referralOwnerId)
-    : (ref && !isOfficialReferralCode(ref) ? st.employees.find((e: any) => 
-        e.id.toUpperCase() === ref || 
-        (e.referenceCode && e.referenceCode.toUpperCase() === ref) || 
-        `TN-REF-${e.id.replace('emp-', '').slice(0, 5).toUpperCase()}` === ref ||
-        (e.phone && e.phone.replace(/[^0-9]/g, '') === ref.replace(/[^0-9]/g, '')) ||
-        (e.name && e.name.toLowerCase() === ref.toLowerCase())
-      ) : null);
 
-  // 1. Direct admin defined margin on this reseller (if strictly > 0)
+  // 1. Direct admin defined margin on this specific reseller (highest priority)
   if (employee.resellerMargin !== undefined && employee.resellerMargin !== null && Number(employee.resellerMargin) > 0) {
+    console.log(`[Margin] Using custom resellerMargin for ${employee.name}: ${employee.resellerMargin}`);
     return Number(employee.resellerMargin);
   }
 
-  // 2. Fallback default wholesale markup for all non-official accounts (+10 TK)
+  // 2. Referral commission rate on this member (if strictly > 0)
+  if (employee.referralCommissionRate !== undefined && employee.referralCommissionRate !== null && Number(employee.referralCommissionRate) > 0) {
+    console.log(`[Margin] Using referralCommissionRate for ${employee.name}: ${employee.referralCommissionRate}`);
+    return Number(employee.referralCommissionRate);
+  }
+
+  // 3. Fallback default wholesale markup for all non-official accounts (+10 TK or brand nonOfficialMarkup)
   const brandSettings = st.brandSettings;
-  return Number(brandSettings?.nonOfficialMarkup || 10);
+  const defaultMarkup = Number(brandSettings?.nonOfficialMarkup || 10);
+  console.log(`[Margin] Using default markup for ${employee.name}: ${defaultMarkup}`);
+  return defaultMarkup;
+
 }
 
 // Helper to compute effective product with dynamic referral wholesale price markup
@@ -249,6 +247,7 @@ function getProductForEmployee(product: Product, employee?: Employee | null, exp
   // Automatically add default +10 TK wholesale markup, or admin configured markup (e.g. 20 TK)
   const st = db.getState();
   const referralMarkup = getEmployeeReferralMarkup(employee, st);
+  console.log(`[PriceCalc] Calculating price for ${employee.name}. ResellerMargin: ${employee.resellerMargin}, Markup used: ${referralMarkup}`);
 
   return {
     ...sanitized,
@@ -877,11 +876,13 @@ app.post('/api/auth/employee/register', (req: Request, res: Response) => {
 
   const generatedRefCode = `TN-REF-${cleanPhone.slice(-5).toUpperCase()}`;
 
-  const initialMargin = isOfficial
-    ? 0
-    : (parentEmp && parentEmp.resellerMargin !== undefined && Number(parentEmp.resellerMargin) > 0
-        ? Number(parentEmp.resellerMargin)
-        : 10);
+  const uplineBonusRate = parentEmp
+    ? (parentEmp.referralCommissionRate !== undefined && Number(parentEmp.referralCommissionRate) > 0
+        ? Number(parentEmp.referralCommissionRate)
+        : (parentEmp.resellerMargin !== undefined && Number(parentEmp.resellerMargin) > 0 ? Number(parentEmp.resellerMargin) : 10))
+    : 10;
+
+  const initialMargin = isOfficial ? 0 : uplineBonusRate;
 
   const newEmployee = {
     id: 'emp-' + crypto.randomUUID().slice(0, 8),
@@ -891,12 +892,10 @@ app.post('/api/auth/employee/register', (req: Request, res: Response) => {
     district: district.trim(),
     thana: thana.trim(),
     referenceCode: generatedRefCode,
-    reference: cleanRef,
+    reference: isOfficial ? 'TAWZOON9516' : (parentEmp ? (parentEmp.referenceCode || cleanRef) : cleanRef),
     isOfficialReferral: isOfficial,
     resellerMargin: initialMargin,
-    referralCommissionRate: (parentEmp && parentEmp.referralCommissionRate !== undefined && Number(parentEmp.referralCommissionRate) > 0)
-      ? Number(parentEmp.referralCommissionRate)
-      : 10,
+    referralCommissionRate: initialMargin,
     referralOwnerId: isOfficial
       ? 'OFFICIAL_TAWZOON'
       : (parentEmp ? parentEmp.id : 'COMPANY'),
@@ -2902,30 +2901,21 @@ app.put('/api/admin/employees/:id', verifyAdmin, (req: Request, res: Response) =
   if (phone) emp.phone = phone.trim();
   if (email) emp.email = email.trim();
   if (reference !== undefined) emp.reference = reference ? reference.trim() : undefined;
-  if (customCommissionRate !== undefined) {
-    emp.customCommissionRate = customCommissionRate ? parseFloat(customCommissionRate) : undefined;
+  if (req.body.resellerMargin !== undefined) {
+    emp.resellerMargin = Number(req.body.resellerMargin);
   }
   if (referralCommissionRate !== undefined) {
     const newRate = referralCommissionRate !== null && referralCommissionRate !== '' ? parseFloat(referralCommissionRate) : 10;
     emp.referralCommissionRate = newRate;
-
-    // Instantly update downline accounts under this upline that don't have individual custom override
-    const downlineMembers = state.employees.filter(e =>
-      e.referralOwnerId === emp.id ||
-      (emp.referenceCode && (e.referredBy === emp.referenceCode || e.reference === emp.referenceCode)) ||
-      e.reference === emp.id
-    );
-
-    for (const m of downlineMembers) {
-      if (!emp.downlineCustomRates || emp.downlineCustomRates[m.id] === undefined) {
-        m.referralCommissionRate = newRate;
-        db.syncEntityDirect('employees', m).catch(() => {});
-      }
+    if (emp.resellerMargin === undefined || emp.resellerMargin === null || !emp.isOfficialReferral) {
+      emp.resellerMargin = newRate;
     }
+
+    // Propagation to downline removed as per user requirement: individual reseller settings must remain independent.
   }
-  if (downlineCustomRates !== undefined) {
-    emp.downlineCustomRates = typeof downlineCustomRates === 'object' && downlineCustomRates !== null ? downlineCustomRates : emp.downlineCustomRates || {};
-  }
+    // Propagation to downline removed as per user requirement: individual reseller settings must remain independent.
+    // Downline updates for members should be managed individually on their own profiles.
+
   if (status && ['APPROVED', 'REJECTED', 'SUSPENDED', 'ARCHIVED', 'PENDING'].includes(status)) {
     emp.status = status;
   }

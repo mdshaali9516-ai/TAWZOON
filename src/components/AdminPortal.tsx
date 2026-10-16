@@ -1633,22 +1633,26 @@ export const AdminPortal: React.FC = () => {
     }
     setIsSavingModalReferralRate(true);
     try {
-      const res = await api.adminUpdateEmployeeProfile(adminToken, empId, { referralCommissionRate: rateNum });
+      const res = await api.adminUpdateEmployeeProfile(adminToken, empId, { 
+        referralCommissionRate: rateNum,
+        resellerMargin: rateNum
+      });
       if (res.success) {
         setEmployees(prev => prev.map(e => {
           if (e.id === empId) {
-            return { ...e, referralCommissionRate: rateNum };
+            return { ...e, referralCommissionRate: rateNum, resellerMargin: rateNum };
           }
           const isDownline = e.referralOwnerId === empId || e.reference === empId || (selectedUserForDetails?.referenceCode && (e.referredBy === selectedUserForDetails.referenceCode || e.reference === selectedUserForDetails.referenceCode));
           if (isDownline && (!selectedUserForDetails?.downlineCustomRates || selectedUserForDetails.downlineCustomRates[e.id] === undefined)) {
-            return { ...e, referralCommissionRate: rateNum };
+            return { ...e, referralCommissionRate: rateNum, resellerMargin: rateNum };
           }
           return e;
         }));
         if (selectedUserForDetails && selectedUserForDetails.id === empId) {
-          setSelectedUserForDetails(prev => prev ? { ...prev, referralCommissionRate: rateNum } : null);
+          setSelectedUserForDetails(prev => prev ? { ...prev, referralCommissionRate: rateNum, resellerMargin: rateNum } : null);
         }
-        showToast(lang === 'bn' ? `রেফারেল সর্বোচ্চ বোনাস লিমিট সফলভাবে ৳${rateNum} নির্ধারণ করা হয়েছে (সকল রেফারেল অ্যাকাউন্টে কার্যকর)` : `Referral bonus limit set to ৳${rateNum}`);
+        await loadAdminData();
+        showToast(lang === 'bn' ? `রেফারেল সর্বোচ্চ বোনাস লিমিট সফলভাবে ৳${rateNum} নির্ধারণ করা হয়েছে (সকল রেফারেল অ্যাকাউন্টের পাইকারি মূল্যে কার্যকর)` : `Referral bonus limit set to ৳${rateNum}`);
       }
     } catch (err: any) {
       showToast(err.message || 'কমিশন রেট সংরক্ষণ ব্যর্থ হয়েছে', 'error');
@@ -1671,14 +1675,31 @@ export const AdminPortal: React.FC = () => {
         ...(parentEmp?.downlineCustomRates || {}),
         [memberEmpId]: rateNum,
       };
-      const res = await api.adminUpdateEmployeeProfile(adminToken, parentEmpId, { downlineCustomRates: updatedCustomRates });
-      if (res.success) {
-        setEmployees(prev => prev.map(e => e.id === parentEmpId ? { ...e, downlineCustomRates: updatedCustomRates } : e));
-        if (selectedUserForDetails && selectedUserForDetails.id === parentEmpId) {
-          setSelectedUserForDetails(prev => prev ? { ...prev, downlineCustomRates: updatedCustomRates } : null);
+
+      // Save custom rates on upline parent AND simultaneously set margin & bonus on member account
+      await Promise.all([
+        api.adminUpdateEmployeeProfile(adminToken, parentEmpId, { downlineCustomRates: updatedCustomRates }),
+        api.adminUpdateEmployeeProfile(adminToken, memberEmpId, { 
+          resellerMargin: rateNum,
+          referralCommissionRate: rateNum 
+        })
+      ]);
+
+      setEmployees(prev => prev.map(e => {
+        if (e.id === parentEmpId) {
+          return { ...e, downlineCustomRates: updatedCustomRates };
         }
-        showToast(lang === 'bn' ? `এই মেম্বারের জন্য রেফারেল সর্বোচ্চ বোনাস ৳${rateNum} নির্ধারণ করা হয়েছে` : `Custom bonus limit set to ৳${rateNum}`);
+        if (e.id === memberEmpId) {
+          return { ...e, resellerMargin: rateNum, referralCommissionRate: rateNum };
+        }
+        return e;
+      }));
+
+      if (selectedUserForDetails && selectedUserForDetails.id === parentEmpId) {
+        setSelectedUserForDetails(prev => prev ? { ...prev, downlineCustomRates: updatedCustomRates } : null);
       }
+      await loadAdminData();
+      showToast(lang === 'bn' ? `এই মেম্বারের জন্য সর্বোচ্চ বোনাস ও মার্জিন ৳${rateNum} নির্ধারণ করা হয়েছে (স্বয়ংক্রিয়ভাবে পাইকারি মূল্যে যুক্ত)` : `Custom bonus & wholesale margin set to ৳${rateNum}`);
     } catch (err: any) {
       showToast(err.message || 'বোনাস লিমিট সংরক্ষণ ব্যর্থ হয়েছে', 'error');
     } finally {
@@ -8749,53 +8770,17 @@ export const AdminPortal: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className={`p-3.5 rounded-xl border space-y-2 text-xs ${
-                        isOfficial ? 'bg-emerald-50/70 border-emerald-200' : 'bg-slate-50 border-slate-200/90'
-                      }`}>
-                        {/* 1. Type */}
+                      <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50 space-y-2 text-xs">
+                        {/* Referrer Name */}
                         <div className="flex items-center justify-between gap-2">
-                          <span className={`${isOfficial ? 'text-emerald-800' : 'text-slate-600'} font-bold shrink-0`}>টাইপ:</span>
-                          <span className={`font-black flex items-center gap-1 ${isOfficial ? 'text-emerald-950' : 'text-slate-900'}`}>
-                            {isOfficial ? '👑 তাওজুন অফিসিয়াল রেফারেল (হাই প্রায়োরিটি)' : '🤝 পার্সোনাল রিসেলার রেফারেল'}
-                          </span>
-                        </div>
-
-                        {/* 2. Referrer Name */}
-                        <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
-                          <span className={`${isOfficial ? 'text-emerald-800' : 'text-slate-600'} font-bold shrink-0`}>রেফারারের নাম:</span>
+                          <span className="text-slate-600 font-bold shrink-0">রেফারারের নাম:</span>
                           <strong className="font-extrabold text-slate-900 truncate text-right">{referrerName}</strong>
                         </div>
 
-                        {/* 3. Mobile Number */}
+                        {/* Mobile Number */}
                         <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
-                          <span className={`${isOfficial ? 'text-emerald-800' : 'text-slate-600'} font-bold shrink-0`}>মোবাইল নম্বর:</span>
+                          <span className="text-slate-600 font-bold shrink-0">মোবাইল নম্বর:</span>
                           <strong className="font-mono font-bold text-emerald-800 shrink-0">{referrerPhone}</strong>
-                        </div>
-
-                        {/* 4. Referral Code */}
-                        <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
-                          <span className={`${isOfficial ? 'text-emerald-800' : 'text-slate-600'} font-bold shrink-0`}>রেফারেল কোড:</span>
-                          <span className="font-mono font-black text-slate-800 shrink-0">{referrerCode}</span>
-                        </div>
-
-                        {/* 5. Fee Deduction */}
-                        <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
-                          <span className={`${isOfficial ? 'text-emerald-800' : 'text-slate-600'} font-bold shrink-0`}>ফি কর্তন:</span>
-                          <span className={`font-bold px-2 py-0.5 rounded text-[11px] ${
-                            isOfficial 
-                              ? 'text-emerald-800 bg-white border border-emerald-300' 
-                              : 'text-amber-800 bg-amber-50 border border-amber-200'
-                          }`}>
-                            {isOfficial ? 'সম্পূর্ণ মুক্ত (০% কর্তন, কোনো ফি নেই)' : 'রেফারেল ফি কর্তন প্রযোজ্য (সিস্টেম নির্ধারিত ফি)'}
-                          </span>
-                        </div>
-
-                        {/* 6. Referral Max Bonus Limit */}
-                        <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
-                          <span className={`${isOfficial ? 'text-emerald-800' : 'text-slate-600'} font-bold shrink-0`}>সর্বোচ্চ বোনাস লিমিট:</span>
-                          <span className="font-mono font-black text-emerald-900 bg-emerald-100 px-2.5 py-0.5 rounded border border-emerald-200 text-xs">
-                            ৳{currentReferralRate} টাকা প্রতি ১০০ টাকায় (১০০ টাকাতে ৳{currentReferralRate} প্রফিট)
-                          </span>
                         </div>
                       </div>
                     </div>

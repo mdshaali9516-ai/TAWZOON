@@ -371,82 +371,28 @@ export const ResellerProfileTab: React.FC<ResellerProfileTabProps> = ({
             <h3 className="text-xs sm:text-sm font-black text-slate-900 truncate">
               {lang === 'bn' ? 'কার রেফারেন্সে একাউন্ট' : 'Upline Referrer Profile'}
             </h3>
-            <p className="text-[11px] text-slate-500 truncate">রেফারারের নাম, কোড ও প্রফিট লিমিট (রিয়েল-টাইম)</p>
+            <p className="text-[11px] text-slate-500 truncate">রেফারারের নাম ও মোবাইল নাম্বার</p>
           </div>
         </div>
 
         {(() => {
-          const isOfficial = employee.isOfficialReferral || employee.reference === 'TAWZOON9516' || isOfficialReferenceCode(employee.reference);
-          const bonusRate = employee.referralCommissionRate !== undefined && Number(employee.referralCommissionRate) > 0
-            ? Number(employee.referralCommissionRate)
-            : (employee.resellerMargin !== undefined && Number(employee.resellerMargin) > 0 ? Number(employee.resellerMargin) : 10);
-          const wholesaleMarkup = isOfficial ? 0 : (employee.resellerMargin !== undefined ? Number(employee.resellerMargin) : 10);
+          const isOfficial = employee.isOfficialReferral === true || employee.referralOwnerId === 'OFFICIAL_TAWZOON';
+          const uplineName = isOfficial ? 'তাওজুন অফিসিয়াল (Tawzoon Official)' : (employee.referralOwnerName || 'রিসেলার রেফারেল');
+          const uplinePhone = isOfficial ? '০১৭৮৭৭৭৫৫১৬' : (employee.referralOwnerPhone || '—');
 
           return (
-            <div className={`p-3.5 rounded-xl border space-y-2 text-xs ${
-              isOfficial ? 'bg-emerald-50/80 border-emerald-200' : 'bg-slate-50 border-slate-200/90'
-            }`}>
-              {/* 1. Type */}
+            <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50 space-y-2 text-xs">
+              {/* Referrer Name */}
               <div className="flex items-center justify-between gap-2">
-                <span className={`${isOfficial ? 'text-emerald-800' : 'text-slate-600'} font-bold shrink-0`}>টাইপ:</span>
-                <span className={`font-black flex items-center gap-1 ${isOfficial ? 'text-emerald-950' : 'text-slate-900'}`}>
-                  {isOfficial ? '👑 তাওজুন অফিসিয়াল রেফারেল (হাই প্রায়োরিটি)' : '🤝 পার্সোনাল রিসেলার রেফারেল'}
-                </span>
+                <span className="text-slate-600 font-bold shrink-0">রেফারারের নাম:</span>
+                <strong className="font-extrabold text-slate-900 truncate text-right">{uplineName}</strong>
               </div>
 
-              {/* 2. Referrer Name */}
+              {/* Mobile Number */}
               <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
-                <span className={`${isOfficial ? 'text-emerald-800' : 'text-slate-600'} font-bold shrink-0`}>রেফারার নাম:</span>
-                <strong className="font-extrabold text-slate-900 truncate text-right">
-                  {isOfficial ? 'তাওজুন অফিসিয়াল (Tawzoon Official)' : (employee.referralOwnerName || 'রিসেলার রেফারেল')}
-                </strong>
+                <span className="text-slate-600 font-bold shrink-0">মোবাইল নম্বর:</span>
+                <strong className="font-mono font-bold text-emerald-800 shrink-0">{uplinePhone}</strong>
               </div>
-
-              {/* 3. Mobile Number */}
-              <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
-                <span className={`${isOfficial ? 'text-emerald-800' : 'text-slate-600'} font-bold shrink-0`}>মোবাইল নম্বর:</span>
-                <strong className="font-mono font-bold text-emerald-800 shrink-0">
-                  {isOfficial ? '০১৭৮৭৭৭৫৫১৬ (অফিসিয়াল হেল্পলাইন)' : (employee.referralOwnerPhone || '—')}
-                </strong>
-              </div>
-
-              {/* 4. Referral Code */}
-              <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
-                <span className={`${isOfficial ? 'text-emerald-800' : 'text-slate-600'} font-bold shrink-0`}>রেফারেল কোড:</span>
-                <span className="font-mono font-black text-slate-800 shrink-0">
-                  {isOfficial ? 'TAWZOON9516' : (employee.referredBy || employee.reference || 'N/A')}
-                </span>
-              </div>
-
-              {/* 5. Fee Deduction */}
-              <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
-                <span className={`${isOfficial ? 'text-emerald-800' : 'text-slate-600'} font-bold shrink-0`}>ফি কর্তন:</span>
-                <span className={`font-bold px-2.5 py-0.5 rounded text-[11px] ${
-                  isOfficial 
-                    ? 'text-emerald-800 bg-white border border-emerald-300' 
-                    : 'text-amber-800 bg-amber-50 border border-amber-200'
-                }`}>
-                  {isOfficial ? 'সম্পূর্ণ মুক্ত (০% কর্তন, কোনো ফি নেই)' : 'রেফারেল ফি কর্তন প্রযোজ্য (সিস্টেম নির্ধারিত ফি)'}
-                </span>
-              </div>
-
-              {/* 6. Referral Max Bonus Limit */}
-              <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60">
-                <span className={`${isOfficial ? 'text-emerald-800' : 'text-slate-600'} font-bold shrink-0`}>সর্বোচ্চ বোনাস লিমিট:</span>
-                <span className="font-mono font-black text-emerald-900 bg-emerald-100 px-2.5 py-1 rounded-md border border-emerald-200 text-xs">
-                  ৳{bonusRate} টাকা প্রতি ১০০ টাকায় (১০০ টাকাতে ৳{bonusRate} প্রফিট)
-                </span>
-              </div>
-
-              {/* 7. Instant Wholesale Margin Rule */}
-              {!isOfficial && wholesaleMarkup > 0 && (
-                <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60 text-[11px]">
-                  <span className="text-slate-500 font-medium shrink-0">ইনস্ট্যান্ট পাইকারি মূল্য:</span>
-                  <span className="font-mono font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-                    +৳{wholesaleMarkup} টাকা স্বয়ংক্রিয়ভাবে পাইকারি মূল্যে যুক্ত
-                  </span>
-                </div>
-              )}
             </div>
           );
         })()}

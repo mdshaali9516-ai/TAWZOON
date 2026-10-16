@@ -6,13 +6,9 @@ export function isOfficialReferenceCode(code?: string | null): boolean {
   return (
     clean === 'TAWZOON9516' ||
     clean === 'TAUZON9516' ||
-    clean === 'TAWZOON' ||
-    clean === 'TAUZON' ||
-    clean === 'OFFICIAL' ||
+    clean === 'OFFICIAL_TAWZOON' ||
     clean === 'OFFICIALTAWZOON' ||
-    clean === 'TAWZOONOFFICIAL' ||
-    clean.includes('TAWZOON') ||
-    clean.includes('TAUZON')
+    clean === 'TAWZOONOFFICIAL'
   );
 }
 
@@ -24,12 +20,15 @@ export function isOfficialReferenceActive(
 
   // 1. Logged in reseller / employee check
   if (employee) {
+    // If explicitly marked as non-official, or referred by a fellow reseller/company, strictly NOT official
+    if (employee.isOfficialReferral === false) return false;
+    if (employee.referralOwnerId && employee.referralOwnerId !== 'OFFICIAL_TAWZOON') return false;
+
     if (employee.isOfficialReferral === true) return true;
     if (employee.referralOwnerId === 'OFFICIAL_TAWZOON') return true;
+
     const empRef = (employee.reference || (employee as any).referredBy || '').toUpperCase().trim();
-    const empCode = (employee.referenceCode || '').toUpperCase().trim();
     if (empRef === officialCode || isOfficialReferenceCode(empRef)) return true;
-    if (empCode === officialCode || isOfficialReferenceCode(empCode)) return true;
     return false;
   }
 
@@ -60,7 +59,7 @@ export function isOfficialReferenceActive(
 /**
  * Returns the effective Reseller Margin (in TK):
  * - Official Reference / Public Store: 0 Tk (Strictly zero markup on public retail prices)
- * - Admin Overridden Reseller: Admin Defined Margin (e.g., 8 Tk, 20 Tk)
+ * - Admin Overridden Reseller: Admin Defined Margin (e.g., 10 Tk, 12 Tk, 20 Tk)
  * - Default Reseller: 10 Tk
  */
 export function getEffectiveResellerMargin(
@@ -77,12 +76,17 @@ export function getEffectiveResellerMargin(
     return Number(employee.resellerMargin);
   }
 
-  // 2. Margin already stamped by backend for this referral session (if strictly > 0)
+  // 2. Referral commission rate on this reseller (if strictly > 0)
+  if (employee.referralCommissionRate !== undefined && employee.referralCommissionRate !== null && Number(employee.referralCommissionRate) > 0) {
+    return Number(employee.referralCommissionRate);
+  }
+
+  // 3. Margin already stamped by backend for this referral session (if strictly > 0)
   if (product && (product as any).referralMarkup !== undefined && (product as any).referralMarkup !== null && Number((product as any).referralMarkup) > 0) {
     return Number((product as any).referralMarkup);
   }
 
-  // 3. Default fallback for non-official reseller (+10 TK)
+  // 4. Default fallback for non-official reseller (+10 TK)
   return Number(brandSettings?.nonOfficialMarkup || 10);
 }
 
@@ -197,8 +201,19 @@ export function getResellerWholesalePrice(
     ? Number(product.originalPrice)
     : Number(product.sellingPrice || 0);
 
-  const markup = isOfficial ? 0 : getEffectiveResellerMargin(product, employee, brandSettings);
-  return baseCost + ((product as any).referralMarkup !== undefined ? 0 : markup);
+  if (isOfficial) {
+    const backendMarkup = (product as any)?.referralMarkup ? Number((product as any).referralMarkup) : 0;
+    return Math.max(0, baseCost - backendMarkup);
+  }
+
+  // If product already contains referralMarkup stamped by backend:
+  if ((product as any).referralMarkup !== undefined && (product as any).referralMarkup !== null && Number((product as any).referralMarkup) > 0) {
+    return baseCost;
+  }
+
+  // Otherwise (e.g. raw product from public store or cart), add effective reseller margin
+  const markup = getEffectiveResellerMargin(product, employee, brandSettings);
+  return baseCost + markup;
 }
 
 /**

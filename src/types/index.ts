@@ -104,6 +104,8 @@ export interface Employee {
   approvedAt?: string;
   customCommissionRate?: number; // Optional override
   resellerMargin?: number; // Admin defined margin / fixed payout per sale in TK (default 10 TK, 0 for official)
+  referralMargin?: number; // Referral margin added to downlines' wholesale purchase price (default 10 TK)
+  purchaseMarkup?: number; // Effective markup applied to this employee's own purchases
   referralCommissionRate?: number; // Referral commission percentage (default 10 for 10%)
   referralMaxBonusCap?: number; // Maximum referral commission cap in TK per sale (default 10 TK)
   downlineCustomRates?: Record<string, number>; // Specific member commission override: { [memberEmployeeId]: number }
