@@ -56,7 +56,7 @@ export interface GroupedOrder {
   trackingCode?: string;
   courierTrackingUrl?: string;
   paymentStatus: 'PAID' | 'PENDING' | 'DELIVERED';
-  saleStatus: 'Approved' | 'Pending Verification' | 'Rejected';
+  saleStatus: 'Approved' | 'Pending Verification' | 'Rejected' | 'Confirmed' | string;
   deliveryStatus: 'pending' | 'processing' | 'shipped' | 'delivered';
   status: 'pending' | 'delivered' | 'cancelled';
 }
@@ -370,6 +370,14 @@ export const ResellerOrdersTab: React.FC<ResellerOrdersTabProps> = ({
         </span>
       );
     }
+    if (order.items.some(s => s.saleStatus === 'Confirmed' || (s as any).status === 'CONFIRMED')) {
+      return (
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[11px] font-bold bg-blue-50 text-blue-800 border-blue-200 shrink-0 whitespace-nowrap">
+          <CheckCircle2 className="w-3 h-3 text-blue-600" />
+          <span>{lang === 'bn' ? 'অর্ডার কনফার্মড' : 'Confirmed'}</span>
+        </span>
+      );
+    }
     return (
       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[11px] font-bold bg-amber-50 text-amber-900 border-amber-300 shrink-0 whitespace-nowrap">
         <Clock className="w-3 h-3 text-amber-600 animate-spin-slow" />
@@ -392,7 +400,7 @@ export const ResellerOrdersTab: React.FC<ResellerOrdersTabProps> = ({
     const courierName = selectedOrder.courierPartner || 'Steadfast Courier';
     const activeTrackingCode = selectedOrder.trackingCode || `STEAD-${selectedOrder.orderCode.replace(/[^0-9]/g, '').slice(-6) || '789123'}`;
     const activeTrackingUrl = selectedOrder.courierTrackingUrl || `https://steadfast.com.bd/t/${activeTrackingCode}`;
-    const isApproved = selectedOrder.saleStatus === 'Approved';
+    const isApproved = selectedOrder.saleStatus === 'Approved' || selectedOrder.saleStatus === 'Confirmed' || (selectedOrder.items && selectedOrder.items.some(s => (s as any).saleStatus === 'Confirmed' || (s as any).status === 'CONFIRMED' || (s as any).saleStatus === 'Approved'));
     const isShipped = selectedOrder.deliveryStatus === 'shipped' || selectedOrder.status === 'delivered';
     const isDelivered = selectedOrder.status === 'delivered' || selectedOrder.paymentStatus === 'PAID';
 

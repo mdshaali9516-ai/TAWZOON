@@ -1,6 +1,6 @@
 {
-  "summary": "Implementation plan for propagating upline Referral Max Bonus Limit changes to all direct downline reseller accounts (unless custom override exists), updating their resellerMargin and wholesale prices instantly.",
-  "updatedAt": "2026-10-16T06:06:27.101656811Z",
+  "summary": "Comprehensive plan for installing and synchronizing the GitHub repository (https://github.com/mdshahali9516-code/SHA-ALI) into the current TAWZOON application. Covers source synchronization, data backup, margin engine alignment, admin order workflow modal enhancements, and automated test suite verification.",
+  "updatedAt": "2026-10-17T06:35:52.849426670Z",
   "requestFeedback": true,
   "userFacing": true
 }

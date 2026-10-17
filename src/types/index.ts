@@ -138,7 +138,7 @@ export interface Sale {
   customerName: string;
   customerPhone: string;
   customerAddress: string;
-  saleStatus?: 'Pending Verification' | 'Approved' | 'Rejected';
+  saleStatus?: 'Pending Verification' | 'Approved' | 'Rejected' | 'Confirmed' | 'Delivered' | string;
   commissionStatus?: 'Pending' | 'Approved' | 'Rejected';
   paymentStatus: 'PAID' | 'PENDING' | 'DELIVERED';
   saleDate: string;

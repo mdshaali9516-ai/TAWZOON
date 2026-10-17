@@ -59,35 +59,35 @@ export function isOfficialReferenceActive(
 /**
  * Returns the effective Reseller Margin (in TK):
  * - Official Reference / Public Store: 0 Tk (Strictly zero markup on public retail prices)
- * - Admin Overridden Reseller: Admin Defined Margin (e.g., 10 Tk, 12 Tk, 20 Tk)
- * - Default Reseller: 10 Tk
+ * - Admin Overridden Reseller: Admin Defined Margin (e.g., 0 Tk, 10 Tk, 15 Tk, 20 Tk)
+ * - Default General Reseller: 10 Tk
  */
 export function getEffectiveResellerMargin(
   product?: Partial<Product> | null,
   employee?: Partial<Employee> | null,
   brandSettings?: Partial<BrandSettings> | null
 ): number {
-  if (!employee || isOfficialReferenceActive(employee, brandSettings) || (product as any)?.isOfficialReferral === true) {
+  if (!employee) {
     return 0;
   }
 
-  // 1. Admin manual margin override set on the specific logged-in reseller (if strictly > 0)
-  if (employee.resellerMargin !== undefined && employee.resellerMargin !== null && Number(employee.resellerMargin) > 0) {
+  // 1. If employee has an explicit personal margin set by admin (including 0 TK)
+  if (employee.resellerMargin !== undefined && employee.resellerMargin !== null && !isNaN(Number(employee.resellerMargin)) && Number(employee.resellerMargin) >= 0) {
     return Number(employee.resellerMargin);
   }
 
-  // 2. Referral commission rate on this reseller (if strictly > 0)
-  if (employee.referralCommissionRate !== undefined && employee.referralCommissionRate !== null && Number(employee.referralCommissionRate) > 0) {
-    return Number(employee.referralCommissionRate);
+  // 2. Official Reference: 0 TK default margin
+  if (isOfficialReferenceActive(employee, brandSettings) || (product as any)?.isOfficialReferral === true) {
+    return 0;
   }
 
-  // 3. Margin already stamped by backend for this referral session (if strictly > 0)
-  if (product && (product as any).referralMarkup !== undefined && (product as any).referralMarkup !== null && Number((product as any).referralMarkup) > 0) {
+  // 3. Margin already stamped by backend for this referral session
+  if (product && (product as any).referralMarkup !== undefined && (product as any).referralMarkup !== null && !isNaN(Number((product as any).referralMarkup))) {
     return Number((product as any).referralMarkup);
   }
 
-  // 4. Default fallback for non-official reseller (+10 TK)
-  return Number(brandSettings?.nonOfficialMarkup || 10);
+  // 4. Default fallback for general non-official reseller (+10 TK)
+  return Number(brandSettings?.nonOfficialMarkup ?? 10);
 }
 
 /**
@@ -195,23 +195,19 @@ export function getResellerWholesalePrice(
   brandSettings?: Partial<BrandSettings> | null
 ): number {
   if (!product) return 0;
-  const isOfficial = isOfficialReferenceActive(employee, brandSettings) || (product as any)?.isOfficialReferral === true;
 
-  const baseCost = product.originalPrice !== undefined && product.originalPrice !== null
-    ? Number(product.originalPrice)
-    : Number(product.sellingPrice || 0);
-
-  if (isOfficial) {
-    const backendMarkup = (product as any)?.referralMarkup ? Number((product as any).referralMarkup) : 0;
-    return Math.max(0, baseCost - backendMarkup);
+  // 1. If backend already transformed and stamped referralMarkup on this product:
+  if ((product as any).referralMarkup !== undefined && (product as any).referralMarkup !== null && !isNaN(Number((product as any).referralMarkup))) {
+    return Number(product.originalPrice ?? product.sellingPrice ?? 0);
   }
 
-  // If product already contains referralMarkup stamped by backend:
-  if ((product as any).referralMarkup !== undefined && (product as any).referralMarkup !== null && Number((product as any).referralMarkup) > 0) {
-    return baseCost;
-  }
+  // 2. Otherwise (e.g. raw product from store or cart), compute from base wholesale price
+  const baseCost = (product as any).baseWholesalePrice !== undefined && (product as any).baseWholesalePrice !== null
+    ? Number((product as any).baseWholesalePrice)
+    : (product.originalPrice !== undefined && product.originalPrice !== null
+      ? Number(product.originalPrice)
+      : Number(product.sellingPrice || 0));
 
-  // Otherwise (e.g. raw product from public store or cart), add effective reseller margin
   const markup = getEffectiveResellerMargin(product, employee, brandSettings);
   return baseCost + markup;
 }

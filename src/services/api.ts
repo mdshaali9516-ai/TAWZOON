@@ -558,6 +558,15 @@ export const api = {
       headers: { Authorization: `Bearer ${token}` },
     }),
 
+  adminConfirmSale: (token: string, saleId: string) =>
+    request<{ success: boolean; message: string; updatedCount: number }>(
+      `/api/admin/sales/${saleId}/confirm`,
+      {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    ),
+
   adminApproveSale: (token: string, saleId: string) =>
     request<{ success: boolean; message: string; updatedCount: number }>(
       `/api/admin/sales/${saleId}/approve`,

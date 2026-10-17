@@ -33,8 +33,10 @@ const isDevContainer = Boolean(process.env.NGINX_PORT);
 const isProduction = process.env.NODE_ENV === 'production' || !isDevContainer || Boolean(process.env.K_SERVICE);
 
 // In AI Studio environment (both dev and deployed containers), Nginx listens on 8080 and proxies to 3000.
-// Node server always binds to port 3000 (or DEFAULT_APP_PORT).
-const PORT = process.env.DEFAULT_APP_PORT ? parseInt(process.env.DEFAULT_APP_PORT, 10) : 3000;
+// Node server binds to DEFAULT_APP_PORT (3000) or Cloud Run's PORT (8080) when running directly.
+const PORT = process.env.DEFAULT_APP_PORT 
+  ? parseInt(process.env.DEFAULT_APP_PORT, 10) 
+  : (process.env.PORT ? parseInt(process.env.PORT, 10) : 3000);
 
 // Real-time SSE Manager for Live Admin & Reseller updates
 const realtimeClients = new Set<Response>();
@@ -186,7 +188,10 @@ function resolveEmployeeFromReq(req: Request): Employee | null {
 function isOfficialReferralCode(code?: string | null): boolean {
   if (!code) return false;
   const clean = code.trim().toUpperCase().replace(/[\s\-_]/g, '');
+  const state = db.getState();
+  const configuredOfficial = (state.brandSettings?.officialReferralCode || 'TAWZOON9516').trim().toUpperCase().replace(/[\s\-_]/g, '');
   return (
+    clean === configuredOfficial ||
     clean === 'TAWZOON9516' ||
     clean === 'TAUZON9516' ||
     clean === 'OFFICIAL_TAWZOON' ||
@@ -209,29 +214,23 @@ function isOfficialEmployee(employee?: Employee | null): boolean {
 
 // Helper to determine dynamic referral wholesale price markup & fixed margin for an employee
 function getEmployeeReferralMarkup(employee?: Employee | null, state?: any): number {
-  if (!employee) return 10;
-  if (isOfficialEmployee(employee)) return 0;
+  if (!employee) return 0;
 
-  const st = state || db.getState();
-
-  // 1. Direct admin defined margin on this specific reseller (highest priority)
-  if (employee.resellerMargin !== undefined && employee.resellerMargin !== null && Number(employee.resellerMargin) > 0) {
-    console.log(`[Margin] Using custom resellerMargin for ${employee.name}: ${employee.resellerMargin}`);
+  // 1. If this reseller has an explicit personal margin set by admin (including 0 TK)
+  if (employee.resellerMargin !== undefined && employee.resellerMargin !== null && !isNaN(Number(employee.resellerMargin)) && Number(employee.resellerMargin) >= 0) {
     return Number(employee.resellerMargin);
   }
 
-  // 2. Referral commission rate on this member (if strictly > 0)
-  if (employee.referralCommissionRate !== undefined && employee.referralCommissionRate !== null && Number(employee.referralCommissionRate) > 0) {
-    console.log(`[Margin] Using referralCommissionRate for ${employee.name}: ${employee.referralCommissionRate}`);
-    return Number(employee.referralCommissionRate);
+  // 2. Official Referral default: 0 TK margin
+  if (isOfficialEmployee(employee)) {
+    return 0;
   }
 
-  // 3. Fallback default wholesale markup for all non-official accounts (+10 TK or brand nonOfficialMarkup)
+  // 3. Fallback default wholesale markup for all general non-official accounts (+10 TK or brand nonOfficialMarkup)
+  const st = state || db.getState();
   const brandSettings = st.brandSettings;
-  const defaultMarkup = Number(brandSettings?.nonOfficialMarkup || 10);
-  console.log(`[Margin] Using default markup for ${employee.name}: ${defaultMarkup}`);
+  const defaultMarkup = Number(brandSettings?.nonOfficialMarkup ?? 10);
   return defaultMarkup;
-
 }
 
 // Helper to compute effective product with dynamic referral wholesale price markup
@@ -251,37 +250,31 @@ function getProductForEmployee(product: Product, employee?: Employee | null, exp
     ? Number(product.regularPrice)
     : (autoRegular > baseSell ? autoRegular : Math.round(baseSell * 1.15));
 
-  // 1. Official Referral (TAWZOON9516, etc.) or Public Store Visitor (no reseller upline):
-  if (isOfficial || !employee) {
-    return {
-      ...sanitized,
-      starRating: stars,
-      originalPrice: baseOrig, // Exact Admin Wholesale Price (0 markup)
-      isOfficialReferral: true,
-      referralMarkup: 0,
-      baseSellingPrice: baseSell,
-      baseRegularPrice: baseReg,
-      sellingPrice: baseSell, // Exact Admin Selling Price on public store
-      regularPrice: baseReg,  // Exact Regular Price with discount badge
-    };
+  // Determine applicable markup:
+  // For official: 0 TK (or custom if admin set resellerMargin)
+  // For general: resellerMargin (default 10 TK, or custom e.g. 15 TK)
+  // For public visitor with no employee session: 0 TK
+  let referralMarkup = 0;
+  if (employee) {
+    referralMarkup = getEmployeeReferralMarkup(employee);
+  } else if (cleanRef && !isOfficialReferralCode(cleanRef)) {
+    const st = db.getState();
+    referralMarkup = Number(st.brandSettings?.nonOfficialMarkup ?? 10);
   }
 
-  // 2. Logged-in Reseller registered under a non-official upline:
-  // Automatically add default +10 TK wholesale markup, or admin configured markup (e.g. 20 TK)
-  const st = db.getState();
-  const referralMarkup = getEmployeeReferralMarkup(employee, st);
-  console.log(`[PriceCalc] Calculating price for ${employee.name}. ResellerMargin: ${employee.resellerMargin}, Markup used: ${referralMarkup}`);
+  const finalWholesale = baseOrig + referralMarkup;
 
   return {
     ...sanitized,
     starRating: stars,
-    originalPrice: baseOrig + referralMarkup, // Wholesale price for this reseller (+10 TK default, or +20 TK if admin set)
-    isOfficialReferral: false,
-    referralMarkup: referralMarkup,
+    baseWholesalePrice: baseOrig, // Master base wholesale price from DB (e.g. 470)
+    originalPrice: finalWholesale, // Final effective wholesale price (e.g. 470, 480, 485)
+    isOfficialReferral: isOfficial,
+    referralMarkup: referralMarkup, // Exact margin added (e.g. 0, 10, 15)
     baseSellingPrice: baseSell,
     baseRegularPrice: baseReg,
-    sellingPrice: baseSell, // Selling price remains exact admin selling price
-    regularPrice: baseReg,  // Regular price remains exact regular price
+    sellingPrice: baseSell, // Exact Selling Price
+    regularPrice: baseReg,  // Exact Regular Price
   };
 }
 
@@ -898,13 +891,8 @@ app.post('/api/auth/employee/register', (req: Request, res: Response) => {
 
   const generatedRefCode = `TN-REF-${cleanPhone.slice(-5).toUpperCase()}`;
 
-  const uplineBonusRate = parentEmp
-    ? (parentEmp.referralCommissionRate !== undefined && Number(parentEmp.referralCommissionRate) > 0
-        ? Number(parentEmp.referralCommissionRate)
-        : (parentEmp.resellerMargin !== undefined && Number(parentEmp.resellerMargin) > 0 ? Number(parentEmp.resellerMargin) : 10))
-    : 10;
-
-  const initialMargin = isOfficial ? 0 : uplineBonusRate;
+  const initialMargin = isOfficial ? 0 : 10;
+  const initialMaxBonus = 10;
 
   const newEmployee = {
     id: 'emp-' + crypto.randomUUID().slice(0, 8),
@@ -917,14 +905,15 @@ app.post('/api/auth/employee/register', (req: Request, res: Response) => {
     reference: isOfficial ? 'TAWZOON9516' : (parentEmp ? (parentEmp.referenceCode || cleanRef) : cleanRef),
     isOfficialReferral: isOfficial,
     resellerMargin: initialMargin,
-    referralCommissionRate: initialMargin,
+    referralCommissionRate: initialMaxBonus,
+    referralMaxBonusCap: initialMaxBonus,
     referralOwnerId: isOfficial
       ? 'OFFICIAL_TAWZOON'
       : (parentEmp ? parentEmp.id : 'COMPANY'),
     referralOwnerName: isOfficial
-      ? 'তাওজুন অফিসিয়াল (Headquarters - TAWZOON9516)'
+      ? 'তাওজুন অফিসিয়াল (Headquarters)'
       : (parentEmp ? parentEmp.name : 'তাওজুন কোম্পানি (Direct)'),
-    referralOwnerPhone: isOfficial ? undefined : (parentEmp ? parentEmp.phone : undefined),
+    referralOwnerPhone: isOfficial ? 'অফিসিয়াল সিস্টেম' : (parentEmp ? parentEmp.phone : undefined),
     referredBy: isOfficial
       ? 'TAWZOON9516'
       : (parentEmp ? (parentEmp.referenceCode || parentEmp.id) : (cleanRef || undefined)),
@@ -1185,11 +1174,11 @@ app.get('/api/employee/referrals', verifyEmployee, (req: Request, res: Response)
 
       const referralCommission = Math.round(deliveredSales.reduce((acc, s) => {
         const profit = s.commissionAmount || 0;
-        return acc + Math.min(profit * 0.1, maxBonusLimit);
+        return acc + Math.round(maxBonusLimit * Math.min(1, profit / 100));
       }, 0));
       const pendingCommission = Math.round(pendingSales.reduce((acc, s) => {
         const profit = s.commissionAmount || 0;
-        return acc + Math.min(profit * 0.1, maxBonusLimit);
+        return acc + Math.round(maxBonusLimit * Math.min(1, profit / 100));
       }, 0));
       
       return {
@@ -1419,6 +1408,39 @@ app.post('/api/employee/sales', verifyEmployee, (req: Request, res: Response) =>
     ? customOrderCode.trim()
     : ('ORD-' + crypto.randomInt(1000, 9999));
 
+  // Duplicate Prevention: Check if this item is already recorded in the same order
+  if (customOrderCode && typeof customOrderCode === 'string' && customOrderCode.trim()) {
+    const existingSameItem = state.sales.find(s =>
+      s.orderCode === customOrderCode.trim() &&
+      (s.productId === product.id || s.productId === cleanProductId) &&
+      s.size === (size ? String(size).trim() : undefined)
+    );
+    if (existingSameItem) {
+      return res.json({
+        success: true,
+        message: 'এই আইটেমটি ইতিমধ্যে অর্ডারে যুক্ত রয়েছে।',
+        sale: existingSameItem
+      });
+    }
+  }
+
+  // Duplicate Prevention: Check rapid duplicate submission within last 15 seconds
+  const fifteenSecsAgo = new Date(Date.now() - 15000).toISOString();
+  const recentDuplicate = state.sales.find(s =>
+    s.employeeId === emp.id &&
+    s.productId === product.id &&
+    s.customerPhone === customerPhone.trim() &&
+    s.quantity === qty &&
+    s.saleDate > fifteenSecsAgo
+  );
+  if (recentDuplicate) {
+    return res.json({
+      success: true,
+      message: 'অর্ডারটি ইতিমধ্যে সফলভাবে রেকর্ড করা হয়েছে।',
+      sale: recentDuplicate
+    });
+  }
+
   const sale: Sale = {
     id: 'sale-' + crypto.randomUUID().slice(0, 8),
     orderCode,
@@ -1428,6 +1450,8 @@ app.post('/api/employee/sales', verifyEmployee, (req: Request, res: Response) =>
     productName: product.nameBn,
     productCode: product.productCode,
     quantity: qty,
+    basePrice: wholesalePrice, // Locked-in historical wholesale price
+    actualSalePrice: finalUnitPrice,
     sellingPrice: finalUnitPrice,
     totalAmount: totalSellingAmount,
     commissionAmount: totalCommission,
@@ -2929,27 +2953,10 @@ app.put('/api/admin/employees/:id', verifyAdmin, (req: Request, res: Response) =
   if (referralCommissionRate !== undefined) {
     const newRate = referralCommissionRate !== null && referralCommissionRate !== '' ? parseFloat(referralCommissionRate) : 10;
     emp.referralCommissionRate = newRate;
-    if (emp.resellerMargin === undefined || emp.resellerMargin === null || !emp.isOfficialReferral) {
-      emp.resellerMargin = newRate;
-    }
-
-    // Automatically propagate referral commission rate to direct downline members under this upline (unless custom override exists)
-    const refCode = emp.referenceCode || '';
-    const downlineMembers = state.employees.filter(e => 
-      e.referralOwnerId === emp.id || 
-      (refCode && e.referredBy && e.referredBy.trim().toUpperCase() === refCode.trim().toUpperCase()) ||
-      e.referredBy === emp.id ||
-      (e.reference && refCode && e.reference.trim().toUpperCase() === refCode.trim().toUpperCase())
-    );
-
-    for (const member of downlineMembers) {
-      const hasCustom = emp.downlineCustomRates && emp.downlineCustomRates[member.id] !== undefined;
-      if (!hasCustom) {
-        member.referralCommissionRate = newRate;
-        member.resellerMargin = newRate;
-        db.syncEntityDirect('employees', member).catch(() => {});
-      }
-    }
+    emp.referralMaxBonusCap = newRate;
+  }
+  if (downlineCustomRates !== undefined) {
+    emp.downlineCustomRates = downlineCustomRates;
   }
 
 
@@ -3093,63 +3100,79 @@ app.patch('/api/admin/sales/:id/approve', verifyAdmin, (req: Request, res: Respo
           messageEn: `Delivery completed for #${s.orderCode}. ৳${s.commissionAmount} commission credited to your wallet.`,
           type: 'COMMISSION'
         });
+      }
+    }
+  });
 
-        // Automatic Referral Profit to Upline Referrer
-        // Official Referral Rule: TAWZOON9516 accounts have zero referral fee or bonus deductions!
-        const isOfficialMember = isOfficialEmployee(emp);
+  // Calculate and credit Referral Bonus to Upline once per order (prevent duplicate bonus for multi-item orders)
+  const primarySale = targetSales[0];
+  const sellerEmp = primarySale ? state.employees.find(e => e.id === primarySale.employeeId) : null;
 
-        if (!isOfficialMember) {
-          const ref = (emp.reference || (emp as any).referredBy || (emp as any).upline || '').trim().toUpperCase();
-          const parentEmp = (emp.referralOwnerId && emp.referralOwnerId !== 'OFFICIAL_TAWZOON' && emp.referralOwnerId !== 'COMPANY')
-            ? state.employees.find(e => e.id === emp.referralOwnerId)
-            : (ref && !isOfficialReferralCode(ref) ? state.employees.find(e => 
-                e.id.toUpperCase() === ref || 
-                (e.referenceCode && e.referenceCode.toUpperCase() === ref) || 
-                `TN-REF-${e.id.replace('emp-', '').slice(0, 5).toUpperCase()}` === ref ||
-                (e.phone && e.phone.replace(/[^0-9]/g, '') === ref.replace(/[^0-9]/g, '')) ||
-                (e.name && e.name.toLowerCase() === ref.toLowerCase())
-              ) : null);
+  if (sellerEmp && !isOfficialEmployee(sellerEmp)) {
+    const orderCode = primarySale.orderCode;
+    const isBonusAlreadyPaid = state.transactions.some(
+      t => t.reference === orderCode && t.description.includes('রেফারেল টিম প্রফিট')
+    );
 
-          if (parentEmp && s.commissionAmount > 0) {
-            // Check if parent has a specific override for this downline member, else fallback to parent's rate, else default ৳10 max bonus limit
-            // Formula: Referral Bonus = MIN(Profit * 10%, Admin-set Maximum Bonus Limit)
-            const maxBonusLimit = getEmployeeReferralMarkup(emp, state);
+    if (!isBonusAlreadyPaid) {
+      const ref = (sellerEmp.reference || (sellerEmp as any).referredBy || (sellerEmp as any).upline || '').trim().toUpperCase();
+      const parentEmp = (sellerEmp.referralOwnerId && sellerEmp.referralOwnerId !== 'OFFICIAL_TAWZOON' && sellerEmp.referralOwnerId !== 'COMPANY')
+        ? state.employees.find(e => e.id === sellerEmp.referralOwnerId)
+        : (ref && !isOfficialReferralCode(ref) ? state.employees.find(e => 
+            e.id.toUpperCase() === ref || 
+            (e.referenceCode && e.referenceCode.toUpperCase() === ref) || 
+            `TN-REF-${e.id.replace('emp-', '').slice(0, 5).toUpperCase()}` === ref ||
+            (e.phone && e.phone.replace(/[^0-9]/g, '') === ref.replace(/[^0-9]/g, '')) ||
+            (e.name && e.name.toLowerCase() === ref.toLowerCase())
+          ) : null);
 
-            if (maxBonusLimit > 0) {
-              const profit = s.commissionAmount || 0;
-              const referralBonus = Math.max(0, Math.round(Math.min(profit * 0.1, maxBonusLimit)));
-              if (referralBonus > 0) {
-                parentEmp.wallet.availableBalance += referralBonus;
-                parentEmp.wallet.totalEarnings += referralBonus;
+      if (parentEmp) {
+        const totalOrderProfit = targetSales.reduce((sum, s) => sum + (s.commissionAmount || 0), 0);
+        if (totalOrderProfit > 0) {
+          // Upline's configured Maximum Bonus Limit for this downline or overall
+          const maxBonusLimit = (parentEmp.downlineCustomRates && parentEmp.downlineCustomRates[sellerEmp.id] !== undefined)
+            ? Number(parentEmp.downlineCustomRates[sellerEmp.id])
+            : (parentEmp.referralMaxBonusCap !== undefined
+                ? Number(parentEmp.referralMaxBonusCap)
+                : (parentEmp.referralCommissionRate !== undefined ? Number(parentEmp.referralCommissionRate) : 10));
 
-                state.transactions.unshift({
-                  id: 'trx-' + crypto.randomUUID().slice(0, 8),
-                  employeeId: parentEmp.id,
-                  type: 'COMMISSION_EARNED',
-                  amount: referralBonus,
-                  balanceAfter: parentEmp.wallet.availableBalance,
-                  status: 'COMPLETED',
-                  reference: s.orderCode,
-                  description: `রেফারেল টিম প্রফিট: ${emp.name} এর অর্ডার #${s.orderCode} থেকে (১০% প্রফিট, সর্বোচ্চ ৳${maxBonusLimit} লিমিট অনুযায়ী ৳${referralBonus})`,
-                  timestamp: new Date().toISOString()
-                });
+          if (maxBonusLimit > 0) {
+            // 10% profit sharing, strictly capped at maxBonusLimit
+             const referralBonus = Math.max(0, Math.round(maxBonusLimit * Math.min(1, totalOrderProfit / 100)));
 
-                db.addNotification({
-                  recipientRole: 'EMPLOYEE',
-                  employeeId: parentEmp.id,
-                  titleBn: 'রেফারেল প্রফিট বোনাস জমা হয়েছে',
-                  titleEn: 'Referral Bonus Credited',
-                  messageBn: `আপনার টিমের সদস্য ${emp.name} এর সেলস সফল হওয়ায় আপনি ৳${referralBonus} রেফারেল লাভ পেয়েছেন (সর্বোচ্চ লিমিট ৳${maxBonusLimit})।`,
-                  messageEn: `You earned ৳${referralBonus} referral bonus from ${emp.name}'s delivered order #${s.orderCode}.`,
-                  type: 'COMMISSION'
-                });
-              }
+            if (referralBonus > 0) {
+              parentEmp.wallet.availableBalance += referralBonus;
+              parentEmp.wallet.totalEarnings += referralBonus;
+
+              state.transactions.unshift({
+                id: 'trx-' + crypto.randomUUID().slice(0, 8),
+                employeeId: parentEmp.id,
+                type: 'COMMISSION_EARNED',
+                amount: referralBonus,
+                balanceAfter: parentEmp.wallet.availableBalance,
+                status: 'COMPLETED',
+                reference: orderCode,
+                description: `রেফারেল টিম প্রফিট: ${sellerEmp.name} এর অর্ডার #${orderCode} থেকে (১০% প্রফিট, সর্বোচ্চ ৳${maxBonusLimit} লিমিট অনুযায়ী ৳${referralBonus})`,
+                timestamp: new Date().toISOString()
+              });
+
+              db.addNotification({
+                recipientRole: 'EMPLOYEE',
+                employeeId: parentEmp.id,
+                titleBn: 'রেফারেল প্রফিট বোনাস জমা হয়েছে',
+                titleEn: 'Referral Bonus Credited',
+                messageBn: `আপনার টিমের সদস্য ${sellerEmp.name} এর সেলস সফল হওয়ায় আপনি ৳${referralBonus} রেফারেল লাভ পেয়েছেন (সর্বোচ্চ লিমিট ৳${maxBonusLimit})।`,
+                messageEn: `You earned ৳${referralBonus} referral bonus from ${sellerEmp.name}'s delivered order #${orderCode}.`,
+                type: 'COMMISSION'
+              });
+
+              db.syncEntityDirect('employees', parentEmp).catch(e => console.warn('Parent employee sync warning:', e));
             }
           }
         }
       }
     }
-  });
+  }
 
   db.save();
   db.syncCollectionDirect('sales', targetSales).catch(e => console.warn('Sales sync warning:', e));
@@ -3177,12 +3200,65 @@ app.patch('/api/admin/sales/:id/reject', verifyAdmin, (req: Request, res: Respon
   const actualPenalty = deductDeliveryCharge ? (Number(penaltyAmount) || 120) : 0;
 
   const targetSales = state.sales.filter(s => (sale.orderCode && s.orderCode === sale.orderCode) || s.id === sale.id);
+  const wasPaid = targetSales.some(s => s.paymentStatus === 'PAID');
+  const totalReversedCommission = wasPaid ? targetSales.reduce((acc, s) => acc + (s.commissionAmount || 0), 0) : 0;
+
   targetSales.forEach(s => {
     s.paymentStatus = 'PENDING';
     s.saleStatus = 'Rejected';
     s.deliveryStatus = 'cancelled';
     s.commissionAmount = 0;
   });
+
+  // If sale was previously delivered/paid, reverse the credited commissions and referral bonuses
+  if (wasPaid && sale.employeeId && totalReversedCommission > 0) {
+    const employee = state.employees.find(e => e.id === sale.employeeId);
+    if (employee && employee.wallet) {
+      employee.wallet.availableBalance = Math.max(0, employee.wallet.availableBalance - totalReversedCommission);
+      employee.wallet.totalEarnings = Math.max(0, employee.wallet.totalEarnings - totalReversedCommission);
+
+      state.transactions.unshift({
+        id: 'trx-' + crypto.randomUUID().slice(0, 8),
+        employeeId: employee.id,
+        type: 'ADJUSTMENT',
+        amount: -totalReversedCommission,
+        balanceAfter: employee.wallet.availableBalance,
+        status: 'COMPLETED',
+        reference: sale.orderCode,
+        description: `অর্ডার বাতিল: পূর্বে জমাকৃত কমিশন সমন্বয় (-৳${totalReversedCommission})`,
+        timestamp: new Date().toISOString()
+      });
+
+      db.syncEntityDirect('employees', employee).catch(e => console.warn('Employee reversal sync warning:', e));
+    }
+
+    // Reverse upline referral bonus if one was paid for this order
+    const bonusTrxIndex = state.transactions.findIndex(
+      t => t.reference === sale.orderCode && t.description.includes('রেফারেল টিম প্রফিট')
+    );
+    if (bonusTrxIndex !== -1) {
+      const bonusTrx = state.transactions[bonusTrxIndex];
+      const parentEmp = state.employees.find(e => e.id === bonusTrx.employeeId);
+      if (parentEmp && parentEmp.wallet) {
+        parentEmp.wallet.availableBalance = Math.max(0, parentEmp.wallet.availableBalance - bonusTrx.amount);
+        parentEmp.wallet.totalEarnings = Math.max(0, parentEmp.wallet.totalEarnings - bonusTrx.amount);
+
+        state.transactions.unshift({
+          id: 'trx-' + crypto.randomUUID().slice(0, 8),
+          employeeId: parentEmp.id,
+          type: 'ADJUSTMENT',
+          amount: -bonusTrx.amount,
+          balanceAfter: parentEmp.wallet.availableBalance,
+          status: 'COMPLETED',
+          reference: sale.orderCode,
+          description: `অর্ডার বাতিল: পূর্বে জমাকৃত রেফারেল বোনাস সমন্বয় (-৳${bonusTrx.amount})`,
+          timestamp: new Date().toISOString()
+        });
+
+        db.syncEntityDirect('employees', parentEmp).catch(e => console.warn('Parent employee reversal sync warning:', e));
+      }
+    }
+  }
 
   // Deduct penalty from reseller wallet if requested
   if (actualPenalty > 0 && sale.employeeId) {
@@ -3268,9 +3344,10 @@ app.patch('/api/admin/sales/:id/courier', verifyAdmin, (req: Request, res: Respo
     if (partner) s.courierPartner = partner;
     if (code) s.trackingCode = code;
     if (url) s.courierTrackingUrl = url;
-    if (deliveryStatus) s.deliveryStatus = deliveryStatus;
-    else if (!s.deliveryStatus || s.deliveryStatus === 'pending') {
-      s.deliveryStatus = 'shipped';
+    if (deliveryStatus) {
+      s.deliveryStatus = deliveryStatus;
+    } else if (!s.deliveryStatus) {
+      s.deliveryStatus = 'pending';
     }
   });
 
@@ -3296,6 +3373,44 @@ app.patch('/api/admin/sales/:id/courier', verifyAdmin, (req: Request, res: Respo
     trackingCode: code,
     courierTrackingUrl: url,
     deliveryStatus: targetSales[0]?.deliveryStatus
+  });
+});
+
+// Admin Explicitly Confirm Sale/Order (Transitions from PENDING to CONFIRMED)
+app.patch('/api/admin/sales/:id/confirm', verifyAdmin, (req: Request, res: Response) => {
+  const state = db.getState();
+  const sale = state.sales.find(s => s.id === req.params.id || s.orderCode === req.params.id);
+
+  if (!sale) {
+    return res.status(404).json({ error: 'Sale not found' });
+  }
+
+  const targetSales = state.sales.filter(s => (sale.orderCode && s.orderCode === sale.orderCode) || s.id === sale.id);
+  targetSales.forEach(s => {
+    s.saleStatus = 'Confirmed';
+    (s as any).status = 'CONFIRMED';
+    (s as any).confirmedAt = new Date().toISOString();
+  });
+
+  db.save();
+  db.syncCollectionDirect('sales', targetSales).catch(e => console.warn('Confirm sales sync warning:', e));
+
+  if (sale.employeeId) {
+    db.addNotification({
+      recipientRole: 'EMPLOYEE',
+      employeeId: sale.employeeId,
+      titleBn: `✅ অর্ডার কনফার্ম হয়েছে (#${sale.orderCode})`,
+      titleEn: `Order Confirmed (#${sale.orderCode})`,
+      messageBn: `আপনার অর্ডার #${sale.orderCode} সফলভাবে কনফার্ম করা হয়েছে। পণ্য প্যাকেজিং ও ডেলিভারির জন্য প্রস্তুত করা হচ্ছে।`,
+      messageEn: `Your order #${sale.orderCode} has been confirmed.`,
+      type: 'SALE'
+    });
+  }
+
+  res.json({
+    success: true,
+    message: `অর্ডার #${sale.orderCode} সফলভাবে কনফার্ম করা হয়েছে।`,
+    updatedCount: targetSales.length
   });
 });
 
@@ -4533,7 +4648,6 @@ ${pageTag} #TawZoon #TawZoonNexus #OnlineShoppingBD #TrendingFashion #PremiumQua
 
 async function startServer() {
   console.log('[Server] Starting Enterprise Engine instantly (local JSON data initialized)...');
-  await db.purgeAllResellers().catch(err => console.warn('[Server] Purge resellers note:', err));
 
   if (isDevContainer && process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({

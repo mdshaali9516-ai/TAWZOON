@@ -43,6 +43,7 @@ import {
   ChevronUp,
   ArrowLeft,
   ExternalLink,
+  CheckCircle2,
   Check,
   Play,
   Copy,
@@ -600,13 +601,50 @@ export const AdminPortal: React.FC = () => {
   const [selectedWithdrawalForDetails, setSelectedWithdrawalForDetails] = useState<Withdrawal | null>(null);
   const [rejectModalSale, setRejectModalSale] = useState<Sale | null>(null);
   const [isRejectingSale, setIsRejectingSale] = useState(false);
+  const [confirmModalSale, setConfirmModalSale] = useState<Sale | null>(null);
+  const [isConfirmingSale, setIsConfirmingSale] = useState(false);
+  const [deliveryConfirmSale, setDeliveryConfirmSale] = useState<Sale | null>(null);
   const [orderFilterTab, setOrderFilterTab] = useState<'pending' | 'confirmed' | 'cancelled'>('pending');
   const [withdrawalFilterTab, setWithdrawalFilterTab] = useState<'pending' | 'confirmed' | 'cancelled'>('pending');
 
   const handleCopyText = (text: string, label: string) => {
     if (!text) return;
-    navigator.clipboard.writeText(text);
-    showToast(`${label} কপি করা হয়েছে!`, 'success');
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text);
+      } else {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+      showToast(`${label} কপি করা হয়েছে!`, 'success');
+    } catch {
+      showToast(`${label} কপি করা হয়েছে!`, 'success');
+    }
+  };
+
+  const handleConfirmSale = async (sale: Sale) => {
+    if (!adminToken) return;
+    setIsConfirmingSale(true);
+    try {
+      const res = await api.adminConfirmSale(adminToken, sale.id);
+      showToast(res.message || 'অর্ডার সফলভাবে কনফার্ম করা হয়েছে!', 'success');
+      setConfirmModalSale(null);
+      if (selectedSaleForDetails && selectedSaleForDetails.orderCode === sale.orderCode) {
+        setSelectedSaleForDetails(prev => prev ? { ...prev, saleStatus: 'Confirmed', status: 'CONFIRMED' as any } : null);
+      }
+      await loadAdminData();
+    } catch (err: any) {
+      showToast(err.message || 'অর্ডার কনফার্ম করতে সমস্যা হয়েছে', 'error');
+    } finally {
+      setIsConfirmingSale(false);
+    }
   };
 
   const handleSendInlineCourierCode = async (sale: Sale, customCode?: string) => {
@@ -623,7 +661,7 @@ export const AdminPortal: React.FC = () => {
         courierPartner: partner,
         trackingCode: codeToSend,
         trackingUrl: codeToSend.startsWith('http') ? codeToSend : undefined,
-        deliveryStatus: 'shipped'
+        deliveryStatus: sale.deliveryStatus || 'pending'
       });
       showToast(res.message || 'কুরিয়ার ট্র্যাকিং কোড সফলভাবে যুক্ত হয়েছে!', 'success');
       setInlineCourierInput('');
@@ -673,8 +711,15 @@ export const AdminPortal: React.FC = () => {
       URL.revokeObjectURL(blobUrl);
       showToast('প্রোডাক্ট ছবি ডাউনলোড সম্পন্ন হয়েছে!');
     } catch (err) {
-      window.open(url, '_blank');
-      showToast('ছবি নতুন ট্যাবে ওপেন করা হয়েছে');
+      const link = document.createElement('a');
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.download = `${name.replace(/\s+/g, '_')}_product.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('প্রোডাক্ট ছবি ডাউনলোড লিংক চালু হয়েছে');
     }
   };
 
@@ -1633,39 +1678,35 @@ export const AdminPortal: React.FC = () => {
     }
     setIsSavingModalReferralRate(true);
     try {
+      const parentEmp = employees.find(e => e.id === empId);
+      const downlines = parentEmp ? getResellerDownlines(parentEmp, employees) : [];
+
       const res = await api.adminUpdateEmployeeProfile(adminToken, empId, { 
-        referralCommissionRate: rateNum,
-        resellerMargin: rateNum
+        referralCommissionRate: rateNum
       });
       if (res.success) {
+        await Promise.all(downlines.map(d => api.adminUpdateEmployeeProfile(adminToken, d.id, {
+          resellerMargin: rateNum,
+          referralCommissionRate: rateNum
+        })));
+
         setEmployees(prev => prev.map(e => {
           if (e.id === empId) {
-            return { ...e, referralCommissionRate: rateNum, resellerMargin: rateNum };
+            return { ...e, referralCommissionRate: rateNum, referralMaxBonusCap: rateNum };
           }
-          const isDownline = e.referralOwnerId === empId || e.reference === empId || (selectedUserForDetails?.referenceCode && (e.referredBy === selectedUserForDetails.referenceCode || e.reference === selectedUserForDetails.referenceCode));
-          if (isDownline && (!selectedUserForDetails?.downlineCustomRates || selectedUserForDetails.downlineCustomRates[e.id] === undefined)) {
-            return { ...e, referralCommissionRate: rateNum, resellerMargin: rateNum };
+          if (downlines.some(d => d.id === e.id)) {
+            return { ...e, resellerMargin: rateNum, referralCommissionRate: rateNum };
           }
           return e;
         }));
         if (selectedUserForDetails && selectedUserForDetails.id === empId) {
-          setSelectedUserForDetails(prev => prev ? { ...prev, referralCommissionRate: rateNum, resellerMargin: rateNum } : null);
-          const referredDownline = getResellerDownlines(selectedUserForDetails, employees);
-          setEditingMemberRates(prev => {
-            const next = { ...prev };
-            referredDownline.forEach(d => {
-              if (!selectedUserForDetails.downlineCustomRates || selectedUserForDetails.downlineCustomRates[d.id] === undefined) {
-                next[d.id] = String(rateNum);
-              }
-            });
-            return next;
-          });
+          setSelectedUserForDetails(prev => prev ? { ...prev, referralCommissionRate: rateNum, referralMaxBonusCap: rateNum } : null);
         }
         await loadAdminData();
-        showToast(lang === 'bn' ? `রেফারেল সর্বোচ্চ বোনাস লিমিট সফলভাবে ৳${rateNum} নির্ধারণ করা হয়েছে (সকল রেফারেল অ্যাকাউন্টের পাইকারি মূল্যে কার্যকর)` : `Referral bonus limit set to ৳${rateNum}`);
+        showToast(lang === 'bn' ? `রেফারেল সর্বোচ্চ বোনাস লিমিট ৳${rateNum} এবং সকল ডাউনলাইন অ্যাকাউন্টে স্বয়ংক্রিয়ভাবে আপডেট করা হয়েছে!` : `Referral bonus limit set to ৳${rateNum} and applied to downlines`);
       }
     } catch (err: any) {
-      showToast(err.message || 'কমিশন রেট সংরক্ষণ ব্যর্থ হয়েছে', 'error');
+      showToast(err.message || 'বোনাস লিমিট সংরক্ষণ ব্যর্থ হয়েছে', 'error');
     } finally {
       setIsSavingModalReferralRate(false);
     }
@@ -1768,19 +1809,20 @@ export const AdminPortal: React.FC = () => {
   };
 
   // Sale Delivery & Commission Approval Handler
-  const handleApproveSale = async (sale: Sale) => {
+  const handleApproveSale = async (sale: Sale, skipConfirm: boolean = false) => {
     if (!adminToken) return;
-    const isConfirmed = window.confirm(
-      lang === 'bn'
-        ? `আপনি কি নিশ্চিত অর্ডার #${sale.orderCode} এর ডেলিভারি সম্পন্ন হিসেবে অনুমোদন করতে চান? অনুমোদনের সাথে সাথে কর্মী "${sale.employeeName}" এর একাউন্ট ব্যালেন্সে ৳${sale.commissionAmount} কমিশন জমা হয়ে যাবে।`
-        : `Are you sure you want to approve delivery for order #${sale.orderCode}? ৳${sale.commissionAmount} commission will be credited to ${sale.employeeName}'s balance.`
-    );
-    if (!isConfirmed) return;
+    if (!skipConfirm) {
+      setDeliveryConfirmSale(sale);
+      return;
+    }
 
     setApprovingSaleId(sale.id);
     try {
       const res = await api.adminApproveSale(adminToken, sale.id);
       showToast(res.message || (lang === 'bn' ? 'ডেলিভারি সফল ও কমিশন অনুমোদন সম্পন্ন!' : 'Sale delivery approved and commission credited!'), 'success');
+      if (selectedSaleForDetails && (selectedSaleForDetails.id === sale.id || selectedSaleForDetails.orderCode === sale.orderCode)) {
+        setSelectedSaleForDetails(null);
+      }
       await loadAdminData();
     } catch (err: any) {
       showToast(err.message || 'অনুমোদন ব্যর্থ হয়েছে', 'error');
@@ -4150,7 +4192,14 @@ export const AdminPortal: React.FC = () => {
         )}
 
         {/* TAB 5: MASTER ORDERS (ORDER REQUESTS, SALES LEDGER, COURIER) */}
-        {(activeTab === 'sales' || activeTab === 'order_requests' || activeTab === 'courier_status') && (
+        {(activeTab === 'sales' || activeTab === 'order_requests' || activeTab === 'courier_status') && (() => {
+          const isOrderPending = (s: Sale) => {
+            const isPaid = s.paymentStatus === 'PAID' || s.deliveryStatus === 'delivered';
+            const isCancelled = s.saleStatus === 'Rejected' || s.deliveryStatus === 'cancelled';
+            const isConfirmed = s.saleStatus === 'Approved' || s.saleStatus === 'Confirmed';
+            return !isPaid && !isCancelled && !isConfirmed;
+          };
+          return (
           <div className="space-y-4">
             <div className="border-b border-slate-100 pb-3 flex items-center justify-between gap-3">
               <div>
@@ -4313,9 +4362,14 @@ export const AdminPortal: React.FC = () => {
             ) : (
               /* Filter Tabs for order_requests / courier_status */
               (() => {
-                const pendingSalesList = sales.filter(s => !(s.paymentStatus === 'PAID' || s.deliveryStatus === 'delivered' || s.deliveryStatus === 'shipped' || s.trackingCode) && s.saleStatus !== 'Rejected' && s.deliveryStatus !== 'cancelled');
-                const confirmedSalesList = sales.filter(s => (s.paymentStatus === 'PAID' || s.deliveryStatus === 'delivered' || s.deliveryStatus === 'shipped' || s.trackingCode) && s.saleStatus !== 'Rejected' && s.deliveryStatus !== 'cancelled');
-                const cancelledSalesList = sales.filter(s => s.saleStatus === 'Rejected' || s.deliveryStatus === 'cancelled');
+                const isOrderCancelled = (s: Sale) => s.saleStatus === 'Rejected' || s.deliveryStatus === 'cancelled';
+                const isOrderPaidOrDelivered = (s: Sale) => s.paymentStatus === 'PAID' || s.deliveryStatus === 'delivered';
+                const isOrderConfirmed = (s: Sale) => !isOrderCancelled(s) && (s.saleStatus === 'Confirmed' || (s as any).status === 'CONFIRMED' || isOrderPaidOrDelivered(s));
+                const isOrderPending = (s: Sale) => !isOrderCancelled(s) && !isOrderConfirmed(s);
+
+                const pendingSalesList = sales.filter(isOrderPending);
+                const confirmedSalesList = sales.filter(isOrderConfirmed);
+                const cancelledSalesList = sales.filter(isOrderCancelled);
 
                 const filteredSales = orderFilterTab === 'pending'
                   ? pendingSalesList
@@ -4427,14 +4481,17 @@ export const AdminPortal: React.FC = () => {
                                   <span className="text-[10px] text-emerald-600 font-extrabold font-mono block">প্রফিট: ৳{sale.commissionAmount.toLocaleString()}</span>
                                 </div>
 
-                                <button
-                                  type="button"
-                                  onClick={() => setSelectedSaleForDetails(sale)}
-                                  className="px-3 py-1.5 bg-[#009245] hover:bg-[#007a37] text-white text-[11px] font-bold rounded-xl shadow-2xs transition-all flex items-center gap-1 cursor-pointer"
-                                >
-                                  <span>বিস্তারিত</span>
-                                  <ChevronRight className="w-3.5 h-3.5" />
-                                </button>
+                                <div className="flex items-center gap-1.5">
+
+                                  <button
+                                    type="button"
+                                    onClick={() => setSelectedSaleForDetails(sale)}
+                                    className="px-3 py-1.5 bg-[#009245] hover:bg-[#007a37] text-white text-[11px] font-bold rounded-xl shadow-2xs transition-all flex items-center gap-1 cursor-pointer"
+                                  >
+                                    <span>বিস্তারিত</span>
+                                    <ChevronRight className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           );
@@ -4452,6 +4509,11 @@ export const AdminPortal: React.FC = () => {
               const orderItemsToRender = matchingOrderItems.length > 0 ? matchingOrderItems : [selectedSaleForDetails];
               const totalOrderValue = orderItemsToRender.reduce((sum, item) => sum + (item.totalAmount || ((item.sellingPrice || item.actualSalePrice || 0) * item.quantity)), 0);
               const totalProfitValue = orderItemsToRender.reduce((sum, item) => sum + item.commissionAmount, 0);
+
+              const isCancelled = selectedSaleForDetails.saleStatus === 'Rejected' || selectedSaleForDetails.deliveryStatus === 'cancelled';
+              const isDeliveredOrPaid = selectedSaleForDetails.paymentStatus === 'PAID' || selectedSaleForDetails.deliveryStatus === 'delivered';
+              const isConfirmed = !isCancelled && (selectedSaleForDetails.saleStatus === 'Confirmed' || (selectedSaleForDetails as any).status === 'CONFIRMED' || isDeliveredOrPaid);
+              const isPending = !isCancelled && !isConfirmed;
 
               return (
                 <div className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden animate-in fade-in duration-150">
@@ -4565,22 +4627,38 @@ export const AdminPortal: React.FC = () => {
                         </div>
 
                         {/* Full Delivery Address */}
-                        <div className="flex items-center justify-between gap-2 bg-white p-2 rounded-xl border border-slate-200/60">
-                          <div className="min-w-0 flex-1">
-                            <span className="text-[9.5px] text-slate-400 block font-semibold">ডেলিভারি সম্পূর্ণ ঠিকানা</span>
-                            <span className="font-semibold text-slate-800 block text-[11px] leading-relaxed">
-                              {selectedSaleForDetails.customerAddress}
-                            </span>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => handleCopyText(selectedSaleForDetails.customerAddress, 'ডেলিভারি ঠিকানা')}
-                            className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] rounded-lg shrink-0 flex items-center gap-1 transition-colors cursor-pointer"
-                          >
-                            <Copy className="w-3 h-3 text-[#009245]" />
-                            <span>কপি</span>
-                          </button>
-                        </div>
+                        {(() => {
+                          const fullFormattedAddress = [
+                            selectedSaleForDetails.district ? `জেলা: ${selectedSaleForDetails.district}` : '',
+                            selectedSaleForDetails.thana ? `থানা: ${selectedSaleForDetails.thana}` : '',
+                            selectedSaleForDetails.customerAddress?.includes('জেলা:')
+                              ? selectedSaleForDetails.customerAddress
+                              : (selectedSaleForDetails.customerAddress ? `ঠিকানা: ${selectedSaleForDetails.customerAddress}` : '')
+                          ].filter(Boolean).join(', ');
+
+                          const displayAddress = selectedSaleForDetails.customerAddress?.includes('জেলা:')
+                            ? selectedSaleForDetails.customerAddress
+                            : (fullFormattedAddress || selectedSaleForDetails.customerAddress);
+
+                          return (
+                            <div className="flex items-center justify-between gap-2 bg-white p-2 rounded-xl border border-slate-200/60">
+                              <div className="min-w-0 flex-1">
+                                <span className="text-[9.5px] text-slate-400 block font-semibold">ডেলিভারি সম্পূর্ণ ঠিকানা</span>
+                                <span className="font-semibold text-slate-800 block text-[11px] leading-relaxed">
+                                  {displayAddress}
+                                </span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleCopyText(displayAddress, 'ডেলিভারি ঠিকানা')}
+                                className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] rounded-lg shrink-0 flex items-center gap-1 transition-colors cursor-pointer"
+                              >
+                                <Copy className="w-3 h-3 text-[#009245]" />
+                                <span>কপি</span>
+                              </button>
+                            </div>
+                          );
+                        })()}
 
                         {/* Customer Order Notes (If Any) */}
                         {selectedSaleForDetails.notes && (
@@ -4607,8 +4685,14 @@ export const AdminPortal: React.FC = () => {
                     <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3 space-y-2.5">
                       <div className="text-[11px] font-extrabold text-slate-800 uppercase tracking-wide flex items-center justify-between border-b border-slate-200/60 pb-1">
                         <span>🛍️ প্রোডাক্ট ও রিসেলার কমিশন তথ্য ({orderItemsToRender.length}টি আইটেম)</span>
-                        <span className="font-mono text-[10px] text-[#009245] font-bold">
-                          {selectedSaleForDetails.paymentStatus === 'PAID' || selectedSaleForDetails.deliveryStatus === 'delivered' ? 'পেইড ✓' : 'পেন্ডিং ⏳'}
+                        <span className="font-mono text-[10px] font-bold">
+                          {isCancelled ? (
+                            <span className="text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">বাতিল ❌</span>
+                          ) : isConfirmed ? (
+                            <span className="text-[#009245] bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">কনফার্ম ও পেইড ✓</span>
+                          ) : (
+                            <span className="text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">পেন্ডিং ⏳</span>
+                          )}
                         </span>
                       </div>
 
@@ -4672,90 +4756,136 @@ export const AdminPortal: React.FC = () => {
                           <span className="font-mono font-black text-slate-900 block">৳{totalOrderValue.toLocaleString()}</span>
                         </div>
 
-                        <div className="col-span-2 bg-emerald-50 p-2 rounded-xl border border-emerald-200/80 flex items-center justify-between">
+                        <div className={`col-span-2 p-2 rounded-xl border flex items-center justify-between ${
+                          isCancelled
+                            ? 'bg-rose-50 border-rose-200/80'
+                            : isConfirmed
+                              ? 'bg-emerald-50 border-emerald-200/80'
+                              : 'bg-emerald-50 border-emerald-200/80'
+                        }`}>
                           <div>
-                            <span className="text-[9.5px] text-emerald-700 block font-bold">রিসেলার কমিশন / মোট প্রফিট</span>
-                            <span className="font-mono font-black text-[#009245] text-sm sm:text-base">৳{totalProfitValue.toLocaleString()}</span>
+                            <span className={`text-[9.5px] block font-bold ${
+                              isCancelled ? 'text-rose-700' : 'text-emerald-700'
+                            }`}>
+                              রিসেলার কমিশন / মোট প্রফিট
+                            </span>
+                            <span className={`font-mono font-black text-sm sm:text-base ${
+                              isCancelled ? 'text-rose-700' : 'text-[#009245]'
+                            }`}>
+                              ৳{totalProfitValue.toLocaleString()}
+                            </span>
                           </div>
-                          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-[#009245]">
-                            {selectedSaleForDetails.paymentStatus === 'PAID' || selectedSaleForDetails.deliveryStatus === 'delivered' ? 'ওয়ালেটে জমা পেইড ✓' : 'পেন্ডিং প্রফিট ⏳'}
+                          <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${
+                            isCancelled
+                              ? 'bg-rose-100 text-rose-800'
+                              : isConfirmed
+                                ? 'bg-emerald-100 text-[#009245]'
+                                : 'bg-amber-100 text-amber-800'
+                          }`}>
+                            {isCancelled ? 'অর্ডার বাতিল' : isConfirmed ? 'ওয়ালেটে জমা পেইড ✓' : 'পেন্ডিং প্রফিট ⏳'}
                           </span>
                         </div>
                       </div>
                     </div>
 
-                    {/* Section 3: Courier Tracking & Direct Code Sender (Clean & Compact) */}
+                    {/* Section 3: Courier Tracking (Editable only for Pending; Read-only for Confirmed/Cancelled) */}
                     <div className="bg-sky-50/90 border border-sky-200 rounded-2xl p-3 space-y-2">
                       <div className="flex items-center justify-between border-b border-sky-200/60 pb-1.5">
                         <span className="text-[11px] font-extrabold text-sky-900 flex items-center gap-1.5">
                           <Truck className="w-3.5 h-3.5 text-sky-600" />
                           <span>কুরিয়ার ট্র্যাকিং কোড</span>
                         </span>
-                        {selectedSaleForDetails.trackingCode && (
+                        {selectedSaleForDetails.trackingCode ? (
                           <span className="text-[9.5px] font-mono font-bold bg-sky-200 text-sky-950 px-2 py-0.5 rounded-md">
                             {selectedSaleForDetails.courierPartner || 'Steadfast'}: {selectedSaleForDetails.trackingCode}
                           </span>
+                        ) : (
+                          <span className="text-[9.5px] text-slate-500 font-medium">কোনো ট্র্যাকিং কোড নেই</span>
                         )}
                       </div>
 
-                      {/* Courier Selection & Input Field */}
-                      <div className="space-y-2 pt-0.5">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-[10px] font-extrabold text-sky-900 shrink-0">কুরিয়ার:</span>
-                          <div className="flex items-center gap-1 flex-1">
-                            {(['Steadfast', 'Pathao', 'RedX'] as const).map((p) => (
-                              <button
-                                key={p}
-                                type="button"
-                                onClick={() => setInlineCourierPartner(p)}
-                                className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
-                                  inlineCourierPartner === p
-                                    ? 'bg-sky-600 text-white shadow-2xs'
-                                    : 'bg-white text-sky-800 border border-sky-200 hover:bg-sky-100'
-                                }`}
-                              >
-                                {p === 'Steadfast' ? 'স্টেডফাস্ট' : p === 'Pathao' ? 'পাঠাও' : 'রেডএক্স'}
-                              </button>
-                            ))}
+                      {isPending ? (
+                        /* Courier Selection & Input Field only when PENDING */
+                        <div className="space-y-2 pt-0.5">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[10px] font-extrabold text-sky-900 shrink-0">কুরিয়ার:</span>
+                            <div className="flex items-center gap-1 flex-1">
+                              {(['Steadfast', 'Pathao', 'RedX'] as const).map((p) => (
+                                <button
+                                  key={p}
+                                  type="button"
+                                  onClick={() => setInlineCourierPartner(p)}
+                                  className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
+                                    inlineCourierPartner === p
+                                      ? 'bg-sky-600 text-white shadow-2xs'
+                                      : 'bg-white text-sky-800 border border-sky-200 hover:bg-sky-100'
+                                  }`}
+                                >
+                                  {p === 'Steadfast' ? 'স্টেডফাস্ট' : p === 'Pathao' ? 'পাঠাও' : 'রেডএক্স'}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="space-y-1.5">
+                            <input
+                              type="text"
+                              value={inlineCourierInput}
+                              onChange={(e) => setInlineCourierInput(e.target.value)}
+                              placeholder={
+                                selectedSaleForDetails.trackingCode
+                                  ? `বর্তমান কোড: ${selectedSaleForDetails.trackingCode}`
+                                  : 'কুরিয়ার কোড লিখুন বা পেস্ট করুন...'
+                              }
+                              className="w-full bg-white border border-sky-300 rounded-xl px-3 py-2 text-xs font-mono outline-none focus:border-[#009245] shadow-2xs"
+                            />
+                            
+                            <button
+                              type="button"
+                              disabled={isUpdatingCourier || !inlineCourierInput.trim()}
+                              onClick={() => handleSendInlineCourierCode(selectedSaleForDetails)}
+                              className="w-full py-2 bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-xs rounded-xl shadow-xs cursor-pointer disabled:opacity-50 transition-all flex items-center justify-center gap-1.5"
+                            >
+                              <Truck className="w-3.5 h-3.5" />
+                              <span>{isUpdatingCourier ? 'পাঠানো হচ্ছে...' : 'কুরিয়ার কোড পাঠান'}</span>
+                            </button>
                           </div>
                         </div>
-
-                        <div className="space-y-1.5">
-                          <input
-                            type="text"
-                            value={inlineCourierInput}
-                            onChange={(e) => setInlineCourierInput(e.target.value)}
-                            placeholder={
-                              selectedSaleForDetails.trackingCode
-                                ? `বর্তমান কোড: ${selectedSaleForDetails.trackingCode}`
-                                : 'কুরিয়ার কোড লিখুন বা পেস্ট করুন...'
-                            }
-                            className="w-full bg-white border border-sky-300 rounded-xl px-3 py-2 text-xs font-mono outline-none focus:border-[#009245] shadow-2xs"
-                          />
-                          
-                          <button
-                            type="button"
-                            disabled={isUpdatingCourier || !inlineCourierInput.trim()}
-                            onClick={() => handleSendInlineCourierCode(selectedSaleForDetails)}
-                            className="w-full py-2 bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-xs rounded-xl shadow-xs cursor-pointer disabled:opacity-50 transition-all flex items-center justify-center gap-1.5"
-                          >
-                            <Truck className="w-3.5 h-3.5" />
-                            <span>{isUpdatingCourier ? 'পাঠানো হচ্ছে...' : 'কুরিয়ার কোড পাঠান'}</span>
-                          </button>
+                      ) : (
+                        /* Read-only tracking display for confirmed or cancelled orders */
+                        <div className="p-2.5 bg-white/90 rounded-xl border border-sky-100 flex items-center justify-between text-xs">
+                          <span className="text-slate-600 font-medium">কুরিয়ার স্ট্যাটাস:</span>
+                          {selectedSaleForDetails.trackingCode ? (
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono font-bold text-sky-900">
+                                {selectedSaleForDetails.courierPartner || 'Steadfast'}: {selectedSaleForDetails.trackingCode}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handleCopyText(selectedSaleForDetails.trackingCode!, 'কুরিয়ার কোড')}
+                                className="px-2 py-0.5 bg-sky-100 hover:bg-sky-200 text-sky-800 text-[10px] font-bold rounded-md transition-colors"
+                              >
+                                কপি
+                              </button>
+                            </div>
+                          ) : (
+                            <span className="text-slate-400 font-mono text-[11px]">ট্র্যাকিং কোড যুক্ত নেই</span>
+                          )}
                         </div>
-                      </div>
+                      )}
                     </div>
 
                     {/* Action Buttons inside Modal */}
                     <div className="space-y-2 pt-1 border-t border-slate-100">
-                      {!(selectedSaleForDetails.paymentStatus === 'PAID' || selectedSaleForDetails.deliveryStatus === 'delivered') && (
+                      {isPending ? (
                         <div className="space-y-2">
+                          {/* "অর্ডার কনফার্ম করুন" button is TOTALLY REMOVED as requested */}
+
                           <button
                             type="button"
                             disabled={approvingSaleId === selectedSaleForDetails.id}
-                            onClick={async () => {
-                              await handleApproveSale(selectedSaleForDetails);
-                              setSelectedSaleForDetails(null);
+                            onClick={() => {
+                              setDeliveryConfirmSale(selectedSaleForDetails);
                             }}
                             className="w-full py-2.5 bg-[#009245] hover:bg-[#007a37] text-white font-extrabold text-xs rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                           >
@@ -4778,16 +4908,24 @@ export const AdminPortal: React.FC = () => {
                             <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
                             <span>অর্ডার বাতিল করুন</span>
                           </button>
-                        </div>
-                      )}
 
-                      <button
-                        type="button"
-                        onClick={() => setSelectedSaleForDetails(null)}
-                        className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors cursor-pointer"
-                      >
-                        বন্ধ করুন
-                      </button>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedSaleForDetails(null)}
+                            className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors cursor-pointer"
+                          >
+                            বন্ধ করুন
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => setSelectedSaleForDetails(null)}
+                          className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors cursor-pointer"
+                        >
+                          বন্ধ করুন
+                        </button>
+                      )}
                     </div>
 
                   </div>
@@ -4893,6 +5031,164 @@ export const AdminPortal: React.FC = () => {
               </div>
             )}
 
+            {/* ORDER CONFIRMATION MODAL */}
+            {confirmModalSale && (
+              <div className="fixed inset-0 z-[100000] bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 animate-in fade-in duration-150">
+                <div className="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl space-y-4 border border-blue-200 text-xs">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-blue-600" />
+                      <h3 className="font-extrabold text-slate-900 text-sm">
+                        অর্ডার কনফার্মেশন
+                      </h3>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setConfirmModalSale(null)}
+                      className="w-7 h-7 rounded-full bg-slate-100 text-slate-500 hover:text-slate-700 flex items-center justify-center font-bold"
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  <div className="space-y-2.5 text-slate-700">
+                    <p className="text-xs font-bold text-slate-900">
+                      আপনি কি নিশ্চিত যে এই অর্ডারটি কনফার্ম করতে চান?
+                    </p>
+                    <div className="bg-blue-50/70 p-3 rounded-xl border border-blue-100 space-y-1.5">
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">অর্ডার কোড:</span>
+                        <strong className="font-mono text-blue-900">{confirmModalSale.orderCode}</strong>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">কর্মী/রিসেলার:</span>
+                        <strong className="text-slate-800">{confirmModalSale.employeeName}</strong>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">ক্রেতা:</span>
+                        <strong className="text-slate-800">{confirmModalSale.customerName}</strong>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">মোট বিক্রয় মূল্য:</span>
+                        <span className="font-mono font-bold text-slate-900">৳{(confirmModalSale.totalAmount || 0).toLocaleString()}</span>
+                      </div>
+                    </div>
+                    <p className="text-[11px] text-slate-500 leading-relaxed">
+                      কনফার্ম করলে অর্ডারটি "অর্ডার কনফার্ম" ট্যাবে স্থানান্তরিত হবে। পার্সেল ডেলিভারি সফল হলে সেখান থেকে প্রফিট রিলিজ সম্পন্ন করতে পারবেন।
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
+                    <button
+                      type="button"
+                      onClick={() => setConfirmModalSale(null)}
+                      className="py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-colors cursor-pointer"
+                    >
+                      বাতিল
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isConfirmingSale}
+                      onClick={() => handleConfirmSale(confirmModalSale)}
+                      className="py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-xl shadow-xs transition-all cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
+                    >
+                      <Check className="w-4 h-4" />
+                      <span>{isConfirmingSale ? 'কনফার্ম হচ্ছে...' : 'হ্যাঁ, কনফার্ম করুন'}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* DELIVERY COMPLETE & PROFIT RELEASE CONFIRMATION MODAL */}
+            {deliveryConfirmSale && (() => {
+              const matchingItems = sales.filter(s => s.orderCode === deliveryConfirmSale.orderCode);
+              const itemsList = matchingItems.length > 0 ? matchingItems : [deliveryConfirmSale];
+              const profitToRelease = itemsList.reduce((sum, s) => sum + (s.commissionAmount || 0), 0);
+              const orderTotal = itemsList.reduce((sum, s) => sum + (s.totalAmount || 0), 0);
+
+              return (
+                <div className="fixed inset-0 z-[100000] bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 animate-in fade-in duration-150">
+                  <div className="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl space-y-4 border border-emerald-300 text-xs">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                      <div className="flex items-center gap-2">
+                        <ShieldCheck className="w-5 h-5 text-[#009245]" />
+                        <h3 className="font-extrabold text-slate-900 text-sm">
+                          ডেলিভারি সম্পন্ন ও প্রফিট রিলিজ কনফার্মেশন
+                        </h3>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setDeliveryConfirmSale(null)}
+                        className="w-7 h-7 rounded-full bg-slate-100 text-slate-500 hover:text-slate-700 flex items-center justify-center font-bold"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-center space-y-1">
+                        <span className="text-[11px] font-bold text-emerald-800 block">রিসেলারের ওয়ালেটে প্রফিট জমা হবে</span>
+                        <span className="font-mono font-black text-2xl text-[#009245] block">৳{profitToRelease.toLocaleString()}</span>
+                      </div>
+
+                      <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 space-y-1.5 text-slate-700">
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">অর্ডার কোড:</span>
+                          <strong className="font-mono font-bold text-slate-900">{deliveryConfirmSale.orderCode}</strong>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">রিসেলারের নাম:</span>
+                          <strong className="font-bold text-slate-900">{deliveryConfirmSale.employeeName}</strong>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">ক্রেতার নাম:</span>
+                          <span className="font-semibold text-slate-800">{deliveryConfirmSale.customerName}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">সর্বমোট বিক্রয় মূল্য:</span>
+                          <span className="font-mono font-bold text-slate-900">৳{orderTotal.toLocaleString()}</span>
+                        </div>
+                        {deliveryConfirmSale.trackingCode && (
+                          <div className="flex justify-between">
+                            <span className="text-slate-500">কুরিয়ার ট্র্যাকিং:</span>
+                            <span className="font-mono font-bold text-sky-800">{deliveryConfirmSale.courierPartner || 'Steadfast'}: {deliveryConfirmSale.trackingCode}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <p className="text-[11.5px] text-slate-600 leading-relaxed text-center font-medium">
+                        আপনি কি নিশ্চিত যে এই অর্ডারটি কাস্টমারের কাছে সফলভাবে ডেলিভারি হয়েছে এবং রিসেলারের ওয়ালেটে <strong className="text-[#009245]">৳{profitToRelease.toLocaleString()}</strong> প্রফিট রিলিজ করতে চান?
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
+                      <button
+                        type="button"
+                        onClick={() => setDeliveryConfirmSale(null)}
+                        className="py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-colors cursor-pointer"
+                      >
+                        বাতিল
+                      </button>
+                      <button
+                        type="button"
+                        disabled={approvingSaleId === deliveryConfirmSale.id}
+                        onClick={async () => {
+                          await handleApproveSale(deliveryConfirmSale, true);
+                          setDeliveryConfirmSale(null);
+                          setSelectedSaleForDetails(null);
+                        }}
+                        className="py-2.5 bg-[#009245] hover:bg-[#007a37] text-white font-extrabold rounded-xl shadow-xs transition-all cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
+                      >
+                        <Check className="w-4 h-4" />
+                        <span>{approvingSaleId === deliveryConfirmSale.id ? 'প্রসেস হচ্ছে...' : 'হ্যাঁ, প্রফিট পাঠান'}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+
             {/* Courier Tracking Input Modal in Admin */}
             {courierModalSale && (
               <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
@@ -4968,7 +5264,8 @@ export const AdminPortal: React.FC = () => {
               </div>
             )}
           </div>
-        )}
+        );
+      })()}
 
         {/* TAB 6: PAYMENTS HUB (WITHDRAWALS, PAYOUT REQUESTS, TRANSACTION HISTORY) */}
         {(activeTab === 'withdrawals' || activeTab === 'payment_requests' || activeTab === 'payment_history' || activeTab === 'payment_hub') && (
@@ -8878,21 +9175,13 @@ export const AdminPortal: React.FC = () => {
                         displayDownlineMembers.map((member: any, idx) => {
                         const memberSales = sales.filter(s => s.employeeId === member.id);
                         const memberSalesAmount = memberSales.reduce((sum, s) => sum + (s.totalAmount || 0), 0);
-                        
-                        // Member-specific rate or parent default rate
-                        const memberSavedRate = (emp.downlineCustomRates?.[member.id] !== undefined && Number(emp.downlineCustomRates[member.id]) > 0)
-                          ? Number(emp.downlineCustomRates[member.id])
-                          : currentReferralRate;
-                        
-                        const isInputActive = editingMemberRates[member.id] !== undefined;
-                        const inputVal = isInputActive ? editingMemberRates[member.id] : String(memberSavedRate);
+                        const memberSavedRate = member.resellerMargin !== undefined && member.resellerMargin !== null ? member.resellerMargin : currentReferralRate;
 
                         return (
                           <div
                             key={member.id}
                             className="p-2.5 sm:p-3 bg-slate-50 hover:bg-slate-100/70 rounded-xl border border-slate-200 flex items-center justify-between gap-2 text-xs transition-all shadow-3xs"
                           >
-                            {/* Left: Avatar, Name, Phone in One Crisp Line */}
                             <div className="flex items-center gap-2 min-w-0">
                               <span className="w-5 h-5 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center shrink-0">
                                 #{idx + 1}
@@ -8925,32 +9214,13 @@ export const AdminPortal: React.FC = () => {
                               </div>
                             </div>
 
-                            {/* Right: Referral Profit Controller for this specific member in One Compact Group */}
-                            <div className="flex items-center gap-1 sm:gap-1.5 bg-white p-1 sm:p-1.5 rounded-lg border border-slate-200 shrink-0 shadow-3xs">
-                              <div className="relative w-12 sm:w-16">
-                                <input
-                                  type="number"
-                                  min="0"
-                                  max="1000"
-                                  step="1"
-                                  value={inputVal}
-                                  onChange={(e) => setEditingMemberRates(prev => ({ ...prev, [member.id]: e.target.value }))}
-                                  className="w-full pr-3.5 pl-1.5 py-0.5 text-xs bg-slate-50 border border-slate-200 rounded font-mono font-bold text-center focus:bg-white focus:border-emerald-500 outline-none"
-                                />
-                                <span className="absolute right-1 top-0.5 text-[9px] font-bold text-slate-400">৳</span>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <div className="text-right hidden xs:block">
+                                <span className="text-[10px] text-slate-400 block">মোট অর্ডার: {memberSales.length}টি</span>
+                                <span className="text-xs font-mono font-bold text-slate-700">৳{memberSalesAmount.toLocaleString()}</span>
                               </div>
-
-                              <button
-                                type="button"
-                                onClick={() => handleSaveMemberCustomRate(emp.id, member.id, inputVal)}
-                                disabled={savingMemberRateId === member.id}
-                                className="px-2 py-0.5 text-[11px] font-bold text-white bg-[#009245] hover:bg-[#007a3a] rounded transition-all cursor-pointer shadow-3xs shrink-0"
-                              >
-                                {savingMemberRateId === member.id ? '..' : 'সেভ'}
-                              </button>
-
-                              <span className="text-[10px] sm:text-[11px] font-mono text-emerald-900 bg-emerald-50 px-1.5 py-0.5 rounded font-bold border border-emerald-200 hidden xs:inline shrink-0">
-                                ৳{memberSavedRate} লিমিট
+                              <span className="text-[10px] sm:text-[11px] font-mono text-emerald-900 bg-emerald-50 px-2.5 py-1 rounded-lg font-bold border border-emerald-200 shrink-0">
+                                ৳{memberSavedRate} লিমিট (স্বয়ংক্রিয়)
                               </span>
                             </div>
                           </div>
