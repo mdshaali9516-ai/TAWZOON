@@ -117,6 +117,7 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | null>(null);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [cartItems, setCartItems] = useState<Product[]>([]);
   const [lang, setLangState] = useState<Language>(() => {
     return (localStorage.getItem('tawzoon_lang') as Language) || 'bn';
   });
@@ -489,6 +490,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, [employeeToken]);
 
+  // Check for completion of 'Add Product' flow
+  useEffect(() => {
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('isAddingToOrderModeComplete') === 'true') {
+      localStorage.removeItem('isAddingToOrderModeComplete');
+      openCheckoutModal();
+    }
+  }, [cartItems]);
+
   const setAdminSession = (token: string, email: string) => {
     authStorage.setAdminToken(token);
     setAdminToken(token);
@@ -544,7 +553,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  const [cartItems, setCartItems] = useState<Product[]>([]);
+
   const [isPublicCartOpen, setIsPublicCartOpen] = useState(false);
   const [autoOpenCheckoutModal, setAutoOpenCheckoutModal] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
@@ -625,6 +634,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
       return [...prev, productWithEntryId];
     });
+
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('isAddingToOrderMode') === 'true') {
+      localStorage.removeItem('isAddingToOrderMode');
+      localStorage.setItem('isAddingToOrderModeComplete', 'true');
+    }
+
     showToast(lang === 'bn' ? `✓ '${product.nameBn}' (${size}) কার্টে যোগ হয়েছে!` : `✓ Added '${product.nameBn}' (${size}) to Cart!`);
   };
 

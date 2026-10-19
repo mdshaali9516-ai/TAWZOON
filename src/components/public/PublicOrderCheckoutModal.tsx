@@ -27,6 +27,7 @@ import { Product } from '../../types/index.js';
 import { api } from '../../services/api.js';
 import { bdDistrictsAndThanas, isSearchTextMatch } from '../../data/bdLocations.js';
 import { getAdjustedSellingPrice } from '../../utils/pricing.js';
+import { ProductCard } from '../ProductCard.js';
 
 export interface OrderItemState {
   productId: string;
@@ -614,7 +615,11 @@ ${confirmedOrder.items.map((it: any, i: number) => `${i + 1}. ${it.productName} 
                 {/* "+ আরও প্রোডাক্ট যোগ করুন" BUTTON */}
                 <button
                   type="button"
-                  onClick={handleOpenAddProduct}
+                  onClick={() => {
+                    localStorage.setItem('isAddingToOrderMode', 'true');
+                    closeCheckoutModal();
+                    window.location.href = '/';
+                  }}
                   className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black shadow-xs inline-flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
                 >
                   <Plus className="w-3.5 h-3.5" />
@@ -994,159 +999,6 @@ ${confirmedOrder.items.map((it: any, i: number) => `${i + 1}. ${it.productName} 
             </div>
           </div>
 
-        </div>
-      )}
-
-      {/* ------------------------------------------------------------- */}
-      {/* 3. PRODUCT SELECTION POPUP MODAL ("+ আরও প্রোডাক্ট যোগ করুন")   */}
-      {/* ------------------------------------------------------------- */}
-      {isAddProductOpen && (
-        <div className="fixed inset-0 z-[100010] bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-3 animate-in fade-in duration-200">
-          <div className="bg-white w-full max-w-xl rounded-3xl border border-slate-200 shadow-2xl overflow-hidden flex flex-col max-h-[88vh] my-auto">
-            {/* Header */}
-            <div className="p-3.5 sm:p-4 bg-[#009245] text-white flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-2">
-                <Package className="w-4 h-4 text-emerald-200" />
-                <h4 className="text-sm sm:text-base font-black">
-                  {lang === 'bn' ? 'অর্ডারে আরও প্রোডাক্ট যুক্ত করুন' : 'Add Another Product'}
-                </h4>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsAddProductOpen(false)}
-                className="w-7 h-7 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Search Bar */}
-            <div className="p-3 bg-slate-50 border-b border-slate-200">
-              <div className="relative">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  value={productSearchQuery}
-                  onChange={e => setProductSearchQuery(e.target.value)}
-                  placeholder={lang === 'bn' ? 'পণ্যের নাম বা কোড দিয়ে খুঁজুন...' : 'Search by name or code...'}
-                  className="w-full pl-9 pr-3 py-2 bg-white text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#009245]/20 focus:border-[#009245]"
-                />
-              </div>
-            </div>
-
-            {/* Products Grid */}
-            <div className="p-3 overflow-y-auto flex-1 space-y-2 max-h-[50vh]">
-              {allProducts
-                .filter(p => isSearchTextMatch(p.nameBn || '', productSearchQuery) || isSearchTextMatch(p.productCode || '', productSearchQuery))
-                .slice(0, 30)
-                .map(prod => {
-                  const pTitle = lang === 'bn' ? prod.nameBn : (prod.nameEn || prod.nameBn);
-                  const pImg = prod.images?.find(i => i.isPrimary)?.url || prod.images?.[0]?.url || prod.imageUrl || '/images/product_shop_dress_1790244714775.jpg';
-                  const price = getAdjustedSellingPrice(prod, employee, brandSettings);
-                  const isSelected = selectedProductToAdd?.id === prod.id;
-
-                  return (
-                    <div
-                      key={prod.id}
-                      onClick={() => {
-                        setSelectedProductToAdd(prod);
-                        const sizes = prod.colors?.length ? prod.colors : ['M', 'L', 'XL', 'XXL'];
-                        setAddSize(sizes[0] || 'M');
-                      }}
-                      className={`p-2.5 rounded-2xl border flex items-center justify-between gap-2.5 cursor-pointer transition-all ${
-                        isSelected
-                          ? 'bg-emerald-50/80 border-[#009245] ring-2 ring-[#009245]/20 shadow-xs'
-                          : 'bg-white border-slate-200 hover:border-emerald-200'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <img src={pImg} alt="" className="w-12 h-12 rounded-lg object-cover border border-slate-100 bg-slate-50 shrink-0" />
-                        <div className="min-w-0 space-y-0.5">
-                          <h6 className="text-xs font-bold text-slate-900 truncate max-w-[240px]">{pTitle}</h6>
-                          <div className="flex items-center gap-1.5 text-[10.5px] font-mono">
-                            <span className="text-emerald-700 bg-emerald-50 px-1 rounded border border-emerald-200/60">
-                              #{prod.productCode}
-                            </span>
-                            <span className="text-rose-600 font-bold">৳{price.toLocaleString()}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="shrink-0">
-                        {isSelected ? (
-                          <div className="w-6 h-6 rounded-full bg-[#009245] text-white flex items-center justify-center">
-                            <Check className="w-3.5 h-3.5" />
-                          </div>
-                        ) : (
-                          <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2 py-1 rounded-lg border border-emerald-200">
-                            সিলেক্ট করুন
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-            </div>
-
-            {/* Selected Product Size & Quantity Configuration */}
-            {selectedProductToAdd && (
-              <div className="p-3 bg-slate-50 border-t border-slate-200 space-y-2.5">
-                <div className="flex items-center justify-between flex-wrap gap-2">
-                  {/* Size selection */}
-                  <div className="space-y-1">
-                    <span className="text-[11px] font-bold text-slate-700 block">সাইজ নির্বাচন:</span>
-                    <div className="flex items-center gap-1 flex-wrap">
-                      {(selectedProductToAdd.colors?.length ? selectedProductToAdd.colors : ['M', 'L', 'XL', 'XXL']).map(sz => (
-                        <button
-                          key={sz}
-                          type="button"
-                          onClick={() => setAddSize(sz)}
-                          className={`px-2 py-0.5 text-xs font-black rounded-lg border transition-all cursor-pointer ${
-                            addSize === sz
-                              ? 'bg-[#009245] text-white border-[#009245]'
-                              : 'bg-white text-slate-700 border-slate-200'
-                          }`}
-                        >
-                          {sz}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Quantity */}
-                  <div className="space-y-1">
-                    <span className="text-[11px] font-bold text-slate-700 block text-right">পরিমাণ:</span>
-                    <div className="flex items-center gap-1 bg-white px-2 py-0.5 rounded-lg border border-slate-200 shadow-3xs">
-                      <button
-                        type="button"
-                        onClick={() => setAddQuantity(Math.max(1, addQuantity - 1))}
-                        className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-bold"
-                      >
-                        <Minus className="w-3 h-3" />
-                      </button>
-                      <span className="w-6 text-center text-xs font-black font-mono">{addQuantity}</span>
-                      <button
-                        type="button"
-                        onClick={() => setAddQuantity(addQuantity + 1)}
-                        className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-bold"
-                      >
-                        <Plus className="w-3 h-3" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleConfirmAddProduct}
-                  className="w-full py-2.5 bg-[#009245] hover:bg-[#007a38] text-white font-black text-xs sm:text-sm rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>অর্ডারে যুক্ত করুন</span>
-                </button>
-              </div>
-            )}
-          </div>
         </div>
       )}
 

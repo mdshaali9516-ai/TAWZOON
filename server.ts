@@ -720,15 +720,29 @@ async function sendTelegramOrderNotification(orderData: {
       ? orderData.employeeName
       : 'অফিসিয়াল ওয়েবসাইট (Official)';
 
-    const message = `🚨 *নতুন অর্ডার নোটিফিকেশন* 🚨
+    const isPublic = orderData.employeeName === 'পাবলিক ওয়েবসাইট';
+    const sourceLabel = isPublic ? '📢 পাবলিক ওয়েবসাইট' : `🔥 রিসেলার: ${orderData.employeeName}`;
+    
+    // Parse address
+    let addressParts = { district: '', thana: '', address: '' };
+    const addrMatch = orderData.customerAddress.match(/জেলা: (.*), থানা: (.*), ঠিকানা: (.*)/);
+    if (addrMatch) {
+      addressParts = { district: addrMatch[1], thana: addrMatch[2], address: addrMatch[3] };
+    } else {
+      addressParts.address = orderData.customerAddress;
+    }
+
+    const message = `${isPublic ? '📢' : '🔥'} *নতুন অর্ডার নোটিফিকেশন* ${isPublic ? '📢' : '🔥'}
 ━━━━━━━━━━━━━━━━━━━━
-🔥 *রিসেলার / রেফারেন্স নাম:* *${resellerDisplay}*
-📌 *অর্ডার কোড:* #${orderData.orderCode}
+📌 *সোর্স:* ${sourceLabel}
+🆔 *অর্ডার কোড:* \`${orderData.orderCode}\`
 
 👤 *গ্রাহক তথ্য (কপি করতে ট্যাপ করুন):*
 • নাম: \`${orderData.customerName}\`
 • মোবাইল: \`${orderData.customerPhone}\`
-• ঠিকানা: \`${orderData.customerAddress}\`
+• জেলা: \`${addressParts.district}\`
+• থানা: \`${addressParts.thana}\`
+• ঠিকানা: \`${addressParts.address}\`
 
 📦 *অর্ডারকৃত পণ্যসমূহ:*
 ${itemsText}
@@ -738,12 +752,19 @@ ${itemsText}
 🚚 *ডেলিভারি চার্জ:* ৳${orderData.deliveryCharge} (${orderData.isAdvancePaid ? `অগ্রিম পেইড [${orderData.paymentMethod} TrxID: ${orderData.transactionId || 'N/A'}]` : 'ক্যাশ অন ডেলিভারি'})
 💰 *সর্বমোট বিল:* ৳${orderData.grandTotal.toLocaleString()}
 💳 *বাকি (COD):* ৳${orderData.dueAmount.toLocaleString()}
-📦 *ট্র্যাকিং কোড:* \`${orderData.trackingCode || 'N/A'}\`
 📊 *স্ট্যাটাস:* ${orderData.saleStatus || 'Pending Verification'}`;
 
     const adminUrl = process.env.APP_URL || 'https://ais-dev-h7i2pkla2v2sc5me2lmcrw-940774871860.asia-east1.run.app';
     const replyMarkup = {
-      inline_keyboard: [
+      inline_keyboard: isPublic ? [
+        [
+          { text: '✅ এপ্রুভ (Confirm)', callback_data: `confirm_${orderData.saleId || orderData.orderCode}` },
+          { text: '❌ রিজেক্ট (Reject)', callback_data: `cancel_${orderData.saleId || orderData.orderCode}` }
+        ],
+        [
+          { text: '🌐 অ্যাডমিন প্যানেলে প্রবেশ করুন', url: adminUrl }
+        ]
+      ] : [
         [
           { text: '🌐 অ্যাডমিন প্যানেলে প্রবেশ করুন', url: adminUrl }
         ]
