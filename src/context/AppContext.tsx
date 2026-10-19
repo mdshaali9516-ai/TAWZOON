@@ -96,6 +96,12 @@ interface AppContextType {
   setIsPublicCartOpen: (open: boolean) => void;
   autoOpenCheckoutModal: boolean;
   setAutoOpenCheckoutModal: (open: boolean) => void;
+  isCheckoutModalOpen: boolean;
+  setIsCheckoutModalOpen: (open: boolean) => void;
+  checkoutModalItems: Array<{ product: Product; size?: string; quantity: number }>;
+  setCheckoutModalItems: (items: Array<{ product: Product; size?: string; quantity: number }>) => void;
+  openCheckoutModal: (items?: Array<{ product: Product; size?: string; quantity: number }>) => void;
+  closeCheckoutModal: () => void;
   addToCart: (product: Product) => void;
   removeFromCart: (productId: string) => void;
   clearCart: () => void;
@@ -541,6 +547,36 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [cartItems, setCartItems] = useState<Product[]>([]);
   const [isPublicCartOpen, setIsPublicCartOpen] = useState(false);
   const [autoOpenCheckoutModal, setAutoOpenCheckoutModal] = useState(false);
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [checkoutModalItems, setCheckoutModalItems] = useState<Array<{ product: Product; size?: string; quantity: number }>>([]);
+
+  const openCheckoutModal = (items?: Array<{ product: Product; size?: string; quantity: number }>) => {
+    if (items && items.length > 0) {
+      setCheckoutModalItems(items);
+    } else if (cartItems.length > 0) {
+      setCheckoutModalItems(
+        cartItems.map(item => ({
+          product: item,
+          size: item.sizes?.[0] || 'M',
+          quantity: item.quantity || 1,
+        }))
+      );
+    } else if (selectedProduct) {
+      setCheckoutModalItems([
+        {
+          product: selectedProduct,
+          size: selectedProduct.sizes?.[0] || 'M',
+          quantity: 1,
+        },
+      ]);
+    }
+    setIsPublicCartOpen(false);
+    setIsCheckoutModalOpen(true);
+  };
+
+  const closeCheckoutModal = () => {
+    setIsCheckoutModalOpen(false);
+  };
 
   const [wishlistItems, setWishlistItems] = useState<Product[]>(() => {
     try {
@@ -661,6 +697,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setIsPublicCartOpen,
         autoOpenCheckoutModal,
         setAutoOpenCheckoutModal,
+        isCheckoutModalOpen,
+        setIsCheckoutModalOpen,
+        checkoutModalItems,
+        setCheckoutModalItems,
+        openCheckoutModal,
+        closeCheckoutModal,
         addToCart,
         removeFromCart,
         clearCart,

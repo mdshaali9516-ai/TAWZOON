@@ -127,6 +127,57 @@ export const api = {
       body: JSON.stringify({ imageBase64, mimeType }),
     }),
 
+  testTelegram: (payload: { token?: string; chatId?: string }) =>
+    request<{ success: boolean; message?: string; error?: string }>('/api/telegram/test', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
+  submitPublicOrder: (payload: {
+    items: Array<{
+      productId: string;
+      productName: string;
+      productCode: string;
+      quantity: number;
+      size?: string;
+      sellingPrice: number;
+      imageUrl?: string;
+    }>;
+    customerName: string;
+    customerPhone: string;
+    customerAddress: string;
+    district: string;
+    thana: string;
+    notes?: string;
+    deliveryCharge: number;
+    paymentMethod: 'bKash' | 'Nagad' | 'COD';
+    transactionId?: string;
+    senderPhone?: string;
+    isAdvancePaid: boolean;
+    referralCode?: string;
+  }) =>
+    request<{
+      success: boolean;
+      orderCode: string;
+      itemsCount: number;
+      productsTotal: number;
+      deliveryCharge: number;
+      grandTotal: number;
+      advancePaid: number;
+      dueAmount: number;
+      isAdvancePaid: boolean;
+      paymentMethod: string;
+      transactionId?: string;
+      customerName: string;
+      customerPhone: string;
+      customerAddress: string;
+      orderDate: string;
+      message: string;
+    }>('/api/public/orders', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
   // Admin Auth
   adminRequestOtp: (email: string, password: string) =>
     request<{ success: boolean; message: string }>('/api/auth/admin/request-otp', {

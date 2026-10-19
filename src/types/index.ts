@@ -155,6 +155,9 @@ export interface Sale {
   deliveryStatus?: string;
   district?: string;
   thana?: string;
+  deliveryCharge?: number;
+  isPublicOrder?: boolean;
+  orderSource?: string;
 }
 
 export interface Withdrawal {
@@ -229,6 +232,8 @@ export interface BrandSettings {
   promoBannerTextEn: string;
   promoBannerLink: string;
   whatsappNumber?: string;
+  telegramBotToken?: string;
+  telegramChatId?: string;
   helplinePhone?: string;
   publicNoticeText?: string;
   resellerTerms?: Array<{ id: string; title: string; desc: string; isWarning?: boolean }>;

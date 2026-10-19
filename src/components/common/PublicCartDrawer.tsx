@@ -31,7 +31,7 @@ export const PublicCartDrawer: React.FC = () => {
     showToast,
     employee,
     brandSettings,
-    setAutoOpenCheckoutModal,
+    openCheckoutModal,
   } = useApp();
 
   if (!isPublicCartOpen) return null;
@@ -44,8 +44,13 @@ export const PublicCartDrawer: React.FC = () => {
   const handleCheckoutClick = () => {
     if (cartItems.length === 0) return;
     setIsPublicCartOpen(false);
-    setAutoOpenCheckoutModal(true); // Signal to auto-open checkout notice modal!
-    setSelectedProduct(cartItems[0]); // Open first item in product details page!
+    openCheckoutModal(
+      cartItems.map((item) => ({
+        product: item,
+        size: item.sizes?.[0] || 'M',
+        quantity: item.quantity || 1,
+      }))
+    );
   };
 
   return (

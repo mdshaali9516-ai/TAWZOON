@@ -17,7 +17,7 @@ import {
 import { ProductGallery } from './ProductGallery.js';
 
 export const ProductDetailsModal: React.FC = () => {
-  const { lang, t, selectedProduct, setSelectedProduct, showToast, employee, brandSettings, setActivePortal } = useApp();
+  const { lang, t, selectedProduct, setSelectedProduct, showToast, employee, brandSettings, setActivePortal, addToCart, openCheckoutModal } = useApp();
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
   if (!selectedProduct) return null;
@@ -259,18 +259,43 @@ export const ProductDetailsModal: React.FC = () => {
                 </div>
               )}
 
-              {/* Contact Us Action - Direct checkout prohibited */}
-              <div className="pt-2 space-y-1.5">
-                <a
-                  href="tel:+8801800000000"
-                  className="w-full bg-[#009245] hover:bg-[#007a3a] text-white py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-xs transition-colors"
-                >
-                  <Phone className="w-4 h-4" />
-                  <span>{lang === 'bn' ? 'আমাদের সাথে যোগাযোগ করুন' : 'Contact Us to Order'}</span>
-                </a>
-                <p className="text-[11px] text-center text-slate-400">
-                  {lang === 'bn' ? '🔒 পণ্য অর্ডার করতে বা বিস্তারিত তথ্যের জন্য আমাদের সাথে সরাসরি যোগাযোগ করুন।' : '🔒 Contact us directly to purchase or inquire about this product.'}
-                </p>
+              {/* Order Actions */}
+              <div className="pt-2 space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      addToCart(selectedProduct);
+                      showToast(lang === 'bn' ? 'পণ্যটি কার্টে যোগ করা হয়েছে' : 'Added to cart');
+                    }}
+                    className="w-full py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 text-[#009245] border border-emerald-300 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <span>{lang === 'bn' ? 'কার্টে যোগ করুন' : 'Add to Cart'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedProduct(null);
+                      openCheckoutModal([{
+                        product: selectedProduct,
+                        size: selectedProduct.sizes?.[0] || 'M',
+                        quantity: 1,
+                      }]);
+                    }}
+                    className="w-full bg-[#009245] hover:bg-[#007a3a] text-white py-2.5 px-3 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-xs transition-colors cursor-pointer active:scale-95"
+                  >
+                    <span>{lang === 'bn' ? 'এখনই অর্ডার করুন' : 'Order Now'}</span>
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-center gap-2 pt-1 text-slate-400 text-xs">
+                  <Phone className="w-3.5 h-3.5" />
+                  <span>{lang === 'bn' ? 'প্রয়োজনে কল দিন: ' : 'Helpline: '}</span>
+                  <a href={`tel:${brandSettings?.helplinePhone || '01800000000'}`} className="font-mono font-bold text-slate-600 hover:text-[#009245]">
+                    {brandSettings?.helplinePhone || '01800000000'}
+                  </a>
+                </div>
               </div>
 
             </div>

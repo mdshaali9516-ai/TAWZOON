@@ -59,15 +59,8 @@ export const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
     wishlistItems,
     toggleWishlist,
     cartItems,
+    openCheckoutModal,
   } = useApp();
-
-  useEffect(() => {
-    if (autoOpenCheckoutModal) {
-      setCheckoutSource('cart');
-      setIsQuickOrderOpen(true);
-      setAutoOpenCheckoutModal(false);
-    }
-  }, [autoOpenCheckoutModal]);
 
   const publicWhatsapp = brandSettings?.whatsappNumber || employee?.phone || '01700000000';
   const publicHelpline = brandSettings?.helplinePhone || employee?.phone || '01700000000';
@@ -80,6 +73,17 @@ export const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
   const isWishlisted = wishlistItems.some(p => p.id === currentProduct.id);
+
+  useEffect(() => {
+    if (autoOpenCheckoutModal) {
+      setAutoOpenCheckoutModal(false);
+      openCheckoutModal([{
+        product: currentProduct,
+        size: selectedSize || 'M',
+        quantity: quantity,
+      }]);
+    }
+  }, [autoOpenCheckoutModal, currentProduct, selectedSize, quantity, openCheckoutModal, setAutoOpenCheckoutModal]);
 
   // States for copy & download feedback
   const [copiedLink, setCopiedLink] = useState(false);
@@ -747,10 +751,13 @@ export const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
                 <button
                   type="button"
                   onClick={() => {
-                    setCheckoutSource('single');
-                    setIsQuickOrderOpen(true);
+                    openCheckoutModal([{
+                      product: currentProduct,
+                      size: selectedSize || availableSizes[0] || 'M',
+                      quantity: quantity,
+                    }]);
                   }}
-                  className="w-full py-2.5 sm:py-3 px-4 rounded-xl bg-[#009245] hover:bg-[#007a3a] text-white font-black text-xs sm:text-sm shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full py-2.5 sm:py-3 px-4 rounded-xl bg-[#009245] hover:bg-[#007a3a] text-white font-black text-xs sm:text-sm shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-95"
                 >
                   <span>{lang === 'bn' ? 'এখনই অর্ডার করুন' : 'Order Now'}</span>
                 </button>

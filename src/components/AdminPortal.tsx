@@ -57,6 +57,7 @@ import {
   Download,
   Share2,
   MessageSquare,
+  MessageCircle,
   Globe,
   Search,
   Lock,
@@ -5786,6 +5787,61 @@ export const AdminPortal: React.FC = () => {
                       placeholder="যেমন: 01700000000"
                       className="w-full px-4 py-2.5 text-xs bg-white border border-slate-300 rounded-xl focus:border-[#009245] outline-none font-mono text-slate-900 font-bold shadow-3xs"
                     />
+                  </div>
+
+                  {/* Telegram Bot Notification Settings */}
+                  <div className="space-y-3 pt-3 border-t border-emerald-200">
+                    <label className="text-xs font-black text-slate-800 block flex items-center justify-between">
+                      <span className="flex items-center gap-1.5">
+                        <span>🤖 টেলিগ্রাম বট নোটিফিকেশন (Telegram Order Alert)</span>
+                        <span className="bg-sky-100 text-sky-700 text-[10px] px-2 py-0.5 rounded font-mono">ফ্রি ও অটোমেটিক</span>
+                      </span>
+                    </label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-[11px] font-bold text-slate-700 block mb-1">Telegram Bot Token</label>
+                        <input
+                          type="text"
+                          value={branding.telegramBotToken || ''}
+                          onChange={(e) => setBranding({ ...branding, telegramBotToken: e.target.value })}
+                          placeholder="যেমন: 123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ"
+                          className="w-full px-3 py-2 text-xs bg-white border border-slate-300 rounded-xl focus:border-[#009245] outline-none font-mono text-slate-900"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[11px] font-bold text-slate-700 block mb-1">Telegram Chat ID / Channel ID</label>
+                        <input
+                          type="text"
+                          value={branding.telegramChatId || ''}
+                          onChange={(e) => setBranding({ ...branding, telegramChatId: e.target.value })}
+                          placeholder="যেমন: -1001234567890 বা আপনার চ্যাট আইডি"
+                          className="w-full px-3 py-2 text-xs bg-white border border-slate-300 rounded-xl focus:border-[#009245] outline-none font-mono text-slate-900"
+                        />
+                      </div>
+                    </div>
+                    <div className="pt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                      <p className="text-[11px] text-slate-500">
+                        টেলিগ্রাম বট টোকেন ও চ্যাট আইডি সেট করলে ওয়েবসাইটে নতুন অর্ডার আসার সাথে সাথেই আপনার টেলিগ্রাম চ্যাটে পণ্যের ছবি ও বিবরণসহ নোটিফিকেশন চলে যাবে!
+                      </p>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            const res = await api.testTelegram({ token: branding.telegramBotToken, chatId: branding.telegramChatId });
+                            if (res && res.success) {
+                              showToast('টেলিগ্রাম টেস্ট মেসেজ সফলভাবে পাঠানো হয়েছে!', 'success');
+                            } else {
+                              showToast(res?.error || 'টেস্ট মেসেজ পাঠাতে ব্যর্থ হয়েছে।', 'error');
+                            }
+                          } catch (e: any) {
+                            showToast(e.message || 'নেটওয়ার্ক ত্রুটি', 'error');
+                          }
+                        }}
+                        className="px-3 py-2 bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+                      >
+                        <span>🧪 টেলিগ্রাম টেস্ট মেসেজ পাঠান</span>
+                      </button>
+                    </div>
                   </div>
 
                   {/* Public Order Notice Text */}

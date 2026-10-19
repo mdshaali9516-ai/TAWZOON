@@ -669,6 +669,562 @@ Return ONLY valid JSON matching this exact structure:
   });
 });
 
+async function sendTelegramOrderNotification(orderData: {
+  orderCode: string;
+  saleId?: string;
+  employeeName?: string;
+  customerName: string;
+  customerPhone: string;
+  customerAddress: string;
+  items: any[];
+  productsTotal: number;
+  deliveryCharge: number;
+  grandTotal: number;
+  isAdvancePaid: boolean;
+  paymentMethod?: string;
+  transactionId?: string;
+  dueAmount: number;
+  saleStatus?: string;
+  deliveryStatus?: string;
+  trackingCode?: string;
+}, brandSettings: any) {
+  try {
+    const token = brandSettings?.telegramBotToken;
+    let chatId = brandSettings?.telegramChatId;
+    if (!token) return;
+
+    if (!chatId) {
+      try {
+        const updateRes = await fetch(`https://api.telegram.org/bot${token}/getUpdates`);
+        const updateData = await updateRes.json();
+        if (updateData.ok && updateData.result && updateData.result.length > 0) {
+          const lastUpdate = updateData.result[updateData.result.length - 1];
+          chatId = lastUpdate.message?.chat?.id || lastUpdate.callback_query?.message?.chat?.id;
+          if (chatId) {
+            const state = db.getState();
+            state.brandSettings.telegramChatId = String(chatId);
+            await db.syncBrandSettingsDirect(state.brandSettings);
+            db.save();
+          }
+        }
+      } catch (e) {}
+    }
+
+    if (!chatId) return;
+
+    const itemsText = orderData.items.map((it: any, i: number) => 
+      `${i + 1}. *${it.productName || 'পণ্য'}*\n   • কোড: #${it.productCode || 'N/A'}\n   • সাইজ: ${it.size || 'N/A'}\n   • পরিমাণ: ${it.quantity || 1}টি x ৳${(it.unitPrice || 0).toLocaleString()} = ৳${((it.unitPrice || 0) * (it.quantity || 1)).toLocaleString()}`
+    ).join('\n\n');
+
+    const resellerDisplay = orderData.employeeName && orderData.employeeName !== 'OFFICIAL' && orderData.employeeName !== 'অফিসিয়াল ওয়েবসাইট'
+      ? orderData.employeeName
+      : 'অফিসিয়াল ওয়েবসাইট (Official)';
+
+    const message = `🚨 *নতুন অর্ডার নোটিফিকেশন* 🚨
+━━━━━━━━━━━━━━━━━━━━
+🔥 *রিসেলার / রেফারেন্স নাম:* *${resellerDisplay}*
+📌 *অর্ডার কোড:* #${orderData.orderCode}
+
+👤 *গ্রাহক তথ্য (কপি করতে ট্যাপ করুন):*
+• নাম: \`${orderData.customerName}\`
+• মোবাইল: \`${orderData.customerPhone}\`
+• ঠিকানা: \`${orderData.customerAddress}\`
+
+📦 *অর্ডারকৃত পণ্যসমূহ:*
+${itemsText}
+
+━━━━━━━━━━━━━━━━━━━━
+💵 *পণ্যের মূল্য মোট:* ৳${orderData.productsTotal.toLocaleString()}
+🚚 *ডেলিভারি চার্জ:* ৳${orderData.deliveryCharge} (${orderData.isAdvancePaid ? `অগ্রিম পেইড [${orderData.paymentMethod} TrxID: ${orderData.transactionId || 'N/A'}]` : 'ক্যাশ অন ডেলিভারি'})
+💰 *সর্বমোট বিল:* ৳${orderData.grandTotal.toLocaleString()}
+💳 *বাকি (COD):* ৳${orderData.dueAmount.toLocaleString()}
+📦 *ট্র্যাকিং কোড:* \`${orderData.trackingCode || 'N/A'}\`
+📊 *স্ট্যাটাস:* ${orderData.saleStatus || 'Pending Verification'}`;
+
+    const adminUrl = process.env.APP_URL || 'https://ais-dev-h7i2pkla2v2sc5me2lmcrw-940774871860.asia-east1.run.app';
+    const replyMarkup = {
+      inline_keyboard: [
+        [
+          { text: '🌐 অ্যাডমিন প্যানেলে প্রবেশ করুন', url: adminUrl }
+        ]
+      ]
+    };
+
+    const firstItem = orderData.items[0];
+    let rawImageUrl = firstItem?.imageUrl || firstItem?.originalProduct?.imageUrl;
+
+    let sentPhoto = false;
+    if (rawImageUrl && typeof rawImageUrl === 'string') {
+      try {
+        if (rawImageUrl.startsWith('data:')) {
+          const matches = rawImageUrl.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+          if (matches && matches.length === 3) {
+            const mimeType = matches[1];
+            const base64Data = matches[2];
+            const buffer = Buffer.from(base64Data, 'base64');
+            const ext = mimeType.split('/')[1] || 'jpg';
+
+            const formData = new FormData();
+            formData.append('chat_id', chatId);
+            formData.append('caption', message);
+            formData.append('parse_mode', 'Markdown');
+            formData.append('reply_markup', JSON.stringify(replyMarkup));
+
+            const blob = new Blob([buffer], { type: mimeType });
+            formData.append('photo', blob, `product.${ext}`);
+
+            const photoRes = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+              method: 'POST',
+              body: formData
+            });
+            const photoData = await photoRes.json();
+            if (photoData.ok) {
+              sentPhoto = true;
+            }
+          }
+        } else {
+          let imageUrl = rawImageUrl;
+          if (imageUrl.startsWith('/')) {
+            imageUrl = `https://ais-dev-h7i2pkla2v2sc5me2lmcrw-940774871860.asia-east1.run.app${imageUrl}`;
+          } else if (!imageUrl.startsWith('http')) {
+            imageUrl = `https://ais-dev-h7i2pkla2v2sc5me2lmcrw-940774871860.asia-east1.run.app/${imageUrl}`;
+          }
+
+          const photoRes = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: chatId,
+              photo: imageUrl,
+              caption: message,
+              parse_mode: 'Markdown',
+              reply_markup: replyMarkup
+            })
+          });
+          const photoData = await photoRes.json();
+          if (photoData.ok) {
+            sentPhoto = true;
+          }
+        }
+      } catch (e) {
+        console.warn('Telegram photo send error:', e);
+      }
+    }
+
+    if (!sentPhoto) {
+      await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message,
+          parse_mode: 'Markdown',
+          reply_markup: replyMarkup
+        })
+      });
+    }
+  } catch (err) {
+    console.warn('Failed to send Telegram notification:', err);
+  }
+}
+
+// Background poller for Telegram button clicks (Confirm, Processing, Shipped, Delivered, Cancel)
+async function pollTelegramUpdates() {
+  try {
+    const state = db.getState();
+    const token = state.brandSettings?.telegramBotToken;
+    if (!token) return;
+
+    if (!(global as any)._lastTelegramUpdateId) {
+      (global as any)._lastTelegramUpdateId = 0;
+    }
+
+    const res = await fetch(`https://api.telegram.org/bot${token}/getUpdates?offset=${(global as any)._lastTelegramUpdateId + 1}&timeout=1`);
+    const data = await res.json();
+    if (!data.ok || !data.result) return;
+
+    for (const update of data.result) {
+      (global as any)._lastTelegramUpdateId = Math.max((global as any)._lastTelegramUpdateId, update.update_id);
+
+      const chatId = update.message?.chat?.id || update.callback_query?.message?.chat?.id;
+      if (chatId && !state.brandSettings.telegramChatId) {
+        state.brandSettings.telegramChatId = String(chatId);
+        db.syncBrandSettingsDirect(state.brandSettings).catch(() => {});
+      }
+
+      if (update.callback_query) {
+        const cq = update.callback_query;
+        const dataStr = cq.data || '';
+        const messageId = cq.message?.message_id;
+        const chatId = cq.message?.chat?.id;
+
+        let action = '';
+        let targetId = '';
+        if (dataStr.startsWith('confirm_')) {
+          action = 'confirm';
+          targetId = dataStr.replace('confirm_', '');
+        } else if (dataStr.startsWith('processing_')) {
+          action = 'processing';
+          targetId = dataStr.replace('processing_', '');
+        } else if (dataStr.startsWith('shipped_')) {
+          action = 'shipped';
+          targetId = dataStr.replace('shipped_', '');
+        } else if (dataStr.startsWith('delivered_')) {
+          action = 'delivered';
+          targetId = dataStr.replace('delivered_', '');
+        } else if (dataStr.startsWith('cancel_')) {
+          action = 'cancel';
+          targetId = dataStr.replace('cancel_', '');
+        }
+
+        if (action && targetId) {
+          const sale = state.sales.find(s => s.id === targetId || s.orderCode === targetId);
+          if (sale) {
+            let statusText = '';
+            if (action === 'confirm') {
+              sale.saleStatus = 'Confirmed';
+              sale.deliveryStatus = 'processing';
+              statusText = '✅ কনফার্মড (Confirmed)';
+            } else if (action === 'processing') {
+              sale.saleStatus = 'Processing';
+              sale.deliveryStatus = 'processing';
+              statusText = '🚚 প্রসেসিং (Processing)';
+            } else if (action === 'shipped') {
+              sale.saleStatus = 'Shipped';
+              sale.deliveryStatus = 'shipped';
+              statusText = '📦 শিপড (Shipped)';
+            } else if (action === 'delivered') {
+              sale.saleStatus = 'Delivered';
+              sale.deliveryStatus = 'delivered';
+              statusText = '✨ ডেলিভারড (Delivered)';
+            } else {
+              sale.saleStatus = 'Cancelled';
+              sale.deliveryStatus = 'cancelled';
+              statusText = '❌ বাতিলকৃত (Cancelled)';
+            }
+            db.save();
+            db.syncEntityDirect('sales', sale).catch(() => {});
+
+            await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                callback_query_id: cq.id,
+                text: `স্ট্যাটাস আপডেট সফল: ${statusText}`
+              })
+            });
+
+            if (chatId && messageId) {
+              const updatedText = cq.message.caption || cq.message.text || '';
+              const newCaption = updatedText.replace(/📊 \*অর্ডার স্ট্যাটাস:\* .*/, `📊 *অর্ডার স্ট্যাটাস:* ${statusText}`);
+
+              const editEndpoint = cq.message.caption ? 'editMessageCaption' : 'editMessageText';
+              await fetch(`https://api.telegram.org/bot${token}/${editEndpoint}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  chat_id: chatId,
+                  message_id: messageId,
+                  [cq.message.caption ? 'caption' : 'text']: newCaption,
+                  parse_mode: 'Markdown',
+                  reply_markup: {
+                    inline_keyboard: [
+                      [
+                        { text: '✅ কনফার্ম', callback_data: `confirm_${targetId}` },
+                        { text: '🚚 প্রসেসিং', callback_data: `processing_${targetId}` }
+                      ],
+                      [
+                        { text: '📦 শিপড', callback_data: `shipped_${targetId}` },
+                        { text: '✨ ডেলিভারড', callback_data: `delivered_${targetId}` }
+                      ],
+                      [
+                        { text: '❌ অর্ডার বাতিল করুন', callback_data: `cancel_${targetId}` }
+                      ]
+                    ]
+                  }
+                })
+              });
+            }
+          }
+        }
+      }
+    }
+  } catch (err) {
+    // silent catch
+  }
+}
+
+// Poll Telegram updates every 4 seconds
+setInterval(pollTelegramUpdates, 4000);
+
+// ==========================================
+// TELEGRAM TEST ENDPOINT
+// ==========================================
+app.post('/api/telegram/test', async (req: Request, res: Response) => {
+  try {
+    const { token, chatId } = req.body;
+    const state = db.getState();
+    const botToken = token || state.brandSettings?.telegramBotToken;
+    let targetChatId = chatId || state.brandSettings?.telegramChatId;
+
+    if (!botToken) {
+      return res.status(400).json({ error: 'Telegram Bot Token দিন।' });
+    }
+
+    if (!targetChatId) {
+      try {
+        const updateRes = await fetch(`https://api.telegram.org/bot${botToken}/getUpdates`);
+        const updateData = await updateRes.json();
+        if (updateData.ok && updateData.result && updateData.result.length > 0) {
+          const lastUpdate = updateData.result[updateData.result.length - 1];
+          targetChatId = lastUpdate.message?.chat?.id || lastUpdate.callback_query?.message?.chat?.id;
+        }
+      } catch (e) {}
+    }
+
+    if (!targetChatId) {
+      return res.status(400).json({ error: 'Telegram Chat ID পাওয়া যায়নি। দয়া করে আপনার টেলিগ্রাম বটে একটি মেসেজ (যেমন /start) পাঠিয়ে আবার চেষ্টা করুন।' });
+    }
+
+    const testMsg = `🤖 *টিএওজুন (TAWZOON) টেস্ট নোটিফিকেশন*
+━━━━━━━━━━━━━━━━━━━━
+আপনার টেলিগ্রাম বট সফলভাবে যুক্ত হয়েছে! ✅ এখন থেকে ওয়েবসাইটে নতুন অর্ডার আসলে এই চ্যাটে নোটিফিকেশন ও কনফার্ম/বাতিল বাটন চলে আসবে।`;
+
+    const tgRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: targetChatId,
+        text: testMsg,
+        parse_mode: 'Markdown'
+      })
+    });
+    const tgData = await tgRes.json();
+
+    if (!tgData.ok) {
+      return res.status(400).json({ error: `Telegram Error: ${tgData.description || 'Failed to send message'}` });
+    }
+
+    state.brandSettings.telegramChatId = String(targetChatId);
+    if (token) state.brandSettings.telegramBotToken = token;
+    await db.syncBrandSettingsDirect(state.brandSettings);
+    db.save();
+
+    res.json({ success: true, message: 'Test message sent successfully!' });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Server error' });
+  }
+});
+
+// ==========================================
+// PUBLIC WEBSITE ORDER PLACEMENT ENDPOINT
+// ==========================================
+app.post('/api/public/orders', async (req: Request, res: Response) => {
+  try {
+    const {
+      items,
+      customerName,
+      customerPhone,
+      customerAddress,
+      district,
+      thana,
+      notes,
+      deliveryCharge,
+      paymentMethod,
+      transactionId,
+      senderPhone,
+      isAdvancePaid,
+      referralCode,
+    } = req.body;
+
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ error: 'কমপক্ষে একটি পণ্য সিলেক্ট থাকতে হবে।' });
+    }
+
+    if (!customerName || !customerName.trim()) {
+      return res.status(400).json({ error: 'গ্রাহকের পুরো নাম আবশ্যক।' });
+    }
+
+    const cleanPhone = (customerPhone || '').replace(/[^0-9]/g, '');
+    if (cleanPhone.length < 11) {
+      return res.status(400).json({ error: 'সঠিক ১১ ডিজিটের মোবাইল নম্বর দিন।' });
+    }
+
+    if (!customerAddress || !customerAddress.trim()) {
+      return res.status(400).json({ error: 'হোম ডেলিভারির বিস্তারিত ঠিকানা দিন।' });
+    }
+
+    const state = db.getState();
+
+    // Validate delivery fee: Dhaka is 70, outside Dhaka is 120
+    const normalizedDistrict = (district || 'ঢাকা').trim();
+    const isDhaka = normalizedDistrict === 'ঢাকা' || normalizedDistrict.toLowerCase() === 'dhaka';
+    const standardDeliveryFee = isDhaka ? 70 : 120;
+    const effectiveDeliveryFee = typeof deliveryCharge === 'number' && deliveryCharge > 0 ? deliveryCharge : standardDeliveryFee;
+
+    // Resolve reseller employee if customer arrived via referral
+    const cleanRef = (referralCode || (req.query.ref as string) || (req.headers['x-referral-code'] as string) || '').trim();
+    let referringEmployee = null;
+    if (cleanRef) {
+      referringEmployee = state.employees.find(e =>
+        e.id === cleanRef ||
+        e.referenceCode === cleanRef ||
+        (e.phone && e.phone === cleanRef) ||
+        (e.name && e.name.toLowerCase() === cleanRef.toLowerCase())
+      ) || null;
+    }
+
+    const sharedOrderCode = 'ORD-' + crypto.randomInt(100000, 999999);
+    const createdSales: Sale[] = [];
+    let productsTotal = 0;
+    let totalProfit = 0;
+
+    for (const item of items) {
+      const rawProdId = item.productId || item.id;
+      const cleanId = (typeof rawProdId === 'string' && rawProdId.includes('_')) ? rawProdId.split('_')[0] : rawProdId;
+      const product = state.products.find(p => p.id === cleanId || p.id === rawProdId || p.productCode === item.productCode);
+
+      const qty = Math.max(1, parseInt(item.quantity, 10) || 1);
+      const unitPrice = Number(item.sellingPrice) || (product ? product.sellingPrice : 0);
+      const itemTotal = unitPrice * qty;
+      productsTotal += itemTotal;
+
+      // Reseller profit attribution if referred
+      let unitCommission = 0;
+      let wholesalePrice = product ? Number(product.originalPrice || 0) : 0;
+      if (referringEmployee && product) {
+        const effectiveProduct = getProductForEmployee(product, referringEmployee);
+        wholesalePrice = Number(effectiveProduct.originalPrice || 0);
+        unitCommission = Math.max(0, unitPrice - wholesalePrice);
+      }
+      const itemCommission = Math.max(0, Math.round(unitCommission * qty));
+      totalProfit += itemCommission;
+
+      const deliveryNote = isAdvancePaid
+        ? ` [ডেলিভারি চার্জ: ৳${effectiveDeliveryFee} অগ্রিম পরিশোধিত (${paymentMethod || 'bKash'}${transactionId ? `, TrxID: ${transactionId}` : ''}${senderPhone ? `, প্রেরক: ${senderPhone}` : ''})]`
+        : ` [ডেলিভারি চার্জ: ৳${effectiveDeliveryFee} ক্যাশ অন ডেলিভারি (বিকল্প পদ্ধতি)]`;
+
+      const fullAddress = `জেলা: ${normalizedDistrict}, থানা: ${thana || 'সদর'}, ঠিকানা: ${customerAddress.trim()}`;
+
+      const sale: Sale = {
+        id: 'sale-' + crypto.randomUUID().slice(0, 8),
+        orderCode: sharedOrderCode,
+        employeeId: referringEmployee ? referringEmployee.id : 'OFFICIAL',
+        employeeName: referringEmployee ? referringEmployee.name : 'অফিশিয়াল ওয়েবসাইট',
+        productId: product ? product.id : (cleanId || 'prod-custom'),
+        productName: item.productName || (product ? product.nameBn : 'পণ্য'),
+        productCode: item.productCode || (product ? product.productCode : 'TNX'),
+        quantity: qty,
+        basePrice: wholesalePrice,
+        actualSalePrice: unitPrice,
+        sellingPrice: unitPrice,
+        totalAmount: itemTotal,
+        commissionAmount: itemCommission,
+        customerName: customerName.trim(),
+        customerPhone: cleanPhone,
+        customerAddress: fullAddress,
+        paymentStatus: isAdvancePaid ? 'PAID' : 'PENDING',
+        saleStatus: 'Pending Verification',
+        deliveryStatus: 'pending',
+        size: item.size ? String(item.size).trim() : undefined,
+        saleDate: new Date().toISOString(),
+        district: normalizedDistrict,
+        thana: thana ? String(thana).trim() : undefined,
+        deliveryCharge: effectiveDeliveryFee,
+        isPublicOrder: true,
+        orderSource: referringEmployee ? `রিসেলার: ${referringEmployee.name}` : 'পাবলিক ওয়েবসাইট',
+        paymentMethod: paymentMethod || (isAdvancePaid ? 'bKash' : 'COD'),
+        transactionId: transactionId ? String(transactionId).trim() : undefined,
+        notes: `${notes ? notes.trim() : ''}${deliveryNote}`.trim()
+      };
+
+      state.sales.unshift(sale);
+      createdSales.push(sale);
+      db.syncEntityDirect('sales', sale).catch(e => console.error('[Persistence] Sale sync warning:', e));
+    }
+
+    db.save();
+
+    const grandTotal = productsTotal + effectiveDeliveryFee;
+
+    // Broadcast real-time live event
+    broadcastRealtimeEvent('order_created', {
+      orderCode: sharedOrderCode,
+      employeeName: referringEmployee ? referringEmployee.name : 'পাবলিক ওয়েবসাইট',
+      customerName: customerName.trim(),
+      totalAmount: grandTotal,
+      itemsCount: items.length,
+      timestamp: Date.now()
+    });
+
+    // Notify Admin
+    db.addNotification({
+      recipientRole: 'ADMIN',
+      titleBn: `নতুন ওয়েবসাইট অর্ডার (${sharedOrderCode})`,
+      titleEn: `New Website Order (${sharedOrderCode})`,
+      messageBn: `${customerName.trim()} (${cleanPhone}) থেকে ৳${grandTotal} মূল্যের ${items.length}টি পণ্যের অর্ডার এসেছে। ডেলিভারি চার্জ: ৳${effectiveDeliveryFee} (${isAdvancePaid ? 'অগ্রিম পরিশোধিত' : 'ক্যাশ অন ডেলিভারি'})।`,
+      messageEn: `New order from ${customerName.trim()} (${cleanPhone}). Total: ৳${grandTotal}, Items: ${items.length}, Delivery: ৳${effectiveDeliveryFee}.`,
+      type: 'SALE'
+    });
+
+    // Notify Reseller if referred
+    if (referringEmployee) {
+      db.addNotification({
+        recipientRole: 'EMPLOYEE',
+        employeeId: referringEmployee.id,
+        titleBn: `আপনার লিংকে নতুন অর্ডার (${sharedOrderCode})`,
+        titleEn: `New Referral Order (${sharedOrderCode})`,
+        messageBn: `আপনার রেফারেল লিংক থেকে কাস্টমার ${customerName.trim()} একটি নতুন অর্ডার করেছেন (${sharedOrderCode})। মোট: ৳${grandTotal}, সম্ভাব্য মুনাফা: ৳${totalProfit}।`,
+        messageEn: `Customer ${customerName.trim()} ordered via your referral link (${sharedOrderCode}). Total: ৳${grandTotal}, Profit: ৳${totalProfit}.`,
+        type: 'SALE'
+      });
+    }
+
+    // Send Telegram Notification if configured
+    sendTelegramOrderNotification({
+      orderCode: sharedOrderCode,
+      saleId: createdSales[0]?.id,
+      employeeName: referringEmployee ? referringEmployee.name : 'পাবলিক ওয়েবসাইট',
+      customerName: customerName.trim(),
+      customerPhone: cleanPhone,
+      customerAddress: `জেলা: ${normalizedDistrict}, থানা: ${thana || 'সদর'}, ঠিকানা: ${customerAddress.trim()}`,
+      items,
+      productsTotal,
+      deliveryCharge: effectiveDeliveryFee,
+      grandTotal,
+      isAdvancePaid: !!isAdvancePaid,
+      paymentMethod: paymentMethod || (isAdvancePaid ? 'bKash' : 'COD'),
+      transactionId,
+      dueAmount: isAdvancePaid ? productsTotal : grandTotal,
+      saleStatus: 'Pending Verification',
+      deliveryStatus: 'pending',
+      trackingCode: undefined
+    }, state.brandSettings);
+
+    res.json({
+      success: true,
+      orderCode: sharedOrderCode,
+      itemsCount: items.length,
+      productsTotal,
+      deliveryCharge: effectiveDeliveryFee,
+      grandTotal,
+      advancePaid: isAdvancePaid ? effectiveDeliveryFee : 0,
+      dueAmount: isAdvancePaid ? productsTotal : grandTotal,
+      isAdvancePaid: !!isAdvancePaid,
+      paymentMethod: paymentMethod || (isAdvancePaid ? 'bKash' : 'COD'),
+      transactionId: transactionId || null,
+      customerName: customerName.trim(),
+      customerPhone: cleanPhone,
+      customerAddress: `জেলা: ${normalizedDistrict}, থানা: ${thana || 'সদর'}, ঠিকানা: ${customerAddress.trim()}`,
+      orderDate: new Date().toLocaleString('bn-BD'),
+      message: 'আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে!'
+    });
+  } catch (err: any) {
+    console.error('[API] /api/public/orders error:', err);
+    res.status(500).json({ error: err.message || 'অর্ডার প্রসেস করতে ব্যর্থ হয়েছে।' });
+  }
+});
+
 // ==========================================
 // 2. ADMIN AUTHENTICATION (NO PASSWORD - OTP ONLY)
 // ==========================================
@@ -1469,6 +2025,34 @@ app.post('/api/employee/sales', verifyEmployee, (req: Request, res: Response) =>
   state.sales.unshift(sale);
   db.save();
   db.syncEntityDirect('sales', sale).catch(e => console.error('[Persistence] Sale background sync error:', e));
+
+  // Send Telegram Notification if configured
+  const imgUrl = product.images?.find(i => i.isPrimary)?.url || product.images?.[0]?.url || product.imageUrl;
+  sendTelegramOrderNotification({
+    orderCode,
+    saleId: sale.id,
+    employeeName: emp.name,
+    customerName: customerName.trim(),
+    customerPhone: customerPhone.trim(),
+    customerAddress: customerAddress.trim(),
+    items: [{
+      productName: product.nameBn,
+      productCode: product.productCode,
+      size: size ? String(size).trim() : 'M',
+      quantity: qty,
+      unitPrice: finalUnitPrice,
+      imageUrl: imgUrl
+    }],
+    productsTotal: totalSellingAmount,
+    deliveryCharge: 0,
+    grandTotal: totalSellingAmount,
+    isAdvancePaid: false,
+    paymentMethod: 'COD',
+    dueAmount: totalSellingAmount,
+    saleStatus: sale.saleStatus || 'Pending Verification',
+    deliveryStatus: sale.deliveryStatus || 'pending',
+    trackingCode: sale.trackingCode
+  }, state.brandSettings);
 
   // Broadcast real-time live event to connected clients
   broadcastRealtimeEvent('order_created', {

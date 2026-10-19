@@ -15,6 +15,7 @@ import { ToastContainer } from './components/ToastContainer.js';
 import { UserBottomNav } from './components/UserBottomNav.js';
 import { PublicCartDrawer } from './components/common/PublicCartDrawer.js';
 import { AIChatWidget } from './components/common/AIChatWidget.js';
+import { PublicOrderCheckoutModal } from './components/public/PublicOrderCheckoutModal.js';
 
 const MainView: React.FC = () => {
   const { activePortal, showPromo } = useApp();
@@ -42,6 +43,9 @@ const MainView: React.FC = () => {
 
       {/* Global Public Cart Slide-Over Drawer */}
       <PublicCartDrawer />
+
+      {/* Global Public Order Checkout Modal */}
+      <PublicOrderCheckoutModal />
 
       {/* Global Floating AI Chat Widget (Excludes Admin Portal) */}
       {activePortal !== 'admin' && <AIChatWidget />}
