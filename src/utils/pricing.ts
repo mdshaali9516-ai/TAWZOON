@@ -1,4 +1,4 @@
-import { Product, Employee, BrandSettings } from '../types/index.js';
+import type { Product, Employee, BrandSettings } from '../types/index.ts';
 
 export function isOfficialReferenceCode(code?: string | null): boolean {
   if (!code) return false;

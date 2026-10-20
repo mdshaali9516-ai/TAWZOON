@@ -118,6 +118,16 @@ export interface Employee {
   customTrialDays?: number;
   trialExtendedDays?: number;
   trialStartedAt?: string;
+  // Custom Store Fields
+  storeSlug?: string;
+  storeName?: string;
+  storeLogoUrl?: string;
+  storeWhatsapp?: string;
+  storePhone?: string;
+  storeThemeColor?: string;
+  storeHeaderColor?: string;
+  storeFooterColor?: string;
+  storeStatus?: 'active' | 'suspended' | 'expired';
 }
 
 export interface Sale {

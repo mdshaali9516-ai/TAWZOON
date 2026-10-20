@@ -358,7 +358,7 @@ export const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
   };
 
   return (
-    <div className="w-full min-h-screen bg-white text-slate-900 font-sans pb-16 relative">
+    <div className="w-full min-h-screen bg-white text-slate-900 font-sans pb-28 sm:pb-32 relative">
       
       {/* Floating Notice */}
       {downloadNotice && (
@@ -429,35 +429,25 @@ export const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
             {/* LEFT COLUMN: Gallery & Marketing actions (6 cols)             */}
             {/* ------------------------------------------------------------- */}
             <div className="lg:col-span-6 space-y-2.5">
-              {/* গ্যালারি (উলম্ব থাম্বনেইল + বড় ডিসপ্লে) */}
-              <div className="flex gap-2 items-stretch">
-                {/* থাম্বনেইল কলাম */}
-                <div className="flex flex-col items-center gap-1.5 w-[44px] sm:w-[52px] shrink-0">
-                  <div
-                    className="flex flex-col gap-1.5 overflow-y-auto max-h-[320px] md:max-h-[400px] w-full p-0.5"
-                    style={{ scrollbarWidth: 'none' }}
-                  >
-                    {images.map((img, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => setActiveImageIndex(idx)}
-                        className={`w-[40px] h-[40px] sm:w-[48px] sm:h-[48px] rounded-lg sm:rounded-xl overflow-hidden border-2 p-0.5 transition-all cursor-pointer bg-slate-50 shrink-0 ${
-                          activeImageIndex === idx
-                            ? 'border-[#009245] ring-2 ring-[#009245]/20 shadow-xs scale-105'
-                            : 'border-slate-200 opacity-75 hover:opacity-100'
-                        }`}
-                      >
-                        <img src={img} alt="thumb" className="w-full h-full object-cover rounded-md" />
-                      </button>
-                    ))}
-                  </div>
-
-                  {images.length > 5 && (
-                    <div className="w-4 h-4 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center shrink-0">
-                      <ChevronDown className="w-3 h-3" />
-                    </div>
-                  )}
+              {/* গ্যালারি (বামে সাইডে উল্লম্ব থাম্বনেইল + ডানপাশে মূল ডিসপ্লে) */}
+              <div className="flex flex-row gap-2 sm:gap-2.5 items-stretch">
+                
+                {/* থাম্বনেইল কলাম (সাইডে উল্লম্ব স্ক্রল) */}
+                <div className="flex flex-col items-center gap-1.5 overflow-y-auto max-h-[360px] sm:max-h-[460px] w-[44px] sm:w-[54px] shrink-0 p-0.5 scrollbar-none">
+                  {images.map((img, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setActiveImageIndex(idx)}
+                      className={`w-[40px] h-[40px] sm:w-[48px] sm:h-[48px] rounded-lg sm:rounded-xl overflow-hidden border-2 p-0.5 transition-all cursor-pointer bg-slate-50 shrink-0 ${
+                        activeImageIndex === idx
+                          ? 'border-[#009245] ring-2 ring-[#009245]/20 shadow-xs scale-105'
+                          : 'border-slate-200 opacity-75 hover:opacity-100'
+                      }`}
+                    >
+                      <img src={img} alt="thumb" className="w-full h-full object-cover rounded-md" />
+                    </button>
+                  ))}
                 </div>
 
                 {/* মূল ডিসপ্লে */}
@@ -470,7 +460,7 @@ export const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
                       const y = ((e.clientY - top) / height) * 100;
                       setMousePos({ x, y });
                     }}
-                    className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200/80 flex items-center justify-center p-1 group shadow-inner transition-all duration-200"
+                    className="relative aspect-[4/5] sm:aspect-square lg:aspect-[4/5] w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200/80 flex items-center justify-center p-1 group shadow-inner transition-all duration-200"
                   >
                     {/* Discount Badge */}
                     <span className="absolute top-2 left-2 z-10 text-[9.5px] sm:text-xs font-black text-white bg-rose-600 px-1.5 sm:px-2 py-0.5 rounded-md leading-none shadow-xs">
@@ -526,7 +516,7 @@ export const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
                 </div>
               </div>
 
-              {/* স্টার রেটিং এবং পোস্ট কপি ও সব ডাউনলোড বাটন (ফিট করা হয়েছে যাতে বর্ডারের বাহিরে না যায়) */}
+              {/* স্টার রেটিং এবং পোস্ট কপি ও সব ডাউনলোড বাটন */}
               <div className="flex items-center justify-between gap-1 pt-1.5 border-t border-slate-100 flex-wrap">
                 {/* স্টার রেটিং ব্যাজ */}
                 <div className="flex items-center gap-1 bg-[#fffbeb] border border-[#fef3c7] px-2 py-1 rounded-full shadow-3xs shrink-0">
@@ -741,7 +731,9 @@ export const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
               <div className="grid grid-cols-2 gap-2.5 pt-1">
                 <button
                   type="button"
-                  onClick={handleAddToCart}
+                  onClick={() => {
+                    handleAddToCart();
+                  }}
                   className="w-full py-2.5 sm:py-3 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-[#009245] font-black text-xs sm:text-sm shadow-2xs transition-all cursor-pointer flex items-center justify-center gap-2"
                 >
                   <ShoppingCart className="w-4 h-4 text-[#009245]" />
@@ -751,8 +743,50 @@ export const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
                 <button
                   type="button"
                   onClick={() => {
+                    const productWithImage = {
+                      ...currentProduct,
+                      selectedImageUrl: activeImage,
+                      imageUrl: activeImage,
+                    };
+                    
+                    // Check if we are in "adding to order" mode
+                    const isAddingToOrder = typeof window !== 'undefined' && sessionStorage.getItem('tawzoon_is_adding_to_order') === 'true';
+                    if (isAddingToOrder) {
+                      try {
+                        const existingItemsRaw = sessionStorage.getItem('tawzoon_pending_order_items');
+                        let currentItems = existingItemsRaw ? JSON.parse(existingItemsRaw) : [];
+                        if (!Array.isArray(currentItems)) currentItems = [];
+
+                        const newItem = {
+                          productId: currentProduct.id,
+                          originalProduct: productWithImage,
+                          productName: lang === 'bn' ? (currentProduct.nameBn || 'Product') : (currentProduct.nameEn || currentProduct.nameBn || 'Product'),
+                          productCode: currentProduct.productCode,
+                          imageUrl: activeImage,
+                          size: selectedSize || availableSizes[0] || 'M',
+                          quantity: quantity || 1,
+                          unitPrice: getAdjustedSellingPrice(currentProduct, employee, brandSettings),
+                        };
+
+                        currentItems.push(newItem);
+                        sessionStorage.setItem('tawzoon_pending_order_items', JSON.stringify(currentItems));
+                        sessionStorage.removeItem('tawzoon_is_adding_to_order');
+                        window.dispatchEvent(new Event('tawzoon_order_mode_changed'));
+
+                        showToast(lang === 'bn' ? `✓ পণ্যটি অর্ডারে যুক্ত হয়েছে!` : `✓ Added product to Order!`, 'success');
+                        openCheckoutModal(
+                          currentItems.map((it: any) => ({
+                            product: it.originalProduct || it.product || productWithImage,
+                            size: it.size,
+                            quantity: it.quantity,
+                          }))
+                        );
+                        return;
+                      } catch {}
+                    }
+
                     openCheckoutModal([{
-                      product: currentProduct,
+                      product: productWithImage,
                       size: selectedSize || availableSizes[0] || 'M',
                       quantity: quantity,
                     }]);

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Maximize2, X, Play } from 'lucide-react';
 import { Product, ProductImage } from '../types/index.js';
 import { getYouTubeEmbedUrl, getYouTubeThumbnail } from '../utils/youtube.js';
@@ -6,9 +6,10 @@ import { getYouTubeEmbedUrl, getYouTubeThumbnail } from '../utils/youtube.js';
 interface ProductGalleryProps {
   product: Product;
   lang: 'bn' | 'en';
+  onImageChange?: (url: string, index: number) => void;
 }
 
-export const ProductGallery: React.FC<ProductGalleryProps> = ({ product, lang }) => {
+export const ProductGallery: React.FC<ProductGalleryProps> = ({ product, lang, onImageChange }) => {
   // Extract images
   const rawImages: ProductImage[] = product.images && product.images.length > 0
     ? product.images
@@ -30,6 +31,12 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({ product, lang })
 
   const currentImage = rawImages[activeIndex] || rawImages[0];
   const totalSlides = rawImages.length + (hasVideo ? 1 : 0);
+
+  useEffect(() => {
+    if (rawImages[activeIndex]?.url && onImageChange) {
+      onImageChange(rawImages[activeIndex].url, activeIndex);
+    }
+  }, [activeIndex, product, onImageChange]);
 
   // YouTube auto-thumbnail or fallback
   const ytThumb = product.youtubeId ? getYouTubeThumbnail(product.youtubeId) : null;

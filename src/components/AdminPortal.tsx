@@ -7289,6 +7289,82 @@ export const AdminPortal: React.FC = () => {
                 </div>
               )}
             </div>
+
+            {/* 3. RESELLER CUSTOM WEBSITES LIST */}
+            <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 space-y-4 shadow-xs">
+              <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+                <Globe className="w-4 h-4 text-[#009245]" />
+                <span>রিসেলারদের তৈরি কাস্টম ওয়েবসাইটসমূহ (Reseller Stores)</span>
+              </h3>
+              <p className="text-xs text-slate-500">
+                যেসব রিসেলাররা ৭ দিনের ফ্রি ট্রায়াল বা কাস্টম শপ তৈরি করেছেন, তাদের তালিকা ও স্ট্যাটাস:
+              </p>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="border-b border-slate-200 bg-slate-50 text-slate-700 font-black">
+                      <th className="p-3">রিসেলার নাম</th>
+                      <th className="p-3">দোকানের নাম</th>
+                      <th className="p-3">URL / স্লাগ</th>
+                      <th className="p-3">হোয়াটসঅ্যাপ</th>
+                      <th className="p-3">স্ট্যাটাস / মেয়াদ</th>
+                      <th className="p-3 text-right">অ্যাকশন</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {employees.filter(e => e.storeSlug).length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="p-6 text-center text-slate-400 font-medium">
+                          এখনো কোনো রিসেলার নিজস্ব ওয়েবসাইট তৈরি করেননি।
+                        </td>
+                      </tr>
+                    ) : (
+                      employees.filter(e => (e as any).storeSlug).map((emp) => {
+                        const isExpired = (emp as any).trialExpiryDate ? Date.now() > new Date((emp as any).trialExpiryDate).getTime() : false;
+                        const isSuspended = (emp as any).storeStatus === 'suspended';
+                        return (
+                          <tr key={emp.id} className="hover:bg-slate-50 transition-colors">
+                            <td className="p-3 font-bold text-slate-900">{emp.name}</td>
+                            <td className="p-3 font-bold text-emerald-700">{(emp as any).storeName || 'এক্সপ্রেস শপ'}</td>
+                            <td className="p-3 font-mono text-slate-600">/shop/{(emp as any).storeSlug}</td>
+                            <td className="p-3 font-mono text-slate-600">{(emp as any).storeWhatsapp || emp.phone}</td>
+                            <td className="p-3">
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
+                                isSuspended ? 'bg-rose-100 text-rose-800' : isExpired ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'
+                              }`}>
+                                {isSuspended ? 'সাসপেন্ডেড' : isExpired ? 'মেয়াদ শেষ' : 'সক্রিয় (Active)'}
+                              </span>
+                            </td>
+                            <td className="p-3 text-right">
+                              <button
+                                type="button"
+                                onClick={async () => {
+                                  const newStatus = isSuspended ? 'active' : 'suspended';
+                                  try {
+                                    await api.adminUpdateResellerStoreStatus(adminToken!, emp.id, newStatus);
+                                    setEmployees(employees.map(e => e.id === emp.id ? { ...e, storeStatus: newStatus } : e));
+                                    showToast('স্ট্যাটাস আপডেট সফল হয়েছে!', 'success');
+                                  } catch {
+                                    showToast('আপডেট ব্যর্থ হয়েছে', 'error');
+                                  }
+                                }}
+                                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer ${
+                                  isSuspended ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-rose-100 text-rose-800 hover:bg-rose-200'
+                                }`}
+                              >
+                                {isSuspended ? 'অ্যাক্টিভেট করুন' : 'সাসপেন্ড করুন'}
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
           </div>
         )}
 

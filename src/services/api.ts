@@ -235,6 +235,16 @@ export const api = {
       body: JSON.stringify(payload),
     }),
 
+  employeeUpdateStore: (token: string, payload: any) =>
+    request<{ success: boolean; employee: Employee }>('/api/employee/store', {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${token}` },
+      body: JSON.stringify(payload),
+    }),
+
+  getPublicStore: (slug: string) =>
+    request<{ success: boolean; reseller: Employee; isExpired: boolean; products: Product[] }>(`/api/store/${slug}`),
+
   employeeUploadAvatar: (token: string, imageBase64: string) =>
     request<{ success: boolean; url: string }>('/api/employee/upload-avatar', {
       method: 'POST',
@@ -597,6 +607,18 @@ export const api = {
       method: 'PATCH',
       headers: { Authorization: `Bearer ${token}` },
       body: JSON.stringify({ margin }),
+    }),
+
+  adminGetResellerStores: (token: string) =>
+    request<{ success: boolean; stores: Employee[] }>('/api/admin/reseller-stores', {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+
+  adminUpdateResellerStoreStatus: (token: string, employeeId: string, storeStatus: string) =>
+    request<{ success: boolean; storeStatus: string }>(`/api/admin/reseller-stores/${employeeId}/status`, {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ storeStatus }),
     }),
 
   adminGetSales: (token: string) =>

@@ -16,14 +16,30 @@ import { UserBottomNav } from './components/UserBottomNav.js';
 import { PublicCartDrawer } from './components/common/PublicCartDrawer.js';
 import { AIChatWidget } from './components/common/AIChatWidget.js';
 import { PublicOrderCheckoutModal } from './components/public/PublicOrderCheckoutModal.js';
+import { PublicAddingToOrderBanner } from './components/public/PublicAddingToOrderBanner.js';
+import { ResellerStorefrontView } from './components/public/ResellerStorefrontView.js';
 
 const MainView: React.FC = () => {
   const { activePortal, showPromo } = useApp();
+
+  // Detect if visiting /shop/:slug or ?store=slug
+  const path = typeof window !== 'undefined' ? window.location.pathname : '';
+  const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  const storeFromParam = searchParams?.get('store');
+  const storeFromPath = path.startsWith('/shop/') ? path.replace('/shop/', '').split('/')[0] : null;
+  const activeStoreSlug = storeFromParam || storeFromPath;
+
+  if (activeStoreSlug) {
+    return <ResellerStorefrontView storeSlug={activeStoreSlug} />;
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-slate-900 font-sans selection:bg-slate-900 selection:text-white">
       {/* Top Bar Navigation */}
       <Navbar />
+
+      {/* Floating Add to Order Banner for Public Storefront */}
+      {activePortal === 'public' && <PublicAddingToOrderBanner />}
 
       {/* Dynamic Views */}
       <main className={`flex-1 ${showPromo ? 'pt-[85px] sm:pt-[92px]' : 'pt-[54px] sm:pt-[60px]'} ${activePortal !== 'admin' ? 'pb-20 sm:pb-22' : ''}`}>

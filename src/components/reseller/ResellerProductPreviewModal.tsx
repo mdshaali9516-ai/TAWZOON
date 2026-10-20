@@ -16,6 +16,7 @@ import {
 import { useApp } from '../../context/AppContext.js';
 import { Product } from '../../types/index.js';
 import { getAdjustedSellingPrice, getAdjustedRegularPrice, getResellerProfitPerUnit, getResellerWholesalePrice } from '../../utils/pricing.js';
+import { getProductSizes } from '../../utils/productSizes.js';
 import { ResellerOrderCheckoutModal } from './ResellerOrderCheckoutModal.js';
 
 interface ResellerProductPreviewModalProps {
@@ -42,11 +43,10 @@ export const ResellerProductPreviewModal: React.FC<ResellerProductPreviewModalPr
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
 
   // Sizes setup
-  const availableSizes = product?.sizes && product.sizes.length > 0
-    ? product.sizes
-    : ['M', 'L', 'XL', 'XXL'];
-
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const availableSizes = getProductSizes(product);
+  const [selectedSize, setSelectedSize] = useState<string | null>(() => {
+    return availableSizes.length > 0 ? availableSizes[0] : null;
+  });
   const [customSellingPrice, setCustomSellingPrice] = useState<number | string>(() => {
     return product ? getAdjustedSellingPrice(product, employee, brandSettings) : '';
   });
@@ -432,39 +432,37 @@ ${sizes ? `📐 উপলব্ধ সাইজ: ${sizes}\n` : ''}${desc ? `\n�
           <div className="p-3 bg-slate-50/90 rounded-2xl border border-slate-200/80 space-y-2.5 shadow-3xs">
             
             {/* ১. সাইজ নির্বাচন (M, L, XL, XXL) */}
-            <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <label className="text-xs md:text-sm font-black text-slate-800 flex items-center gap-1">
-                  <span>{lang === 'bn' ? 'সাইজ সিলেক্ট করুন:' : 'Select Size:'}</span>
-                  <span className="text-[#009245]">*</span>
-                </label>
-                <span className="text-[10.5px] font-bold font-mono">
-                  {lang === 'bn' ? 'সিলেক্টেড:' : 'Selected:'}{' '}
-                  {selectedSize ? (
-                    <span className="text-[#009245] font-black">{selectedSize}</span>
-                  ) : (
-                    <span className="text-amber-600 font-bold animate-pulse">{lang === 'bn' ? 'সাইজ বাছুন ⚠️' : 'Pick Size ⚠️'}</span>
-                  )}
-                </span>
-              </div>
+            {availableSizes.length > 0 && (
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs md:text-sm font-black text-slate-800 flex items-center gap-1">
+                    <span>{lang === 'bn' ? 'সাইজ সিলেক্ট করুন:' : 'Select Size:'}</span>
+                    <span className="text-[#009245]">*</span>
+                  </label>
+                  <span className="text-[10.5px] font-bold font-mono">
+                    {lang === 'bn' ? 'সিলেক্টেড:' : 'Selected:'}{' '}
+                    <span className="text-[#009245] font-black">{selectedSize || availableSizes[0]}</span>
+                  </span>
+                </div>
 
-              <div className="flex items-center gap-1.5 flex-wrap">
-                {availableSizes.map((size) => (
-                  <button
-                    key={size}
-                    type="button"
-                    onClick={() => setSelectedSize(size)}
-                    className={`px-3 py-1 text-xs font-black rounded-xl border transition-all cursor-pointer ${
-                      selectedSize === size
-                        ? 'bg-[#009245] text-white border-[#009245] shadow-xs scale-105'
-                        : 'bg-white text-slate-700 border-slate-200 hover:border-[#009245]/50 hover:bg-emerald-50/50'
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {availableSizes.map((size) => (
+                    <button
+                      key={size}
+                      type="button"
+                      onClick={() => setSelectedSize(size)}
+                      className={`px-3 py-1 text-xs font-black rounded-xl border transition-all cursor-pointer ${
+                        (selectedSize || availableSizes[0]) === size
+                          ? 'bg-[#009245] text-white border-[#009245] shadow-xs scale-105'
+                          : 'bg-white text-slate-700 border-slate-200 hover:border-[#009245]/50 hover:bg-emerald-50/50'
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* ২. ২-কলাম লেআউট: কাস্টম বিক্রয়মূল্য ইনপুট (বাম) ও পরিমাণ ১-পিস/২-পিস সিলেক্টর (ডান) */}
             <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200/70">

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext.js';
 import { getAdjustedSellingPrice } from '../../utils/pricing.js';
+import { getProductSizes } from '../../utils/productSizes.js';
 import {
   ShoppingBag,
   X,
@@ -45,11 +46,15 @@ export const PublicCartDrawer: React.FC = () => {
     if (cartItems.length === 0) return;
     setIsPublicCartOpen(false);
     openCheckoutModal(
-      cartItems.map((item) => ({
-        product: item,
-        size: item.sizes?.[0] || 'M',
-        quantity: item.quantity || 1,
-      }))
+      cartItems.map((item) => {
+        const szs = getProductSizes(item);
+        const resolved = item.sizes?.[0] || (szs.length > 0 ? szs[0] : 'স্ট্যান্ডার্ড');
+        return {
+          product: item,
+          size: resolved,
+          quantity: item.quantity || 1,
+        };
+      })
     );
   };
 
@@ -134,7 +139,8 @@ export const PublicCartDrawer: React.FC = () => {
                 const title = lang === 'bn' ? (item.nameBn || 'Product') : (item.nameEn || item.nameBn);
                 const img = item.images?.[0]?.url || item.imageUrl || '/images/product_shop_dress_1790244714775.jpg';
                 const itemQty = item.quantity || 1;
-                const size = item.sizes?.[0] || 'M';
+                const itemSizes = getProductSizes(item);
+                const size = item.sizes?.[0] || (itemSizes.length > 0 ? itemSizes[0] : null);
 
                 return (
                   <div
@@ -163,9 +169,11 @@ export const PublicCartDrawer: React.FC = () => {
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-black text-[#009245] bg-emerald-50 border border-emerald-200/80 px-1.5 py-0.2 rounded-md font-mono">
-                          {size}
-                        </span>
+                        {size && (
+                          <span className="text-[10px] font-black text-[#009245] bg-emerald-50 border border-emerald-200/80 px-1.5 py-0.2 rounded-md font-mono">
+                            {size}
+                          </span>
+                        )}
                         <span className="text-xs font-black text-rose-600 font-mono">
                           ৳{(getAdjustedSellingPrice(item, employee, brandSettings) * itemQty).toLocaleString()}
                         </span>

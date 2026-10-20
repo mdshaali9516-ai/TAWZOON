@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { getEffectiveResellerMargin, getResellerWholesalePrice, getResellerProfitPerUnit } from './src/utils/pricing.js';
+import { getEffectiveResellerMargin, getResellerWholesalePrice, getResellerProfitPerUnit } from './src/utils/pricing.ts';
 
 console.log('--- Starting TAWZOON Business Logic Test Suite ---');
 

@@ -771,79 +771,81 @@ ${itemsText}
       ]
     };
 
-    const firstItem = orderData.items[0];
-    let rawImageUrl = firstItem?.imageUrl || firstItem?.originalProduct?.imageUrl;
-
-    let sentPhoto = false;
-    if (rawImageUrl && typeof rawImageUrl === 'string') {
-      try {
-        if (rawImageUrl.startsWith('data:')) {
-          const matches = rawImageUrl.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-          if (matches && matches.length === 3) {
-            const mimeType = matches[1];
-            const base64Data = matches[2];
-            const buffer = Buffer.from(base64Data, 'base64');
-            const ext = mimeType.split('/')[1] || 'jpg';
-
-            const formData = new FormData();
-            formData.append('chat_id', chatId);
-            formData.append('caption', message);
-            formData.append('parse_mode', 'Markdown');
-            formData.append('reply_markup', JSON.stringify(replyMarkup));
-
-            const blob = new Blob([buffer], { type: mimeType });
-            formData.append('photo', blob, `product.${ext}`);
-
-            const photoRes = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
-              method: 'POST',
-              body: formData
-            });
-            const photoData = await photoRes.json();
-            if (photoData.ok) {
-              sentPhoto = true;
-            }
-          }
-        } else {
-          let imageUrl = rawImageUrl;
-          if (imageUrl.startsWith('/')) {
-            imageUrl = `https://ais-dev-h7i2pkla2v2sc5me2lmcrw-940774871860.asia-east1.run.app${imageUrl}`;
-          } else if (!imageUrl.startsWith('http')) {
-            imageUrl = `https://ais-dev-h7i2pkla2v2sc5me2lmcrw-940774871860.asia-east1.run.app/${imageUrl}`;
-          }
-
-          const photoRes = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              chat_id: chatId,
-              photo: imageUrl,
-              caption: message,
-              parse_mode: 'Markdown',
-              reply_markup: replyMarkup
-            })
-          });
-          const photoData = await photoRes.json();
-          if (photoData.ok) {
-            sentPhoto = true;
-          }
+    // 1. Send each ordered product image individually as a photo to ensure reliable delivery
+    const imagesToSend: string[] = [];
+    if (orderData.items && Array.isArray(orderData.items)) {
+      for (const item of orderData.items) {
+        const imgUrl = item.imageUrl || item.originalProduct?.imageUrl;
+        if (imgUrl && typeof imgUrl === 'string' && !imagesToSend.includes(imgUrl)) {
+          imagesToSend.push(imgUrl);
         }
-      } catch (e) {
-        console.warn('Telegram photo send error:', e);
       }
     }
 
-    if (!sentPhoto) {
-      await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: message,
-          parse_mode: 'Markdown',
-          reply_markup: replyMarkup
-        })
-      });
+    if (imagesToSend.length > 0) {
+      try {
+        const resolvedBaseUrl = process.env.APP_URL || 'https://ais-dev-mrusyenjorkxq5mhm5imzd-697439367961.asia-southeast1.run.app';
+        
+        for (let i = 0; i < imagesToSend.length; i++) {
+          let imageUrl = imagesToSend[i];
+          if (imageUrl.startsWith('/')) {
+            imageUrl = `${resolvedBaseUrl}${imageUrl}`;
+          } else if (!imageUrl.startsWith('http') && !imageUrl.startsWith('data:')) {
+            imageUrl = `${resolvedBaseUrl}/${imageUrl}`;
+          }
+
+          if (imageUrl.startsWith('data:')) {
+            const matches = imageUrl.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+            if (matches && matches.length === 3) {
+              const mimeType = matches[1];
+              const base64Data = matches[2];
+              const buffer = Buffer.from(base64Data, 'base64');
+              const ext = mimeType.split('/')[1] || 'jpg';
+
+              const formData = new FormData();
+              formData.append('chat_id', chatId);
+              formData.append('caption', i === 0 ? `🖼️ *অর্ডারকৃত পণ্যের ছবিসমূহ* (\`${orderData.orderCode}\`)` : `🖼️ *পণ্য #${i + 1} ছবি*`);
+              formData.append('parse_mode', 'Markdown');
+
+              const blob = new Blob([buffer], { type: mimeType });
+              formData.append('photo', blob, `product_${i + 1}.${ext}`);
+
+              await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+                method: 'POST',
+                body: formData
+              });
+            }
+          } else {
+            await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: chatId,
+                photo: imageUrl,
+                caption: i === 0 ? `🖼️ *অর্ডারকৃত পণ্যের ছবিসমূহ* (\`${orderData.orderCode}\`)` : `🖼️ *পণ্য #${i + 1} ছবি*`,
+                parse_mode: 'Markdown'
+              })
+            });
+          }
+          // Small pause to prevent rate limiting
+          await new Promise(r => setTimeout(r, 350));
+        }
+      } catch (e) {
+        console.warn('Telegram individual photo send error:', e);
+      }
     }
+
+    // 2. Send the professional colored order details message with inline reply markup
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+        parse_mode: 'Markdown',
+        reply_markup: replyMarkup
+      })
+    });
   } catch (err) {
     console.warn('Failed to send Telegram notification:', err);
   }
@@ -1662,6 +1664,112 @@ app.patch('/api/employee/profile', verifyEmployee, async (req: Request, res: Res
 
   const { passwordHash, ...safeEmp } = targetEmp;
   res.json({ success: true, employee: safeEmp });
+});
+
+// Update Reseller Store / Free Trial Setup
+app.put('/api/employee/store', verifyEmployee, async (req: Request, res: Response) => {
+  const emp = (req as any).employee;
+  const state = db.getState();
+  const { storeName, storeSlug, storeLogoUrl, storeWhatsapp, storePhone, storeThemeColor, storeHeaderColor, storeFooterColor } = req.body;
+
+  const targetEmp = state.employees.find(e => e.id === emp.id);
+  if (!targetEmp) {
+    return res.status(404).json({ error: 'Reseller not found' });
+  }
+
+  const cleanSlug = (storeSlug || '').toLowerCase().trim().replace(/[^a-z0-9_]/g, '');
+  if (!cleanSlug) {
+    return res.status(400).json({ error: 'Valid store slug / subdomain is required.' });
+  }
+
+  const existing = state.employees.find(e => e.storeSlug === cleanSlug && e.id !== emp.id);
+  if (existing) {
+    return res.status(400).json({ error: 'This store URL / slug is already taken. Please choose another.' });
+  }
+
+  targetEmp.storeSlug = cleanSlug;
+  targetEmp.storeName = storeName?.trim() || `${targetEmp.name} এক্সপ্রেস শপ`;
+  if (storeLogoUrl) {
+    targetEmp.storeLogoUrl = await persistLocalMedia(storeLogoUrl.trim());
+  } else if (!targetEmp.storeLogoUrl) {
+    targetEmp.storeLogoUrl = targetEmp.avatarUrl;
+  }
+  targetEmp.storeWhatsapp = storeWhatsapp?.trim() || targetEmp.phone;
+  targetEmp.storePhone = storePhone?.trim() || targetEmp.phone;
+  targetEmp.storeThemeColor = storeThemeColor || '#009245';
+  targetEmp.storeHeaderColor = storeHeaderColor || '#ffffff';
+  targetEmp.storeFooterColor = storeFooterColor || '#0f172a';
+  targetEmp.storeStatus = 'active';
+
+  if (!(targetEmp as any).trialStartedAt) {
+    const now = new Date();
+    (targetEmp as any).trialStartedAt = now.toISOString();
+    const expiry = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    (targetEmp as any).trialExpiryDate = expiry.toISOString();
+    targetEmp.subscriptionStatus = 'trial';
+  }
+
+  db.save();
+  await db.syncEntityDirect('employees', targetEmp);
+
+  const { passwordHash, ...safeEmp } = targetEmp;
+  res.json({ success: true, employee: safeEmp });
+});
+
+// Get Public Reseller Store by Slug
+app.get('/api/store/:slug', async (req: Request, res: Response) => {
+  const { slug } = req.params;
+  const state = db.getState();
+  const reseller = state.employees.find(e => e.storeSlug && e.storeSlug.toLowerCase() === slug.toLowerCase());
+  if (!reseller) {
+    return res.status(404).json({ error: 'Store not found' });
+  }
+
+  let isExpired = false;
+  if ((reseller as any).trialExpiryDate) {
+    const expiry = new Date((reseller as any).trialExpiryDate).getTime();
+    if (Date.now() > expiry) {
+      isExpired = true;
+    }
+  }
+
+  const { passwordHash, ...safeReseller } = reseller;
+  res.json({
+    success: true,
+    reseller: safeReseller,
+    isExpired,
+    products: state.products.filter(p => p.isActive !== false && !p.isArchived)
+  });
+});
+
+// Admin Get All Reseller Stores
+app.get('/api/admin/reseller-stores', verifyAdmin, async (_req: Request, res: Response) => {
+  const state = db.getState();
+  const stores = state.employees
+    .filter(e => e.storeSlug)
+    .map(e => {
+      const { passwordHash, ...safe } = e;
+      const isExpired = (e as any).trialExpiryDate ? Date.now() > new Date((e as any).trialExpiryDate).getTime() : false;
+      return { ...safe, isExpired };
+    });
+  res.json({ success: true, stores });
+});
+
+// Admin Update Reseller Store Status
+app.patch('/api/admin/reseller-stores/:id/status', verifyAdmin, async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { storeStatus } = req.body;
+  const state = db.getState();
+  const target = state.employees.find(e => e.id === id);
+  if (!target) {
+    return res.status(404).json({ error: 'Reseller not found' });
+  }
+  if (storeStatus) {
+    target.storeStatus = storeStatus;
+  }
+  db.save();
+  await db.syncEntityDirect('employees', target);
+  res.json({ success: true, storeStatus: target.storeStatus });
 });
 
 // Reseller avatar upload endpoint
@@ -4672,7 +4780,7 @@ ${contextMemoryStr}
 AUTHORIZED LIVE CATALOG FOR RESELLER (${currentResellerId}):
 ${JSON.stringify(activeProducts.slice(0, 30))}`;
 
-    // Format conversation history
+    // Format conversation history ensuring valid alternating turns starting with role 'user'
     const contents: any[] = [];
     for (const msg of messages) {
       const parts: any[] = [];
@@ -4702,13 +4810,24 @@ ${JSON.stringify(activeProducts.slice(0, 30))}`;
       });
     }
 
+    // Gemini requires the first message to have role: 'user'
+    while (contents.length > 0 && contents[0].role !== 'user') {
+      contents.shift();
+    }
+    if (contents.length === 0) {
+      contents.push({ role: 'user', parts: [{ text: lastUserMsg || 'হ্যালো' }] });
+    }
+
     let replyText = '';
     
-    // Model fallback chain: try gemini-3.1-flash-lite first, then gemini-flash-latest, then gemini-3.8-flash
-    const candidateModels = ['gemini-3.1-flash-lite', 'gemini-flash-latest', 'gemini-3.8-flash'];
+    // Model fallback chain with strict 4s timeout per candidate
+    const candidateModels = ['gemini-flash-latest', 'gemini-3.8-flash'];
     for (const modelName of candidateModels) {
       try {
-        const response = await ai.models.generateContent({
+        const timeoutPromise = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('TIMEOUT')), 4000)
+        );
+        const callPromise = ai.models.generateContent({
           model: modelName,
           contents: contents,
           config: {
@@ -4717,7 +4836,8 @@ ${JSON.stringify(activeProducts.slice(0, 30))}`;
             temperature: 0.4,
           }
         });
-        if (response.text) {
+        const response: any = await Promise.race([callPromise, timeoutPromise]);
+        if (response && response.text) {
           replyText = response.text;
           break;
         }
@@ -4803,6 +4923,18 @@ ${JSON.stringify(activeProducts.slice(0, 30))}`;
     if (!replyText) {
       const parts: string[] = [];
 
+      // Greetings & pleasantries
+      if (
+        lastUserMsg.includes('কেমন আছেন') ||
+        lastUserMsg.includes('হ্যালো') ||
+        lastUserMsg.includes('হাই') ||
+        lastUserMsg.includes('সালাম') ||
+        lastUserMsg.includes('hello') ||
+        lastUserMsg.includes('hi')
+      ) {
+        parts.push(`ওয়ালাইকুম আসসালাম! আলহামদুলিল্লাহ, ভালো আছি। আমি আপনার ডিজিটাল শপ ও ক্যাটালগ অ্যাসিস্ট্যান্ট। 🤖✨\n\nআপনি যেকোনো পণ্য অনুসন্ধান, সাইজ, স্টক, ডেলিভারি চার্জ বা অর্ডার সংক্রান্ত যেকোনো বিষয়ে আমাকে জানাতে পারেন। কীভাবে সাহায্য করতে পারি বলুন?`);
+      }
+
       // Check balance query
       if (lastUserMsg.includes('ব্যালেন্স') || lastUserMsg.includes('টাকা') || lastUserMsg.includes('balance')) {
         const bal = authenticatedEmployee?.wallet?.availableBalance ?? 0;
@@ -4833,20 +4965,56 @@ ${JSON.stringify(activeProducts.slice(0, 30))}`;
         }
       }
 
-      // Check similar products query ("ওইটার মতো আরেকটা আছে?")
-      if (lastUserMsg.includes('মতো আরেকটা') || lastUserMsg.includes('similar') || lastUserMsg.includes('অন্য প্রোডাক্ট')) {
-        const similar = activeProducts.filter(p => p.id !== lastReferencedProduct?.id).slice(0, 2);
-        if (similar.length > 0) {
-          const tags = similar.map(p => `[product:${p.id}]`).join('\n');
-          parts.push(`আপনার পছন্দের পণ্যের সাথে মিল থাকা অন্যান্য প্রোডাক্টসমূহ:\n\n${tags}`);
+      // Check delivery & payment inquiries
+      if (
+        lastUserMsg.includes('ডেলিভারি') ||
+        lastUserMsg.includes('কুরিয়ার') ||
+        lastUserMsg.includes('শিপিং') ||
+        lastUserMsg.includes('চার্জ') ||
+        lastUserMsg.includes('ক্যাশ অন') ||
+        lastUserMsg.includes('পেমেন্ট') ||
+        lastUserMsg.includes('বিকাশ')
+      ) {
+        parts.push(`📦 ডেলিভারি ও পেমেন্ট পলিসি:\n• ঢাকার ভিতরে ডেলিভারি চার্জ: ৳৭০\n• ঢাকার বাইরে ডেলিভারি চার্জ: ৳১২০\n• ক্যাশ অন ডেলিভারি (COD) ও বিকাশ পেমেন্ট সুবিধা রয়েছে।\n• পণ্য হাতে পেয়ে চেক করে নেওয়ার সুবিধা এবং ৭ দিনের সহজ রিটার্ন পলিসি পাবেন।`);
+      }
+
+      // Check website generator inquiries
+      if (
+        lastUserMsg.includes('ওয়েবসাইট') ||
+        lastUserMsg.includes('স্টোর') ||
+        lastUserMsg.includes('শপ') ||
+        lastUserMsg.includes('দোকান')
+      ) {
+        parts.push(`🌐 পার্সোনাল ওয়েবসাইট তৈরি:\nরিসেলার প্যানেলের “ওয়েবসাইট তৈরি করুন” মেনু থেকে আপনার পছন্দমতো লোগো, নাম, যোগাযোগ নম্বর ও থিম কালার দিয়ে ১ মিনিটে নিজস্ব কাস্টম শপ চালু করতে পারবেন!`);
+      }
+
+      // Check product search & catalog keywords
+      if (!parts.length && (
+        lastUserMsg.includes('কাতুয়া') || lastUserMsg.includes('শার্ট') || lastUserMsg.includes('ঘড়ি') || 
+        lastUserMsg.includes('পাঞ্জাবি') || lastUserMsg.includes('জুতো') || lastUserMsg.includes('পণ্য') || 
+        lastUserMsg.includes('প্রোডাক্ট') || lastUserMsg.includes('কালেকশন') || lastUserMsg.includes('টি-শার্ট') || 
+        lastUserMsg.includes('ড্রেস') || lastUserMsg.includes('দাম') || lastUserMsg.includes('price') ||
+        lastUserMsg.includes('দেখাও') || lastUserMsg.includes('খুঁজ')
+      )) {
+        const matches = activeProducts.filter(p => {
+          const name = (p.nameBn + ' ' + p.nameEn + ' ' + p.category).toLowerCase();
+          const words = lastUserMsg.split(/\s+/).filter(w => w.length > 2);
+          return words.some(w => name.includes(w));
+        }).slice(0, 3);
+
+        if (matches.length > 0) {
+          const tags = matches.map(p => `• ${p.nameBn} - মূল্য: ৳${p.price.toLocaleString()}\n[product:${p.id}]`).join('\n\n');
+          parts.push(`আপনার পছন্দের সাথে মিল থাকা পণ্যসমূহ:\n\n${tags}`);
         } else {
-          parts.push('এই প্রডাক্টটি আপনার শপ বা ক্যাটালগে পাওয়া যায়নি।');
+          const sample = activeProducts.slice(0, 2);
+          const tags = sample.map(p => `• ${p.nameBn} - মূল্য: ৳${p.price.toLocaleString()}\n[product:${p.id}]`).join('\n\n');
+          parts.push(`আমাদের জনপ্রিয় কালেকশন থেকে নির্বাচিত পণ্য:\n\n${tags}`);
         }
       }
 
       // Check contact query
       if (lastUserMsg.includes('কন্টাক্ট') || lastUserMsg.includes('যোগাযোগ') || lastUserMsg.includes('whatsapp') || lastUserMsg.includes('মালিক')) {
-        parts.push(`অফিশিয়াল সাপোর্ট ও মালিকের সাথে সরাসরি যোগাযোগ:\n• মোবাইল ও হোয়াটসঅ্যাপ: 01722439516\n• ইমেইল: mdshaali9516@gmail.com\n\n[action:whatsapp|💬 সরাসরি হোয়াটসঅ্যাপে কথা বলুন (01722439516)]`);
+        parts.push(`অফিশিয়াল সাপোর্ট ও হেল্পলাইনে সরাসরি যোগাযোগ:\n• মোবাইল ও হোয়াটসঅ্যাপ: 01722439516\n• ইমেইল: mdshaali9516@gmail.com\n\n[action:whatsapp|💬 সরাসরি হোয়াটসঅ্যাপে কথা বলুন (01722439516)]`);
       }
 
       if (parts.length > 0) {
@@ -4856,7 +5024,7 @@ ${JSON.stringify(activeProducts.slice(0, 30))}`;
       } else if (lastReferencedProduct && (lastUserMsg.includes('দাম') || lastUserMsg.includes('প্রফিট') || lastUserMsg.includes('স্টক') || lastUserMsg.includes('প্রোডাক্ট'))) {
         replyText = `“${lastReferencedProduct.nameBn || lastReferencedProduct.nameEn}”\nমূল্য: ৳${lastReferencedProduct.price}\nরিসেলার প্রফিট: ৳${lastReferencedProduct.resellerProfit}\nস্টক: ${lastReferencedProduct.stock > 0 ? 'অ্যাভেইলেবল' : 'স্টক শেষ'}\n\n[product:${lastReferencedProduct.id}]`;
       } else {
-        replyText = `হ্যালো! আমি তাউজুন এআই (TAWZOON AI)। আপনার রিসেলার অ্যাকাউন্ট (ID: ${authenticatedEmployee?.id || 'GUEST'}) এর ব্যালেন্স, প্রফিট, অর্ডার ট্র্যাকিং ও ক্যাটালগ সংক্রান্ত সাহায্য করতে প্রস্তুত। আপনি কী জানতে চান লিখুন।`;
+        replyText = `আসসালামু আলাইকুম! আমি আপনার শপ ও ক্যাটালগ অ্যাসিস্ট্যান্ট।\n\nআপনি পণ্যের নাম বা কোড লিখে সার্চ করতে পারেন, ডেলিভারি চার্জ ও পেমেন্ট পলিসি জানতে পারেন, কিংবা ওয়ালেট ব্যালেন্স ও অর্ডার ট্র্যাকিং চেক করতে পারেন। কীভাবে সাহায্য করতে পারি বলুন?`;
       }
     }
 

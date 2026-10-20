@@ -10,6 +10,7 @@ import {
 } from '../types/index.js';
 import { translations } from '../i18n/translations.js';
 import { api, authStorage } from '../services/api.js';
+import { getProductSizes } from '../utils/productSizes.js';
 
 export type UserNavTab = 'home' | 'products' | 'sales' | 'earnings' | 'profile';
 
@@ -564,17 +565,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setCheckoutModalItems(items);
     } else if (cartItems.length > 0) {
       setCheckoutModalItems(
-        cartItems.map(item => ({
-          product: item,
-          size: item.sizes?.[0] || 'M',
-          quantity: item.quantity || 1,
-        }))
+        cartItems.map(item => {
+          const szs = getProductSizes(item);
+          return {
+            product: item,
+            size: item.sizes?.[0] || (szs.length > 0 ? szs[0] : 'স্ট্যান্ডার্ড'),
+            quantity: item.quantity || 1,
+          };
+        })
       );
     } else if (selectedProduct) {
+      const szs = getProductSizes(selectedProduct);
       setCheckoutModalItems([
         {
           product: selectedProduct,
-          size: selectedProduct.sizes?.[0] || 'M',
+          size: selectedProduct.sizes?.[0] || (szs.length > 0 ? szs[0] : 'স্ট্যান্ডার্ড'),
           quantity: 1,
         },
       ]);

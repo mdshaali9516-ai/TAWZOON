@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext.js';
 import { getAdjustedSellingPrice, getAdjustedRegularPrice, getResellerProfitPerUnit } from '../utils/pricing.js';
+import { getProductSizes } from '../utils/productSizes.js';
 import {
   X,
   Copy,
@@ -12,13 +13,40 @@ import {
   Phone,
   ChevronLeft,
   ChevronRight,
-  Home
+  Home,
+  Package,
+  Plus,
+  Minus
 } from 'lucide-react';
 import { ProductGallery } from './ProductGallery.js';
 
 export const ProductDetailsModal: React.FC = () => {
   const { lang, t, selectedProduct, setSelectedProduct, showToast, employee, brandSettings, setActivePortal, addToCart, openCheckoutModal } = useApp();
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState<string>('M');
+  const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
+  const [isAddingToOrder, setIsAddingToOrder] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsAddingToOrder(sessionStorage.getItem('tawzoon_is_adding_to_order') === 'true');
+    }
+  }, [selectedProduct]);
+
+  useEffect(() => {
+    if (selectedProduct) {
+      const primary =
+        selectedProduct.images?.find(i => i.isPrimary)?.url ||
+        selectedProduct.images?.[0]?.url ||
+        selectedProduct.imageUrl ||
+        '/images/product_shop_dress_1790244714775.jpg';
+      setSelectedImageUrl(primary);
+      const availableSizes = getProductSizes(selectedProduct);
+      setSelectedSize(availableSizes.length > 0 ? availableSizes[0] : 'স্ট্যান্ডার্ড');
+      setSelectedQuantity(1);
+    }
+  }, [selectedProduct]);
 
   if (!selectedProduct) return null;
 
@@ -135,7 +163,11 @@ export const ProductDetailsModal: React.FC = () => {
             
             {/* Gallery Column (6 cols) with Video & Multi-image carousel */}
             <div className="md:col-span-6">
-              <ProductGallery product={selectedProduct} lang={lang} />
+              <ProductGallery
+                product={selectedProduct}
+                lang={lang}
+                onImageChange={(url) => setSelectedImageUrl(url)}
+              />
             </div>
 
             {/* Product Details Column (6 cols) */}
@@ -217,21 +249,62 @@ export const ProductDetailsModal: React.FC = () => {
                 </div>
               )}
 
-              {/* Colors & Sizes */}
-              {selectedProduct.colors && selectedProduct.colors.length > 0 && (
-                <div className="space-y-1.5">
-                  <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-                    {t.colorVariants}
-                  </h4>
-                  <div className="flex flex-wrap gap-1.5 text-xs font-medium text-slate-700">
-                    {selectedProduct.colors.map(col => (
-                      <span key={col} className="px-2 py-0.5 bg-slate-100 rounded-md border border-slate-200">
-                        {col}
+              {/* Colors & Sizes Selection */}
+              <div className="space-y-3 pt-1">
+                {/* Size Selection */}
+                {getProductSizes(selectedProduct).length > 0 && (
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                        {lang === 'bn' ? 'সাইজ নির্বাচন করুন:' : 'Select Size:'}
+                      </h4>
+                      <span className="text-xs font-bold text-[#009245]">
+                        {lang === 'bn' ? `সিলেক্টেড: ${selectedSize}` : `Selected: ${selectedSize}`}
                       </span>
-                    ))}
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 text-xs font-medium">
+                      {getProductSizes(selectedProduct).map(sz => (
+                        <button
+                          key={sz}
+                          type="button"
+                          onClick={() => setSelectedSize(sz)}
+                          className={`px-3 py-1.5 rounded-xl border text-xs font-black transition-all cursor-pointer ${
+                            selectedSize === sz
+                              ? 'bg-[#009245] text-white border-[#009245] shadow-xs scale-102 ring-2 ring-[#009245]/20'
+                              : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                          }`}
+                        >
+                          {sz}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Quantity Selector */}
+                <div className="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-200/80">
+                  <span className="text-xs font-bold text-slate-700">
+                    {lang === 'bn' ? 'পরিমাণ:' : 'Quantity:'}
+                  </span>
+                  <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-lg border border-slate-200 shadow-3xs">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedQuantity(Math.max(1, selectedQuantity - 1))}
+                      className="w-6 h-6 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-bold cursor-pointer"
+                    >
+                      <Minus className="w-3.5 h-3.5" />
+                    </button>
+                    <span className="w-8 text-center text-xs font-black font-mono">{selectedQuantity}</span>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedQuantity(selectedQuantity + 1)}
+                      className="w-6 h-6 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-bold cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </div>
-              )}
+              </div>
 
               {/* Specifications Table */}
               {selectedProduct.specifications && selectedProduct.specifications.length > 0 && (
@@ -261,33 +334,139 @@ export const ProductDetailsModal: React.FC = () => {
 
               {/* Order Actions */}
               <div className="pt-2 space-y-2">
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      addToCart(selectedProduct);
-                      showToast(lang === 'bn' ? 'পণ্যটি কার্টে যোগ করা হয়েছে' : 'Added to cart');
-                    }}
-                    className="w-full py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 text-[#009245] border border-emerald-300 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-                  >
-                    <span>{lang === 'bn' ? 'কার্টে যোগ করুন' : 'Add to Cart'}</span>
-                  </button>
+                {isAddingToOrder ? (
+                  /* Adding to Order Mode Action */
+                  <div className="space-y-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const activeImg =
+                          selectedImageUrl ||
+                          selectedProduct.images?.find(i => i.isPrimary)?.url ||
+                          selectedProduct.images?.[0]?.url ||
+                          selectedProduct.imageUrl ||
+                          '/images/product_shop_dress_1790244714775.jpg';
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedProduct(null);
-                      openCheckoutModal([{
-                        product: selectedProduct,
-                        size: selectedProduct.sizes?.[0] || 'M',
-                        quantity: 1,
-                      }]);
-                    }}
-                    className="w-full bg-[#009245] hover:bg-[#007a3a] text-white py-2.5 px-3 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-xs transition-colors cursor-pointer active:scale-95"
-                  >
-                    <span>{lang === 'bn' ? 'এখনই অর্ডার করুন' : 'Order Now'}</span>
-                  </button>
-                </div>
+                        let currentItems: any[] = [];
+                        try {
+                          const saved = sessionStorage.getItem('tawzoon_pending_order_items');
+                          if (saved) currentItems = JSON.parse(saved);
+                        } catch {}
+
+                        const newItem = {
+                          productId: selectedProduct.id,
+                          originalProduct: {
+                            ...selectedProduct,
+                            imageUrl: activeImg,
+                            selectedImageUrl: activeImg,
+                          },
+                          productName: lang === 'bn' ? selectedProduct.nameBn : (selectedProduct.nameEn || selectedProduct.nameBn),
+                          productCode: selectedProduct.productCode,
+                          imageUrl: activeImg,
+                          size: selectedSize || 'M',
+                          quantity: selectedQuantity || 1,
+                          unitPrice: sellingPrice,
+                        };
+
+                        const existingIdx = currentItems.findIndex(
+                          it => it.productId === newItem.productId && it.size === newItem.size && it.imageUrl === newItem.imageUrl
+                        );
+
+                        let updatedItems: any[] = [];
+                        if (existingIdx >= 0) {
+                          updatedItems = [...currentItems];
+                          updatedItems[existingIdx].quantity += newItem.quantity;
+                        } else {
+                          updatedItems = [...currentItems, newItem];
+                        }
+
+                        sessionStorage.setItem('tawzoon_pending_order_items', JSON.stringify(updatedItems));
+                        sessionStorage.removeItem('tawzoon_is_adding_to_order');
+                        window.dispatchEvent(new Event('tawzoon_order_mode_changed'));
+
+                        showToast(lang === 'bn' ? `✓ '${title}' (${selectedSize}) সফলভাবে অর্ডারে যুক্ত হয়েছে!` : `✓ Added '${title}' (${selectedSize}) to Order!`, 'success');
+                        setSelectedProduct(null);
+                        openCheckoutModal(
+                          updatedItems.map(it => ({
+                            product: it.originalProduct || it.product || selectedProduct,
+                            size: it.size,
+                            quantity: it.quantity,
+                          }))
+                        );
+                      }}
+                      className="w-full bg-[#009245] hover:bg-[#007a38] text-white py-3 px-4 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer active:scale-95"
+                    >
+                      <Package className="w-4 h-4" />
+                      <span>{lang === 'bn' ? '+ অর্ডারে এই পণ্যটি যুক্ত করুন' : '+ Add This Product to Order'}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const activeImg =
+                          selectedImageUrl ||
+                          selectedProduct.images?.find(i => i.isPrimary)?.url ||
+                          selectedProduct.imageUrl ||
+                          '/images/product_shop_dress_1790244714775.jpg';
+                        addToCart({
+                          ...selectedProduct,
+                          imageUrl: activeImg,
+                        } as any);
+                        showToast(lang === 'bn' ? 'পণ্যটি কার্টেও যুক্ত হয়েছে' : 'Added to cart as well');
+                      }}
+                      className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <span>{lang === 'bn' ? 'কার্টেও যোগ করুন' : 'Add to Cart as Well'}</span>
+                    </button>
+                  </div>
+                ) : (
+                  /* Standard Public Order Actions */
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const activeImg =
+                          selectedImageUrl ||
+                          selectedProduct.images?.find(i => i.isPrimary)?.url ||
+                          selectedProduct.images?.[0]?.url ||
+                          selectedProduct.imageUrl ||
+                          '/images/product_shop_dress_1790244714775.jpg';
+                        addToCart({
+                          ...selectedProduct,
+                          imageUrl: activeImg,
+                        } as any);
+                        showToast(lang === 'bn' ? 'পণ্যটি কার্টে যোগ করা হয়েছে' : 'Added to cart');
+                      }}
+                      className="w-full py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 text-[#009245] border border-emerald-300 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <span>{lang === 'bn' ? 'কার্টে যোগ করুন' : 'Add to Cart'}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedProduct(null);
+                        const activeImg =
+                          selectedImageUrl ||
+                          selectedProduct.images?.find(i => i.isPrimary)?.url ||
+                          selectedProduct.images?.[0]?.url ||
+                          selectedProduct.imageUrl ||
+                          '/images/product_shop_dress_1790244714775.jpg';
+                        openCheckoutModal([{
+                          product: {
+                            ...selectedProduct,
+                            imageUrl: activeImg,
+                          } as any,
+                          size: selectedSize || 'M',
+                          quantity: selectedQuantity || 1,
+                        }]);
+                      }}
+                      className="w-full bg-[#009245] hover:bg-[#007a38] text-white py-2.5 px-3 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-xs transition-colors cursor-pointer active:scale-95"
+                    >
+                      <span>{lang === 'bn' ? 'এখনই অর্ডার করুন' : 'Order Now'}</span>
+                    </button>
+                  </div>
+                )}
 
                 <div className="flex items-center justify-center gap-2 pt-1 text-slate-400 text-xs">
                   <Phone className="w-3.5 h-3.5" />
