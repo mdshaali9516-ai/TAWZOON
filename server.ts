@@ -1249,8 +1249,58 @@ app.post('/api/public/orders', async (req: Request, res: Response) => {
 });
 
 // ==========================================
-// 2. ADMIN AUTHENTICATION (NO PASSWORD - OTP ONLY)
+// 2. ADMIN AUTHENTICATION (DIRECT PASSWORD & OTP SUPPORT)
 // ==========================================
+
+// Direct Admin Login with Email & Password (No OTP code required)
+app.post('/api/auth/admin/login', (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  if (!email || email.trim().toLowerCase() !== AUTHORIZED_ADMIN_EMAIL.toLowerCase() || password !== AUTHORIZED_ADMIN_PASSWORD) {
+    db.logAudit(
+      'ADMIN_LOGIN_UNAUTHORIZED_ATTEMPT',
+      email || 'Unknown',
+      'ADMIN_PORTAL',
+      undefined,
+      'Rejected invalid admin email or password',
+      getClientIp(req)
+    );
+    return res.status(403).json({
+      error: 'ভুল ইমেইল বা পাসওয়ার্ড! শুধুমাত্র অনুমোদিত অ্যাডমিন (mdshaali9516@gmail.com) এবং সঠিক পাসওয়ার্ড দিতে হবে।'
+    });
+  }
+
+  const state = db.getState();
+  const token = crypto.randomBytes(32).toString('hex');
+  const session = {
+    token,
+    email: AUTHORIZED_ADMIN_EMAIL,
+    role: 'SUPER_ADMIN' as const,
+    createdAt: Date.now(),
+    expiresAt: Date.now() + 24 * 3600 * 1000 // 24 hours
+  };
+
+  state.adminSessions.push(session);
+  db.save();
+
+  db.logAudit(
+    'ADMIN_LOGIN_SUCCESS',
+    AUTHORIZED_ADMIN_EMAIL,
+    'ADMIN_PORTAL',
+    undefined,
+    'Admin authenticated via direct password login',
+    getClientIp(req)
+  );
+
+  res.json({
+    success: true,
+    token,
+    admin: {
+      email: AUTHORIZED_ADMIN_EMAIL,
+      role: 'SUPER_ADMIN'
+    }
+  });
+});
 
 // Request 6-digit OTP to authorized admin email
 app.post('/api/auth/admin/request-otp', (req: Request, res: Response) => {
@@ -4998,8 +5048,8 @@ ${JSON.stringify(activeProducts.slice(0, 30))}`;
       )) {
         const matches = activeProducts.filter(p => {
           const name = (p.nameBn + ' ' + p.nameEn + ' ' + p.category).toLowerCase();
-          const words = lastUserMsg.split(/\s+/).filter(w => w.length > 2);
-          return words.some(w => name.includes(w));
+          const words = lastUserMsg.split(/\s+/).filter((w: string) => w.length > 2);
+          return words.some((w: string) => name.includes(w));
         }).slice(0, 3);
 
         if (matches.length > 0) {

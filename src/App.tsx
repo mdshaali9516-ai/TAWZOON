@@ -18,6 +18,7 @@ import { AIChatWidget } from './components/common/AIChatWidget.js';
 import { PublicOrderCheckoutModal } from './components/public/PublicOrderCheckoutModal.js';
 import { PublicAddingToOrderBanner } from './components/public/PublicAddingToOrderBanner.js';
 import { ResellerStorefrontView } from './components/public/ResellerStorefrontView.js';
+import { PWAAutoInstallBanner } from './components/common/PWAAutoInstallBanner.js';
 
 const MainView: React.FC = () => {
   const { activePortal, showPromo } = useApp();
@@ -42,7 +43,7 @@ const MainView: React.FC = () => {
       {activePortal === 'public' && <PublicAddingToOrderBanner />}
 
       {/* Dynamic Views */}
-      <main className={`flex-1 ${showPromo ? 'pt-[85px] sm:pt-[92px]' : 'pt-[54px] sm:pt-[60px]'} ${activePortal !== 'admin' ? 'pb-20 sm:pb-22' : ''}`}>
+      <main className={`flex-1 ${showPromo ? 'pt-[85px] sm:pt-[92px]' : 'pt-[54px] sm:pt-[60px]'} ${activePortal !== 'admin' ? 'pb-20 sm:pb-22 md:pb-8' : ''}`}>
         {activePortal === 'public' && <PublicStorefront />}
         {activePortal === 'employee' && <EmployeePortal />}
         {activePortal === 'admin' && <AdminPortal />}
@@ -65,6 +66,9 @@ const MainView: React.FC = () => {
 
       {/* Global Floating AI Chat Widget (Excludes Admin Portal) */}
       {activePortal !== 'admin' && <AIChatWidget />}
+
+      {/* Global PWA Auto Install Prompt (Mobile & Desktop) */}
+      <PWAAutoInstallBanner />
 
       {/* Global Toasts */}
       <ToastContainer />

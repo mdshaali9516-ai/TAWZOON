@@ -154,10 +154,10 @@ export const ResellerPortal: React.FC = () => {
               <img 
                 src={brandSettings.logoUrl} 
                 alt="App Logo" 
-                className="w-8 h-8 rounded-full object-cover bg-white border border-slate-200 p-0.5 shadow-2xs shrink-0" 
+                className="w-8 h-8 rounded-xl object-contain bg-white border border-slate-200 p-0.5 shadow-2xs shrink-0" 
               />
             ) : (
-              <div className="w-8 h-8 rounded-full bg-[#009245] text-white flex items-center justify-center font-black text-xs shadow-2xs shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-[#009245] text-white flex items-center justify-center font-black text-xs shadow-2xs shrink-0">
                 T
               </div>
             )}
@@ -357,10 +357,10 @@ export const ResellerPortal: React.FC = () => {
             <img 
               src={brandSettings.logoUrl} 
               alt="App Logo" 
-              className="w-7 h-7 rounded-full object-cover bg-white border border-slate-200 p-0.5 shadow-3xs shrink-0" 
+              className="w-7 h-7 rounded-xl object-contain bg-white border border-slate-200 p-0.5 shadow-3xs shrink-0" 
             />
           ) : (
-            <div className="w-7 h-7 rounded-full bg-[#009245] text-white flex items-center justify-center font-black text-[10px] shadow-3xs shrink-0">
+            <div className="w-7 h-7 rounded-xl bg-[#009245] text-white flex items-center justify-center font-black text-[10px] shadow-3xs shrink-0">
               T
             </div>
           )}
@@ -401,10 +401,10 @@ export const ResellerPortal: React.FC = () => {
               <img 
                 src={brandSettings.logoUrl} 
                 alt="App Logo" 
-                className="w-9 h-9 rounded-full object-cover bg-white border border-slate-200 p-0.5 shadow-2xs shrink-0" 
+                className="w-9 h-9 rounded-xl object-contain bg-white border border-slate-200 p-0.5 shadow-2xs shrink-0" 
               />
             ) : (
-              <div className="w-9 h-9 rounded-full bg-[#009245] text-white flex items-center justify-center font-black text-sm shadow-2xs shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-[#009245] text-white flex items-center justify-center font-black text-sm shadow-2xs shrink-0">
                 T
               </div>
             )}

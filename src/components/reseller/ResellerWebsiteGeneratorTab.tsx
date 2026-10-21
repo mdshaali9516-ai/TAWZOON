@@ -144,7 +144,6 @@ export const ResellerWebsiteGeneratorTab: React.FC = () => {
       });
 
       if (res && res.success) {
-        setEmployee(prev => prev ? { ...prev, ...res.employee } : res.employee);
         await refreshEmployeeProfile();
         showToast(
           lang === 'bn'

@@ -5,8 +5,11 @@ import {
   Copy,
   Check,
   Star,
+  Heart,
   ChevronDown,
-  Maximize2,
+  ChevronUp,
+  ZoomIn,
+  ZoomOut,
   Link2,
   Plus,
   Minus,
@@ -32,7 +35,8 @@ export const ResellerProductPreviewModal: React.FC<ResellerProductPreviewModalPr
   onClose,
   onTakeForSelling,
 }) => {
-  const { lang, employee, brandSettings, addToCart } = useApp();
+  const { lang, employee, brandSettings, addToCart, wishlistItems = [], toggleWishlist } = useApp();
+  const isWishlisted = product ? wishlistItems.some(p => p.id === product.id) : false;
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
@@ -68,6 +72,51 @@ export const ResellerProductPreviewModal: React.FC<ResellerProductPreviewModalPr
     }
   }, [product, isOpen, adjustedSellingPrice]);
 
+  // Thumbnail list scroll management
+  const thumbnailScrollRef = React.useRef<HTMLDivElement>(null);
+  const [canScrollDown, setCanScrollDown] = useState(false);
+  const [canScrollUp, setCanScrollUp] = useState(false);
+
+  // Filter images only (exclude video URLs)
+  const images = product?.images && product.images.length > 0
+    ? product.images.filter(img => img.url && !img.url.endsWith('.mp4')).map(img => img.url)
+    : [product?.imageUrl || '/images/product_shop_dress_1790244714775.jpg'];
+
+  const activeImage = images[activeImageIndex] || images[0];
+
+  const checkThumbnailScroll = () => {
+    if (thumbnailScrollRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = thumbnailScrollRef.current;
+      setCanScrollDown(scrollHeight - scrollTop - clientHeight > 8);
+      setCanScrollUp(scrollTop > 8);
+    }
+  };
+
+  React.useEffect(() => {
+    if (isOpen && product) {
+      checkThumbnailScroll();
+      const el = thumbnailScrollRef.current;
+      if (!el) return;
+
+      let ro: ResizeObserver | null = null;
+      if (typeof ResizeObserver !== 'undefined') {
+        ro = new ResizeObserver(() => {
+          checkThumbnailScroll();
+        });
+        ro.observe(el);
+      }
+
+      const timer = setTimeout(checkThumbnailScroll, 150);
+      window.addEventListener('resize', checkThumbnailScroll);
+
+      return () => {
+        if (ro) ro.disconnect();
+        clearTimeout(timer);
+        window.removeEventListener('resize', checkThumbnailScroll);
+      };
+    }
+  }, [images, isOpen, product]);
+
   if (!isOpen || !product) return null;
 
   const showInModalNotice = (msg: string, duration = 2200) => {
@@ -75,12 +124,19 @@ export const ResellerProductPreviewModal: React.FC<ResellerProductPreviewModalPr
     setTimeout(() => setDownloadNotice(null), duration);
   };
 
-  // Filter images only (exclude video URLs)
-  const images = product.images && product.images.length > 0
-    ? product.images.filter(img => img.url && !img.url.endsWith('.mp4')).map(img => img.url)
-    : [product.imageUrl || '/images/product_shop_dress_1790244714775.jpg'];
+  const handleScrollThumbnailsDown = () => {
+    if (thumbnailScrollRef.current) {
+      thumbnailScrollRef.current.scrollBy({ top: 120, behavior: 'smooth' });
+      setTimeout(checkThumbnailScroll, 250);
+    }
+  };
 
-  const activeImage = images[activeImageIndex] || images[0];
+  const handleScrollThumbnailsUp = () => {
+    if (thumbnailScrollRef.current) {
+      thumbnailScrollRef.current.scrollBy({ top: -120, behavior: 'smooth' });
+      setTimeout(checkThumbnailScroll, 250);
+    }
+  };
 
   // Category name formatting: Keeps up to 2 full words without breaking single words like "কাতুয়া"
   const rawCategoryName = product.subcategoryBn || product.categorySlug || 'কাতুয়া';
@@ -266,78 +322,142 @@ ${sizes ? `📐 উপলব্ধ সাইজ: ${sizes}\n` : ''}${desc ? `\n�
             <div className="space-y-3.5">
               
               {/* গ্যালারি (উলম্ব থাম্বনেইল + বড় লম্বাটে ডিসপ্লে) */}
-          <div className="flex gap-2 items-stretch">
+              {/* গ্যালারি (উলম্ব থাম্বনেইল + বড় লম্বাটে ডিসপ্লে) */}
+          <div className="flex flex-row gap-2 sm:gap-3.5 items-stretch w-full max-w-full md:max-w-[560px] h-[340px] sm:h-[380px] md:h-[500px] lg:h-[530px]">
             
-            {/* থাম্বনেইল কলাম (Size: 48px on desktop) */}
-            <div className="flex flex-col items-center gap-2 w-[48px] md:w-[56px] shrink-0">
-              <div className="flex flex-col gap-2 overflow-y-auto max-h-[300px] w-full p-0.5" style={{ scrollbarWidth: 'none' }}>
+            {/* থাম্বনেইল কলাম (কোনো আবদ্ধকারী বর্ডার শেপ ছাড়া সম্পূর্ণ মুক্ত ও ক্লিন) */}
+            <div className="relative flex flex-col items-center w-[46px] sm:w-[56px] shrink-0 h-full py-0.5">
+              {canScrollUp && (
+                <button
+                  type="button"
+                  onClick={handleScrollThumbnailsUp}
+                  className="absolute top-0 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white hover:bg-slate-100 text-slate-700 hover:text-[#009245] shadow-xs border border-slate-200 flex items-center justify-center transition-all cursor-pointer z-20"
+                  title={lang === 'bn' ? 'উপরে স্ক্রল করুন' : 'Scroll Up'}
+                >
+                  <ChevronUp className="w-3 h-3" />
+                </button>
+              )}
+
+              <div
+                ref={thumbnailScrollRef}
+                onScroll={checkThumbnailScroll}
+                className="h-full w-full overflow-y-auto flex flex-col items-center gap-1.5 sm:gap-2 scrollbar-none py-1 scroll-smooth"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
                 {images.map((img, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => setActiveImageIndex(idx)}
-                    className={`w-[44px] h-[44px] md:w-[52px] md:h-[52px] rounded-xl overflow-hidden border-2 p-0.5 transition-all cursor-pointer bg-slate-50 shrink-0 ${
+                    className={`w-[44px] h-[44px] sm:w-[54px] sm:h-[54px] min-w-[44px] min-h-[44px] sm:min-w-[54px] sm:min-h-[54px] max-w-[44px] max-h-[44px] sm:max-w-[54px] sm:max-h-[54px] aspect-square rounded-xl overflow-hidden cursor-pointer bg-white shrink-0 transition-all p-0.5 flex items-center justify-center ${
                       activeImageIndex === idx
-                        ? 'border-[#009245] ring-2 ring-[#009245]/20 shadow-xs scale-105'
-                        : 'border-slate-200 opacity-75 hover:opacity-100'
+                        ? 'border-2 border-[#009245] shadow-xs'
+                        : 'border border-slate-200 hover:border-slate-300 opacity-75 hover:opacity-100'
                     }`}
                   >
-                    <img src={img} alt="thumb" className="w-full h-full object-cover rounded-lg" />
+                    <img src={img} alt="thumb" className="w-full h-full object-cover aspect-square rounded-lg" />
                   </button>
                 ))}
               </div>
 
-              {images.length > 5 && (
-                <div className="w-4 h-4 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center shrink-0">
+              {canScrollDown && (
+                <button
+                  type="button"
+                  onClick={handleScrollThumbnailsDown}
+                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white hover:bg-slate-100 text-slate-700 hover:text-[#009245] shadow-xs border border-slate-200 flex items-center justify-center transition-all cursor-pointer z-20"
+                  title={lang === 'bn' ? 'নিচে স্ক্রল করুন' : 'Scroll Down'}
+                >
                   <ChevronDown className="w-3 h-3" />
-                </div>
+                </button>
               )}
             </div>
 
-            {/* মূল ডিসপ্লে */}
-            <div className="flex-1 min-w-0">
+            {/* মূল ডিসপ্লে (মোবাইলে হালকা ছোট, ডেস্কটপে বড় ও সুষম অনুপাতে আকর্ষণীয় ফ্রেম) */}
+            <div className="flex-1 h-full min-w-0">
               <div
                 onMouseMove={(e) => {
                   if (!zoomMode) return;
                   const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-                  const x = ((e.clientX - left) / width) * 100;
-                  const y = ((e.clientY - top) / height) * 100;
+                  const x = Math.max(0, Math.min(100, ((e.clientX - left) / width) * 100));
+                  const y = Math.max(0, Math.min(100, ((e.clientY - top) / height) * 100));
                   setMousePos({ x, y });
                 }}
-                className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200/80 flex items-center justify-center p-1 group shadow-inner transition-all duration-200"
+                onTouchMove={(e) => {
+                  if (!zoomMode || !e.touches[0]) return;
+                  const touch = e.touches[0];
+                  const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+                  const x = Math.max(0, Math.min(100, ((touch.clientX - left) / width) * 100));
+                  const y = Math.max(0, Math.min(100, ((touch.clientY - top) / height) * 100));
+                  setMousePos({ x, y });
+                }}
+                className="relative h-full w-full rounded-2xl overflow-hidden bg-slate-50 border border-slate-200/90 flex items-center justify-center p-2 group shadow-inner transition-all duration-200 select-none touch-none"
               >
+                {/* Discount Badge */}
+                {discountPercent > 0 && (
+                  <span className="absolute top-2.5 left-2.5 z-10 text-[9.5px] sm:text-xs font-black text-white bg-rose-600 px-1.5 sm:px-2 py-0.5 rounded-md leading-none shadow-xs">
+                    {discountPercent}% ছাড়
+                  </span>
+                )}
+
+                {/* HD Full Image Display: কোনো কানি-কোনা কাটবে না, যেকোনো সাইজ সম্পূর্ণ ফিট হবে */}
                 <img
                   src={activeImage}
                   alt={product.nameBn}
-                  className={`w-full h-full object-contain object-center transition-transform duration-150 ${zoomMode ? 'cursor-grab active:cursor-grabbing' : ''}`}
+                  className={`max-w-full max-h-full w-auto h-auto object-contain rounded-xl transition-transform duration-150 ${
+                    zoomMode ? 'cursor-grab active:cursor-grabbing' : ''
+                  }`}
                   style={{
                     transform: zoomMode ? 'scale(2.5)' : 'scale(1)',
                     transformOrigin: `${mousePos.x}% ${mousePos.y}%`,
                   }}
+                  loading="eager"
                 />
 
-                {/* Single Image Download Floating Icon */}
+                {/* Single Image Download Floating Icon (ব্যাকগ্রাউন্ড ছাড়া ক্লিন ও বড়) */}
                 <button
                   type="button"
                   onClick={() => handleDownloadSingle(activeImage, activeImageIndex)}
-                  className="absolute top-2 left-2 p-1.5 text-slate-600 hover:text-[#009245] transition-transform hover:scale-110 active:scale-95 cursor-pointer z-10 focus:outline-none bg-white/90 backdrop-blur-xs rounded-lg shadow-xs border border-slate-200"
+                  className="absolute bottom-2.5 left-2.5 p-1 text-slate-700 hover:text-[#009245] transition-all hover:scale-115 active:scale-90 cursor-pointer z-10 focus:outline-none drop-shadow-[0_2px_6px_rgba(0,0,0,0.35)]"
                   title="ছবি ডাউনলোড করুন"
                 >
-                  <Download className="w-3.5 h-3.5" />
+                  <Download className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
 
-                {/* Zoom Toggle Floating Button */}
+                {/* Wishlist Heart Icon (রিসেলার প্যানেলের মতো হুবহু ক্লিন ও প্রফেশনাল হার্ট আইকন) */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleWishlist(product);
+                  }}
+                  className="absolute top-2.5 right-2.5 p-1 transition-transform hover:scale-110 active:scale-95 cursor-pointer z-10 focus:outline-none"
+                  title={lang === 'bn' ? 'পছন্দের তালিকায় রাখুন/বাদ দিন' : 'Toggle favorite'}
+                >
+                  <Heart
+                    className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors ${
+                      isWishlisted
+                        ? 'fill-rose-600 text-rose-600 drop-shadow-sm'
+                        : 'text-slate-400 hover:text-rose-600 drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]'
+                    }`}
+                  />
+                </button>
+
+                {/* Zoom Toggle Floating Button (জুম আইকন, ব্যাকগ্রাউন্ড ছাড়া এবং মোবাইল ড্র্যাগ সাপোর্টেড) */}
                 <button
                   type="button"
                   onClick={() => setZoomMode(!zoomMode)}
-                  className={`absolute bottom-2 right-2 p-1.5 transition-all cursor-pointer z-10 focus:outline-none rounded-lg shadow-xs border ${
+                  className={`absolute bottom-2.5 right-2.5 p-1 transition-all cursor-pointer z-10 focus:outline-none hover:scale-115 active:scale-90 ${
                     zoomMode
-                      ? 'bg-[#009245] text-white border-[#009245]'
-                      : 'bg-white/95 backdrop-blur-xs text-slate-700 hover:text-[#009245] border-slate-200'
+                      ? 'text-[#009245] drop-shadow-[0_2px_8px_rgba(0,146,69,0.6)]'
+                      : 'text-slate-700 hover:text-[#009245] drop-shadow-[0_2px_6px_rgba(0,0,0,0.35)]'
                   }`}
-                  title="জুম করুন"
+                  title={zoomMode ? 'জুম বন্ধ করুন' : 'জুম করুন (ট্যাপ করে ড্র্যাগ করুন)'}
                 >
-                  <Maximize2 className="w-3.5 h-3.5" />
+                  {zoomMode ? (
+                    <ZoomOut className="w-5 h-5 sm:w-6 sm:h-6" />
+                  ) : (
+                    <ZoomIn className="w-5 h-5 sm:w-6 sm:h-6" />
+                  )}
                 </button>
               </div>
             </div>

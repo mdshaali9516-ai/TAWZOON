@@ -13,6 +13,13 @@ import {
   Camera,
   ArrowLeft,
   Menu,
+  Home,
+  LayoutDashboard,
+  ShoppingBag,
+  Package,
+  Heart,
+  Download,
+  Monitor,
 } from 'lucide-react';
 import { SearchInputWithImage } from './common/SearchInputWithImage.js';
 import { BkashBalanceButton } from './common/BkashBalanceButton.js';
@@ -26,9 +33,11 @@ export const Navbar: React.FC = () => {
     brandSettings,
     activePortal,
     setActivePortal,
+    publicCategory,
     setPublicCategory,
     publicSearch,
     setPublicSearch,
+    setSelectedProduct,
     isAdminAuthenticated,
     adminToken,
     isEmployeeAuthenticated,
@@ -44,6 +53,9 @@ export const Navbar: React.FC = () => {
     resellerTab,
     setResellerTab,
     cartItems,
+    isPublicCartOpen,
+    setIsPublicCartOpen,
+    wishlistItems,
     isAdminMobileMenuOpen,
     setIsAdminMobileMenuOpen,
     isDesktopSidebarOpen,
@@ -113,6 +125,68 @@ export const Navbar: React.FC = () => {
       ? '🎉 স্বাগতম! দেশজুড়ে ক্যাশ অন ডেলিভারি ও দ্রুত হোম ডেলিভারি সুবিধা।'
       : '🎉 Welcome! Nationwide Cash on Delivery & Fast Delivery.');
 
+  const isReseller = activePortal === 'employee';
+
+  const handleNavClick = (type: 'home' | 'dashboard' | 'orders' | 'cart' | 'profile') => {
+    if (setSelectedProduct) setSelectedProduct(null);
+
+    if (type === 'home') {
+      if (isEmployeeAuthenticated) {
+        setActivePortal('employee');
+        setResellerTab('catalog');
+        window.dispatchEvent(new CustomEvent('tawzoon_nav_home'));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        setActivePortal('public');
+        if (setPublicCategory) setPublicCategory('all');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    } else if (type === 'dashboard') {
+      if (isEmployeeAuthenticated) {
+        setActivePortal('employee');
+        setResellerTab('dashboard');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        setActivePortal('public');
+        if (setPublicCategory) setPublicCategory('shop_tab');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    } else if (type === 'orders') {
+      if (isEmployeeAuthenticated) {
+        setActivePortal('employee');
+        setResellerTab('orders');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        setActivePortal('public');
+        if (setPublicCategory) setPublicCategory('wishlist');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    } else if (type === 'cart') {
+      if (isEmployeeAuthenticated) {
+        setActivePortal('employee');
+        setResellerTab('cart');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        setIsPublicCartOpen(true);
+      }
+    } else if (type === 'profile') {
+      setActivePortal('employee');
+      setResellerTab('profile');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const isHomeActive = isReseller
+    ? resellerTab === 'catalog'
+    : activePortal === 'public' && publicCategory !== 'wishlist' && publicCategory !== 'shop_tab';
+  const isDashboardActive = isReseller
+    ? resellerTab === 'dashboard'
+    : activePortal === 'public' && publicCategory === 'shop_tab';
+  const isCartActive = isReseller ? resellerTab === 'cart' : isPublicCartOpen;
+  const isOrdersActive = isReseller
+    ? resellerTab === 'orders'
+    : activePortal === 'public' && publicCategory === 'wishlist';
+
   const handleProfileClick = () => {
     setProfileMenuOpen(false);
     if (isEmployeeAuthenticated) {
@@ -181,7 +255,7 @@ export const Navbar: React.FC = () => {
       )}
 
       {/* Main Header Bar - Compact Single Row for Mobile & Desktop */}
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 flex items-center justify-between gap-1.5 sm:gap-3 relative">
+      <div className="max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 py-2 sm:py-2.5 flex items-center justify-between gap-1.5 sm:gap-2.5 lg:gap-3.5 relative">
         
         {isSearchExpanded ? (
           /* EXPANDED FULL-WIDTH SEARCH BAR FOR MOBILE ONLY */
@@ -241,18 +315,15 @@ export const Navbar: React.FC = () => {
                 }}
                 className="flex items-center gap-2 text-left group focus:outline-none cursor-pointer shrink-0"
               >
-                {/* Brand Logo - 100% Round Green Circle */}
-                {brandSettings?.logoUrl ? (
-                  <img
-                    src={brandSettings.logoUrl}
-                    alt={brandName}
-                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover bg-white dark:bg-slate-800 shadow-xs border border-slate-200 dark:border-slate-700 p-0.5 shrink-0"
-                  />
-                ) : (
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#009245] flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform shrink-0">
-                    <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </div>
-                )}
+                {/* Brand Logo - Subtle Rounded Squircle (হালকা রাউন্ড শেপ) */}
+                <img
+                  src={brandSettings?.logoUrl || '/logo.png'}
+                  alt={brandName}
+                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl object-contain bg-white dark:bg-slate-800 shadow-2xs border border-slate-200 dark:border-slate-700 p-0.5 shrink-0"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/logo.png';
+                  }}
+                />
 
                 {/* Brand Title: TAW in dark slate, ZOON in vibrant green */}
                 <div className="flex items-center min-w-0">
@@ -271,7 +342,7 @@ export const Navbar: React.FC = () => {
             </div>
 
             {/* 2A. DESKTOP ONLY: Direct Working Search Bar with Embedded Camera (Balanced Medium Size) */}
-            <div className="hidden sm:block flex-1 min-w-0 max-w-sm md:max-w-md lg:max-w-lg mx-3 sm:mx-5">
+            <div className="hidden sm:block flex-1 min-w-0 max-w-xs md:max-w-sm lg:max-w-md mx-2 sm:mx-3 lg:mx-4">
               <SearchInputWithImage
                 value={publicSearch}
                 onChange={setPublicSearch}
@@ -295,9 +366,115 @@ export const Navbar: React.FC = () => {
               </div>
             </div>
 
-            {/* 3. Right Action Group: Balance Pill (Reseller only) + Bell (with count) + Avatar (with green circle border) */}
-            <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+            {/* 2C. DESKTOP HEADER NAVIGATION (PC & Desktop only - Beside Search Bar and Balance) */}
+            {activePortal !== 'admin' && (
+              <nav aria-label="Desktop Navigation" className="hidden md:flex items-center gap-1 lg:gap-1.5 shrink-0">
+                {/* 1. Home (হোম) */}
+                <button
+                  type="button"
+                  onClick={() => handleNavClick('home')}
+                  className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    isHomeActive
+                      ? 'bg-emerald-50 text-[#009245] dark:bg-emerald-950/60 dark:text-emerald-400 shadow-3xs'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800'
+                  }`}
+                  title={lang === 'bn' ? 'হোম পেজ' : 'Home'}
+                >
+                  <Home className="w-4 h-4" />
+                  <span>{lang === 'bn' ? 'হোম' : 'Home'}</span>
+                </button>
+
+                {/* 2. Dashboard (ড্যাশবোর্ড) / All Products (সকল পণ্য) */}
+                <button
+                  type="button"
+                  onClick={() => handleNavClick('dashboard')}
+                  className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    isDashboardActive
+                      ? 'bg-emerald-50 text-[#009245] dark:bg-emerald-950/60 dark:text-emerald-400 shadow-3xs'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800'
+                  }`}
+                  title={isReseller ? (lang === 'bn' ? 'ড্যাশবোর্ড' : 'Dashboard') : (lang === 'bn' ? 'সকল পণ্য' : 'All Products')}
+                >
+                  {isReseller ? (
+                    <>
+                      <LayoutDashboard className="w-4 h-4" />
+                      <span>{lang === 'bn' ? 'ড্যাশবোর্ড' : 'Dashboard'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingBag className="w-4 h-4" />
+                      <span>{lang === 'bn' ? 'সকল পণ্য' : 'All Products'}</span>
+                    </>
+                  )}
+                </button>
+
+                {/* 3. Orders (অর্ডার) / Favorites (আমার পছন্দ) */}
+                <button
+                  type="button"
+                  onClick={() => handleNavClick('orders')}
+                  className={`relative flex items-center gap-1.5 px-2.5 lg:px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    isOrdersActive
+                      ? 'bg-emerald-50 text-[#009245] dark:bg-emerald-950/60 dark:text-emerald-400 shadow-3xs'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800'
+                  }`}
+                  title={isReseller ? (lang === 'bn' ? 'অর্ডারসমূহ' : 'Orders') : (lang === 'bn' ? 'পছন্দের তালিকা' : 'Favorites')}
+                >
+                  {isReseller ? (
+                    <>
+                      <Package className="w-4 h-4" />
+                      <span>{lang === 'bn' ? 'অর্ডার' : 'Orders'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Heart className={`w-4 h-4 ${isOrdersActive ? 'fill-[#009245]' : ''}`} />
+                      <span>{lang === 'bn' ? 'পছন্দ' : 'Favorites'}</span>
+                      {wishlistItems && wishlistItems.length > 0 && (
+                        <span className="min-w-4 h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center leading-none">
+                          {wishlistItems.length}
+                        </span>
+                      )}
+                    </>
+                  )}
+                </button>
+
+                {/* 4. Cart (কার্ট) */}
+                <button
+                  type="button"
+                  onClick={() => handleNavClick('cart')}
+                  className={`relative flex items-center gap-1.5 px-2.5 lg:px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    isCartActive
+                      ? 'bg-[#009245] text-white shadow-xs'
+                      : 'bg-emerald-50 text-[#009245] hover:bg-emerald-100 dark:bg-emerald-950/60 dark:text-emerald-400 dark:hover:bg-emerald-900/60'
+                  }`}
+                  title={lang === 'bn' ? 'শপিং কার্ট' : 'Shopping Cart'}
+                >
+                  <ShoppingCart className="w-4 h-4" />
+                  <span>{lang === 'bn' ? 'কার্ট' : 'Cart'}</span>
+                  <span className={`min-w-4 h-4 px-1 rounded-full text-[10px] font-black flex items-center justify-center leading-none ${
+                    isCartActive ? 'bg-amber-400 text-slate-900' : 'bg-[#009245] text-white'
+                  }`}>
+                    {cartItems.length}
+                  </span>
+                </button>
+              </nav>
+            )}
+
+            {/* 3. Right Action Group: Desktop Download Button (PC only) + Balance Pill (Reseller only) + Bell (with count) + Avatar (with green circle border) */}
+            <div className="flex items-center gap-1.5 sm:gap-2.5 lg:gap-3 shrink-0">
               
+              {/* App Download Button (Visible on all screens, triggers 1-click PWA install / download) */}
+              <button
+                type="button"
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent('trigger_pwa_install'));
+                }}
+                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-[#009245] hover:from-emerald-700 hover:to-[#007a3a] text-white text-[11px] sm:text-xs font-bold shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer shrink-0"
+                title={lang === 'bn' ? 'অ্যাপ ডাউনলোড করুন' : 'Download App'}
+              >
+                <Download className="w-3.5 h-3.5 animate-bounce shrink-0" />
+                <span className="font-bold whitespace-nowrap">{lang === 'bn' ? 'অ্যাপ ডাউনলোড করুন' : 'Download App'}</span>
+              </button>
+
               {/* Balance Button - Only visible for authenticated reseller account, hidden in Admin view */}
               {isEmployeeAuthenticated && activePortal !== 'admin' && (
                 <div className="shrink-0 animate-in fade-in duration-200">

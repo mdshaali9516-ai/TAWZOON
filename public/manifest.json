@@ -1,13 +1,13 @@
 {
   "id": "/",
-  "name": "TAWZOON NEXUS",
+  "name": "TAWZOON",
   "short_name": "TAWZOON",
   "description": "Dynamic Product Marketing, Reseller & Employee Management Platform",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
-  "theme_color": "#ffffff",
+  "orientation": "any",
+  "theme_color": "#009245",
   "background_color": "#ffffff",
   "icons": [
     {

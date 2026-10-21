@@ -266,17 +266,14 @@ export const EmployeePortal: React.FC = () => {
           {/* Brand Logo & Header */}
           <div className="text-center space-y-2">
             <div className="w-16 h-16 rounded-2xl bg-white border border-slate-200 p-1 flex items-center justify-center mx-auto shadow-md">
-              {brandSettings?.logoUrl ? (
-                <img
-                  src={brandSettings.logoUrl}
-                  alt="App Logo"
-                  className="w-full h-full object-contain rounded-xl"
-                />
-              ) : (
-                <div className="w-full h-full rounded-xl bg-[#009245] text-white flex items-center justify-center font-black text-xl shadow-xs">
-                  T
-                </div>
-              )}
+              <img
+                src={brandSettings?.logoUrl || '/logo.png'}
+                alt="App Logo"
+                className="w-full h-full object-contain rounded-xl"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/logo.png';
+                }}
+              />
             </div>
 
             <div>

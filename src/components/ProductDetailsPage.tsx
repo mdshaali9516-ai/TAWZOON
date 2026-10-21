@@ -8,7 +8,8 @@ import {
   Heart,
   ChevronLeft,
   ChevronRight,
-  Maximize2,
+  ZoomIn,
+  ZoomOut,
   Minus,
   Plus,
   ShoppingCart,
@@ -21,6 +22,7 @@ import {
   Link2,
   CheckCircle2,
   ChevronDown,
+  ChevronUp,
   Truck,
   ShieldCheck,
   Search,
@@ -151,12 +153,15 @@ export const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
 
   useEffect(() => {
     setCurrentProduct(product);
+  }, [product]);
+
+  useEffect(() => {
     setActiveImageIndex(0);
     setZoomMode(false);
     setSelectedSize(null);
     setQuantity(1);
     setIsQuickOrderOpen(false);
-  }, [product]);
+  }, [product?.id, product?.productCode]);
 
   // Source list of products in the current category/series
   const categoryList = useMemo(() => {
@@ -201,12 +206,67 @@ export const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
   const fullDesc = lang === 'bn' ? currentProduct.fullDescBn : currentProduct.fullDescEn;
 
   // Filter images only (exclude video URLs)
-  const images =
-    currentProduct.images && currentProduct.images.length > 0
-      ? currentProduct.images.filter((img) => img.url && !img.url.endsWith('.mp4')).map((img) => img.url)
-      : [currentProduct.imageUrl || '/images/product_shop_dress_1790244714775.jpg'];
+  const images = useMemo(() => {
+    if (currentProduct?.images && currentProduct.images.length > 0) {
+      const filtered = currentProduct.images
+        .map((img: any) => (typeof img === 'string' ? img : img?.url))
+        .filter((url: any) => url && typeof url === 'string' && !url.endsWith('.mp4'));
+      if (filtered.length > 0) return filtered;
+    }
+    return [currentProduct?.imageUrl || '/images/product_shop_dress_1790244714775.jpg'];
+  }, [currentProduct?.images, currentProduct?.imageUrl]);
 
-  const activeImage = images[activeImageIndex] || images[0];
+  const activeImage = images[activeImageIndex] || images[0] || '/images/product_shop_dress_1790244714775.jpg';
+
+  // Thumbnail list scroll management
+  const thumbnailScrollRef = React.useRef<HTMLDivElement>(null);
+  const [canScrollDown, setCanScrollDown] = useState(false);
+  const [canScrollUp, setCanScrollUp] = useState(false);
+
+  const checkThumbnailScroll = () => {
+    if (thumbnailScrollRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = thumbnailScrollRef.current;
+      setCanScrollDown(scrollHeight - scrollTop - clientHeight > 8);
+      setCanScrollUp(scrollTop > 8);
+    }
+  };
+
+  useEffect(() => {
+    checkThumbnailScroll();
+    const el = thumbnailScrollRef.current;
+    if (!el) return;
+
+    let ro: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(() => {
+        checkThumbnailScroll();
+      });
+      ro.observe(el);
+    }
+
+    const timer = setTimeout(checkThumbnailScroll, 150);
+    window.addEventListener('resize', checkThumbnailScroll);
+
+    return () => {
+      if (ro) ro.disconnect();
+      clearTimeout(timer);
+      window.removeEventListener('resize', checkThumbnailScroll);
+    };
+  }, [images]);
+
+  const handleScrollThumbnailsDown = () => {
+    if (thumbnailScrollRef.current) {
+      thumbnailScrollRef.current.scrollBy({ top: 120, behavior: 'smooth' });
+      setTimeout(checkThumbnailScroll, 250);
+    }
+  };
+
+  const handleScrollThumbnailsUp = () => {
+    if (thumbnailScrollRef.current) {
+      thumbnailScrollRef.current.scrollBy({ top: -120, behavior: 'smooth' });
+      setTimeout(checkThumbnailScroll, 250);
+    }
+  };
 
   // Category name formatting
   const rawCategoryName = subcat || currentProduct.categorySlug || 'কাতুয়া';
@@ -358,7 +418,7 @@ export const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
   };
 
   return (
-    <div className="w-full min-h-screen bg-white text-slate-900 font-sans pb-28 sm:pb-32 relative">
+    <div className={`w-full ${isPreview ? 'bg-white text-slate-900 font-sans pb-4' : 'min-h-screen bg-white text-slate-900 font-sans pb-28 sm:pb-32'} relative`}>
       
       {/* Floating Notice */}
       {downloadNotice && (
@@ -367,7 +427,7 @@ export const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
         </div>
       )}
 
-      <div className="max-w-[1200px] mx-auto px-2 sm:px-6 lg:px-8 pt-0.5 sm:pt-1 pb-4 space-y-2.5 sm:space-y-3.5">
+      <div className={isPreview ? "w-full p-0 space-y-2.5" : "max-w-[1200px] mx-auto px-2 sm:px-6 lg:px-8 pt-2 sm:pt-4 pb-4 space-y-2.5 sm:space-y-3.5"}>
         
         {/* ------------------------------------------------------------- */}
         {/* TOP BAR: Back Button + Home > SHOP > Category > Title Breadcrumb */}
@@ -422,95 +482,153 @@ export const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
         {/* ------------------------------------------------------------- */}
         {/* MAIN PRODUCT UI SHOWCASE CONTAINER (Solid White Card)           */}
         {/* ------------------------------------------------------------- */}
-        <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 p-2.5 sm:p-5 shadow-xs space-y-3">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-6 items-start">
+        <div className={`bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 ${isPreview ? 'p-2 sm:p-2.5 shadow-none border-0' : 'p-2.5 sm:p-5 shadow-xs'} space-y-3`}>
+          <div className={`grid grid-cols-1 ${isPreview ? 'gap-3.5' : 'lg:grid-cols-12 gap-3 sm:gap-6'} items-start`}>
             
             {/* ------------------------------------------------------------- */}
             {/* LEFT COLUMN: Gallery & Marketing actions (6 cols)             */}
             {/* ------------------------------------------------------------- */}
-            <div className="lg:col-span-6 space-y-2.5">
+            <div className={`${isPreview ? 'w-full' : 'lg:col-span-6'} space-y-2.5`}>
               {/* গ্যালারি (বামে সাইডে উল্লম্ব থাম্বনেইল + ডানপাশে মূল ডিসপ্লে) */}
-              <div className="flex flex-row gap-2 sm:gap-2.5 items-stretch">
+              <div className={`flex flex-row gap-2 sm:gap-3 items-stretch w-full ${isPreview ? 'h-[320px] sm:h-[350px]' : 'max-w-full md:max-w-[560px] h-[340px] sm:h-[380px] md:h-[500px] lg:h-[530px]'}`}>
                 
-                {/* থাম্বনেইল কলাম (সাইডে উল্লম্ব স্ক্রল) */}
-                <div className="flex flex-col items-center gap-1.5 overflow-y-auto max-h-[360px] sm:max-h-[460px] w-[44px] sm:w-[54px] shrink-0 p-0.5 scrollbar-none">
-                  {images.map((img, idx) => (
+                {/* থাম্বনেইল কলাম (কোনো আবদ্ধকারী বর্ডার শেপ ছাড়া সম্পূর্ণ মুক্ত ও ক্লিন) */}
+                <div className={`relative flex flex-col items-center ${isPreview ? 'w-[42px] sm:w-[46px]' : 'w-[46px] sm:w-[56px]'} shrink-0 h-full py-0.5`}>
+                  {canScrollUp && (
                     <button
-                      key={idx}
                       type="button"
-                      onClick={() => setActiveImageIndex(idx)}
-                      className={`w-[40px] h-[40px] sm:w-[48px] sm:h-[48px] rounded-lg sm:rounded-xl overflow-hidden border-2 p-0.5 transition-all cursor-pointer bg-slate-50 shrink-0 ${
-                        activeImageIndex === idx
-                          ? 'border-[#009245] ring-2 ring-[#009245]/20 shadow-xs scale-105'
-                          : 'border-slate-200 opacity-75 hover:opacity-100'
-                      }`}
+                      onClick={handleScrollThumbnailsUp}
+                      className="absolute top-0 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white hover:bg-slate-100 text-slate-700 hover:text-[#009245] shadow-xs border border-slate-200 flex items-center justify-center transition-all cursor-pointer z-20"
+                      title={lang === 'bn' ? 'উপরে স্ক্রল করুন' : 'Scroll Up'}
                     >
-                      <img src={img} alt="thumb" className="w-full h-full object-cover rounded-md" />
+                      <ChevronUp className="w-3 h-3" />
                     </button>
-                  ))}
+                  )}
+
+                  <div
+                    ref={thumbnailScrollRef}
+                    onScroll={checkThumbnailScroll}
+                    className="h-full w-full overflow-y-auto flex flex-col items-center gap-1.5 sm:gap-2 scrollbar-none py-1 scroll-smooth"
+                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                  >
+                    {images.map((img, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setActiveImageIndex(idx)}
+                        className={`${
+                          isPreview
+                            ? 'w-[40px] h-[40px] sm:w-[44px] sm:h-[44px] min-w-[40px] min-h-[40px] max-w-[40px] max-h-[40px]'
+                            : 'w-[44px] h-[44px] sm:w-[54px] sm:h-[54px] min-w-[44px] min-h-[44px] sm:min-w-[54px] sm:min-h-[54px] max-w-[44px] max-h-[44px] sm:max-w-[54px] sm:max-h-[54px]'
+                        } aspect-square rounded-xl overflow-hidden cursor-pointer bg-white shrink-0 transition-all p-0.5 flex items-center justify-center ${
+                          activeImageIndex === idx
+                            ? 'border-2 border-[#009245] shadow-xs'
+                            : 'border border-slate-200 hover:border-slate-300 opacity-75 hover:opacity-100'
+                        }`}
+                      >
+                        <img src={img} alt="thumb" className="w-full h-full object-cover aspect-square rounded-lg" />
+                      </button>
+                    ))}
+                  </div>
+
+                  {canScrollDown && (
+                    <button
+                      type="button"
+                      onClick={handleScrollThumbnailsDown}
+                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white hover:bg-slate-100 text-slate-700 hover:text-[#009245] shadow-xs border border-slate-200 flex items-center justify-center transition-all cursor-pointer z-20"
+                      title={lang === 'bn' ? 'নিচে স্ক্রল করুন' : 'Scroll Down'}
+                    >
+                      <ChevronDown className="w-3 h-3" />
+                    </button>
+                  )}
                 </div>
 
-                {/* মূল ডিসপ্লে */}
-                <div className="flex-1 min-w-0">
+                {/* মূল ডিসপ্লে (মোবাইলে হালকা ছোট, ডেস্কটপে বড় ও সুষম অনুপাতে আকর্ষণীয় ফ্রেম) */}
+                <div className="flex-1 h-full min-w-0">
                   <div
                     onMouseMove={(e) => {
                       if (!zoomMode) return;
                       const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-                      const x = ((e.clientX - left) / width) * 100;
-                      const y = ((e.clientY - top) / height) * 100;
+                      const x = Math.max(0, Math.min(100, ((e.clientX - left) / width) * 100));
+                      const y = Math.max(0, Math.min(100, ((e.clientY - top) / height) * 100));
                       setMousePos({ x, y });
                     }}
-                    className="relative aspect-[4/5] sm:aspect-square lg:aspect-[4/5] w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200/80 flex items-center justify-center p-1 group shadow-inner transition-all duration-200"
+                    onTouchMove={(e) => {
+                      if (!zoomMode || !e.touches[0]) return;
+                      const touch = e.touches[0];
+                      const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+                      const x = Math.max(0, Math.min(100, ((touch.clientX - left) / width) * 100));
+                      const y = Math.max(0, Math.min(100, ((touch.clientY - top) / height) * 100));
+                      setMousePos({ x, y });
+                    }}
+                    className="relative h-full w-full rounded-2xl overflow-hidden bg-slate-50 border border-slate-200/90 flex items-center justify-center p-2 group shadow-inner transition-all duration-200 select-none touch-none"
                   >
                     {/* Discount Badge */}
-                    <span className="absolute top-2 left-2 z-10 text-[9.5px] sm:text-xs font-black text-white bg-rose-600 px-1.5 sm:px-2 py-0.5 rounded-md leading-none shadow-xs">
-                      {discountPercent}% ছাড়
-                    </span>
+                    {discountPercent > 0 && (
+                      <span className="absolute top-2.5 left-2.5 z-10 text-[9.5px] sm:text-xs font-black text-white bg-rose-600 px-1.5 sm:px-2 py-0.5 rounded-md leading-none shadow-xs">
+                        {discountPercent}% ছাড়
+                      </span>
+                    )}
 
+                    {/* HD Full Image Display: কোনো কানি-কোনা কাটবে না, যেকোনো সাইজ সম্পূর্ণ ফিট হবে */}
                     <img
                       src={activeImage}
                       alt={title}
-                      className={`w-full h-full object-contain object-center transition-transform duration-150 ${
+                      className={`max-w-full max-h-full w-auto h-auto object-contain rounded-xl transition-transform duration-150 ${
                         zoomMode ? 'cursor-grab active:cursor-grabbing' : ''
                       }`}
                       style={{
                         transform: zoomMode ? 'scale(2.5)' : 'scale(1)',
                         transformOrigin: `${mousePos.x}% ${mousePos.y}%`,
                       }}
+                      loading="eager"
                     />
 
-                    {/* Single Image Download Floating Icon */}
+                    {/* Single Image Download Floating Icon (ব্যাকগ্রাউন্ড ছাড়া ক্লিন ও বড়) */}
                     <button
                       type="button"
                       onClick={() => handleDownloadSingle(activeImage, activeImageIndex)}
-                      className="absolute bottom-2 left-2 p-1.5 text-slate-600 hover:text-[#009245] transition-transform hover:scale-110 active:scale-95 cursor-pointer z-10 focus:outline-none bg-white/90 backdrop-blur-xs rounded-lg shadow-xs border border-slate-200"
+                      className="absolute bottom-2.5 left-2.5 p-1 text-slate-700 hover:text-[#009245] transition-all hover:scale-115 active:scale-90 cursor-pointer z-10 focus:outline-none drop-shadow-[0_2px_6px_rgba(0,0,0,0.35)]"
                       title="ছবি ডাউনলোড করুন"
                     >
-                      <Download className="w-3.5 h-3.5" />
+                      <Download className="w-5 h-5 sm:w-6 sm:h-6" />
                     </button>
 
-                    {/* Wishlist Heart Icon */}
+                    {/* Wishlist Heart Icon (রিসেলার প্যানেলের মতো হুবহু ক্লিন ও প্রফেশনাল হার্ট আইকন) */}
                     <button
                       type="button"
-                      onClick={() => toggleWishlist(currentProduct)}
-                      className="absolute top-2 right-2 p-1.5 text-slate-600 hover:text-rose-600 transition-transform hover:scale-110 active:scale-95 cursor-pointer z-10 focus:outline-none bg-white/90 backdrop-blur-xs rounded-full shadow-xs border border-slate-200"
-                      title="পছন্দের তালিকায় রাখুন"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleWishlist(currentProduct);
+                      }}
+                      className="absolute top-2.5 right-2.5 p-1 transition-transform hover:scale-110 active:scale-95 cursor-pointer z-10 focus:outline-none"
+                      title={lang === 'bn' ? 'পছন্দের তালিকায় রাখুন/বাদ দিন' : 'Toggle favorite'}
                     >
-                      <Heart className={`w-3.5 h-3.5 ${isWishlisted ? 'fill-rose-600 text-rose-600' : 'text-slate-500'}`} />
+                      <Heart
+                        className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors ${
+                          isWishlisted
+                            ? 'fill-rose-600 text-rose-600 drop-shadow-sm'
+                            : 'text-slate-400 hover:text-rose-600 drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]'
+                        }`}
+                      />
                     </button>
 
-                    {/* Zoom Toggle Floating Button */}
+                    {/* Zoom Toggle Floating Button (জুম আইকন, ব্যাকগ্রাউন্ড ছাড়া এবং মোবাইল ড্র্যাগ সাপোর্টেড) */}
                     <button
                       type="button"
                       onClick={() => setZoomMode(!zoomMode)}
-                      className={`absolute bottom-2 right-2 p-1.5 transition-all cursor-pointer z-10 focus:outline-none rounded-lg shadow-xs border ${
+                      className={`absolute bottom-2.5 right-2.5 p-1 transition-all cursor-pointer z-10 focus:outline-none hover:scale-115 active:scale-90 ${
                         zoomMode
-                          ? 'bg-[#009245] text-white border-[#009245]'
-                          : 'bg-white/95 backdrop-blur-xs text-slate-700 hover:text-[#009245] border-slate-200'
+                          ? 'text-[#009245] drop-shadow-[0_2px_8px_rgba(0,146,69,0.6)]'
+                          : 'text-slate-700 hover:text-[#009245] drop-shadow-[0_2px_6px_rgba(0,0,0,0.35)]'
                       }`}
-                      title="জুম করুন"
+                      title={zoomMode ? 'জুম বন্ধ করুন' : 'জুম করুন (ট্যাপ করে ড্র্যাগ করুন)'}
                     >
-                      <Maximize2 className="w-3.5 h-3.5" />
+                      {zoomMode ? (
+                        <ZoomOut className="w-5 h-5 sm:w-6 sm:h-6" />
+                      ) : (
+                        <ZoomIn className="w-5 h-5 sm:w-6 sm:h-6" />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -568,7 +686,7 @@ export const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
             {/* ------------------------------------------------------------- */}
             {/* RIGHT COLUMN: Title, Public Pricing, Description, Selection, Actions (6 cols)*/}
             {/* ------------------------------------------------------------- */}
-            <div className="lg:col-span-6 space-y-2.5">
+            <div className={`${isPreview ? 'w-full' : 'lg:col-span-6'} space-y-2.5`}>
               {/* ১. প্রোডাক্টের নাম ও স্টকে আছে ব্যাজ */}
               <div className="flex items-center justify-between gap-2 pt-0.5">
                 <h1
@@ -803,7 +921,7 @@ export const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
         {/* ------------------------------------------------------------- */}
         {/* SUBSEQUENT / RELATED PRODUCTS IN SAME CATEGORY                  */}
         {/* ------------------------------------------------------------- */}
-        {subsequentProducts.length > 0 && (
+        {!isPreview && subsequentProducts.length > 0 && (
           <div className="pt-6 space-y-4">
             <div className="flex items-center gap-2">
               <span className="w-4 h-1.5 bg-[#009245] rounded-full inline-block" />

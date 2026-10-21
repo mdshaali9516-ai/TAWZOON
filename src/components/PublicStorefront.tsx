@@ -49,11 +49,13 @@ export const PublicStorefront: React.FC = () => {
   const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
   const [viewingProduct, setViewingProduct] = useState<Product | null>(null);
   const [inPageTab, setInPageTab] = useState<'all' | 'wishlist'>('all');
+  const [error, setError] = useState<string | null>(null);
 
   const fetchProducts = async (isBackground = false) => {
     // Only show full loading skeleton if we have no products at all
     if (!isBackground && products.length === 0) {
       setLoading(true);
+      setError(null);
     }
     try {
       const categoryToQuery = (publicCategory !== 'all' && publicCategory !== 'wishlist' && publicCategory !== 'shop' && publicCategory !== 'shop_tab' && publicCategory !== 'gadgets' && publicCategory !== 'gajet' && publicCategory !== 'others' && publicCategory !== 'other')
@@ -76,11 +78,13 @@ export const PublicStorefront: React.FC = () => {
       }
     } catch (err) {
       console.error('Failed to load products:', err);
+      if (products.length === 0) {
+        setError(lang === 'bn' ? 'পণ্য লোড করতে সমস্যা হয়েছে। পুনরায় চেষ্টা করুন।' : 'Failed to load products. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     setSelectedSubCategory(null);
     setViewingProduct(null);

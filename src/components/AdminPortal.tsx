@@ -130,6 +130,7 @@ export const AdminPortal: React.FC = () => {
     setIsAdminMobileMenuOpen,
     isDesktopSidebarOpen,
     setIsDesktopSidebarOpen,
+    brandSettings,
   } = useApp();
 
   // Admin Auth State (OTP Only)
@@ -852,32 +853,19 @@ export const AdminPortal: React.FC = () => {
   });
 
   // ------------------------------------------------------------------
-  // 1. ADMIN OTP AUTHENTICATION
   // ------------------------------------------------------------------
-  const handleRequestOtp = async (e: React.FormEvent) => {
+  // 1. ADMIN DIRECT AUTHENTICATION (PASSWORD ONLY - NO OTP)
+  // ------------------------------------------------------------------
+  const handleDirectLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
     setOtpLoading(true);
     try {
-      await api.adminRequestOtp(emailInput, passwordInput);
-      setOtpSent(true);
-      showToast(t.otpSentAlert);
-    } catch (err: any) {
-      setAuthError(err.message || 'Failed to dispatch verification code');
-    } finally {
-      setOtpLoading(false);
-    }
-  };
-
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setAuthError(null);
-    setOtpLoading(true);
-    try {
-      const res = await api.adminVerifyOtp(emailInput, otpInput);
+      const res = await api.adminLogin(emailInput, passwordInput);
       setAdminSession(res.token, res.admin.email);
+      showToast(lang === 'bn' ? 'সফলভাবে অ্যাডমিন প্যানেলে লগইন হয়েছে!' : 'Logged in successfully!');
     } catch (err: any) {
-      setAuthError(err.message || 'Verification failed');
+      setAuthError(err.message || (lang === 'bn' ? 'লগইন ব্যর্থ হয়েছে। সঠিক ইমেইল ও পাসওয়ার্ড দিন।' : 'Login failed. Please provide correct credentials.'));
     } finally {
       setOtpLoading(false);
     }
@@ -889,11 +877,18 @@ export const AdminPortal: React.FC = () => {
         <div className="w-full max-w-md bg-white rounded-2xl border border-slate-200 shadow-sm p-8 space-y-6">
           
           <div className="text-center space-y-2">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-slate-900 text-white mx-auto shadow-xs">
-              <ShieldCheck className="w-6 h-6" />
+            <div className="w-14 h-14 rounded-2xl bg-white border border-slate-200 p-1 flex items-center justify-center mx-auto shadow-md">
+              <img
+                src={brandSettings?.logoUrl || '/logo.png'}
+                alt="TAWZOON"
+                className="w-full h-full object-contain rounded-xl"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/logo.png';
+                }}
+              />
             </div>
             <h2 className="text-2xl font-bold text-slate-900">{t.adminAuthTitle}</h2>
-            <p className="text-xs text-slate-500">{t.adminAuthSubtitle}</p>
+            <p className="text-xs text-slate-500">{lang === 'bn' ? 'অ্যাডমিন ইমেইল ও পাসওয়ার্ড দিয়ে প্রবেশ করুন' : 'Sign in with your admin credentials'}</p>
           </div>
 
           {authError && (
@@ -903,91 +898,54 @@ export const AdminPortal: React.FC = () => {
             </div>
           )}
 
-          {!otpSent ? (
-            <form onSubmit={handleRequestOtp} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-700 block">
-                  {t.adminEmailLabel}
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={emailInput}
-                  onChange={(e) => setEmailInput(e.target.value)}
-                  placeholder="mdshaali9516@gmail.com"
-                  className="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:border-slate-900 outline-none font-mono"
-                />
-              </div>
+          <form onSubmit={handleDirectLogin} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-700 block">
+                {t.adminEmailLabel}
+              </label>
+              <input
+                type="email"
+                required
+                value={emailInput}
+                onChange={(e) => setEmailInput(e.target.value)}
+                placeholder="mdshaali9516@gmail.com"
+                className="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:border-slate-900 outline-none font-mono"
+              />
+            </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-700 block">
-                  {lang === 'bn' ? 'অ্যাডমিন পাসওয়ার্ড' : 'Admin Password'}
-                </label>
-                <input
-                  type="password"
-                  required
-                  value={passwordInput}
-                  onChange={(e) => setPasswordInput(e.target.value)}
-                  placeholder="••••••••••••"
-                  className="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:border-slate-900 outline-none font-mono"
-                />
-              </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-700 block">
+                {lang === 'bn' ? 'অ্যাডমিন পাসওয়ার্ড' : 'Admin Password'}
+              </label>
+              <input
+                type="password"
+                required
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
+                placeholder="••••••••••••"
+                className="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:border-slate-900 outline-none font-mono"
+              />
+            </div>
 
-              <button
-                type="submit"
-                disabled={otpLoading}
-                className="w-full py-2.5 text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors shadow-xs disabled:opacity-50"
-              >
-                {otpLoading ? (lang === 'bn' ? 'কোড পাঠানো হচ্ছে...' : 'Sending Code...') : t.btnSendOtp}
-              </button>
+            <button
+              type="submit"
+              disabled={otpLoading}
+              className="w-full py-2.5 text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors shadow-xs disabled:opacity-50 cursor-pointer"
+            >
+              {otpLoading ? (lang === 'bn' ? 'লগইন হচ্ছে...' : 'Signing in...') : (lang === 'bn' ? 'লগইন করুন' : 'Sign In')}
+            </button>
 
-              <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-500">
-                <span className="font-semibold text-slate-700 block">
-                  {lang === 'bn' ? 'নিরাপত্তা নীতিমালা:' : 'Security Notice:'}
-                </span>
-                <span>
-                  {lang === 'bn'
-                    ? 'শুধুমাত্র অনুমোদিত ইমেইলে (mdshaali9516@gmail.com) ৬ ডিজিটের ওয়ান-টাইম পাসকোড পাঠানো হবে।'
-                    : 'A 6-digit cryptographic verification code will be dispatched strictly to mdshaali9516@gmail.com.'}
-                </span>
-              </div>
-            </form>
-          ) : (
-            <form onSubmit={handleVerifyOtp} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-700 block">
-                  {t.otpEnterLabel}
-                </label>
-                <input
-                  type="text"
-                  maxLength={6}
-                  required
-                  value={otpInput}
-                  onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, ''))}
-                  placeholder="224395"
-                  className="w-full px-4 py-3 text-center text-xl tracking-[0.5em] font-mono font-bold bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:border-slate-900 outline-none"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={otpLoading || otpInput.length < 6}
-                className="w-full py-2.5 text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors shadow-xs disabled:opacity-50"
-              >
-                {otpLoading ? (lang === 'bn' ? 'যাচাই করা হচ্ছে...' : 'Verifying...') : t.btnVerifyOtp}
-              </button>
-
-              <div className="text-center">
-                <button
-                  type="button"
-                  onClick={() => setOtpSent(false)}
-                  className="text-xs text-slate-500 hover:text-slate-800 underline"
-                >
-                  {t.resendOtp}
-                </button>
-              </div>
-            </form>
-          )}
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-500">
+              <span className="font-semibold text-slate-700 block">
+                {lang === 'bn' ? 'অ্যাডমিন অ্যাক্সেস:' : 'Admin Access:'}
+              </span>
+              <span>
+                {lang === 'bn'
+                  ? 'শুধুমাত্র অনুমোদিত অ্যাডমিন অ্যাকাউন্ট দিয়ে সরাসরি ড্যাশবোর্ডে প্রবেশ করা যাবে।'
+                  : 'Authorized admin credentials grant immediate direct dashboard access.'}
+              </span>
+            </div>
+          </form>
 
         </div>
       </div>
@@ -7843,10 +7801,10 @@ export const AdminPortal: React.FC = () => {
               </div>
             </div>
 
-            <form onSubmit={handleSaveProduct} className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-3 gap-6 overflow-hidden">
+            <form onSubmit={handleSaveProduct} className="flex-1 min-h-0 flex flex-col lg:flex-row gap-5 overflow-hidden">
               
-              {/* LEFT & CENTER COLUMNS (2 COLS FOR FORM SECTIONS) */}
-              <div className="lg:col-span-2 h-full overflow-y-auto pr-3 space-y-4">
+              {/* LEFT & CENTER COLUMNS (MAIN PRODUCT FORM - WIDE & SPACIOUS) */}
+              <div className="flex-1 min-w-0 h-full overflow-y-auto pr-2 sm:pr-4 space-y-4">
 
                 {/* SECTION 1: Product Basic Info */}
                 <div className="p-5 bg-white rounded-xl border border-slate-200 space-y-4 shadow-2xs">
@@ -8270,12 +8228,12 @@ export const AdminPortal: React.FC = () => {
 
               </div>
 
-              {/* RIGHT COLUMN: LIVE PRODUCT PREVIEW (EXACT MATCHING REFERENCE IMAGE) */}
-              <div className="lg:col-span-1 h-full overflow-y-auto scrollbar-none bg-white rounded-2xl border border-slate-200 p-4 shadow-md flex flex-col space-y-3 min-h-0">
+              {/* RIGHT COLUMN: SLEEK MOBILE-STYLE LIVE PREVIEW (COMPACT & OFF TO THE RIGHT) */}
+              <div className="w-full lg:w-[350px] xl:w-[370px] shrink-0 h-full overflow-y-auto scrollbar-none bg-white rounded-2xl border border-slate-200 p-3 sm:p-3.5 shadow-md flex flex-col space-y-2.5 min-h-0">
                 <div className="flex items-center justify-between pb-2 border-b border-slate-100 shrink-0">
                   <h4 className="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
-                    <span className="w-5 h-5 rounded bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-black">👁️</span>
-                    <span>লাইভ প্রিভিউ (পাবলিক সাইটে যেভাবে দেখাবে)</span>
+                    <span className="w-5 h-5 rounded bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-black">📱</span>
+                    <span>লাইভ প্রিভিউ (মোবাইল ভিউ)</span>
                   </h4>
                   <ExternalLink className="w-3.5 h-3.5 text-slate-400 hover:text-slate-700 cursor-pointer" />
                 </div>

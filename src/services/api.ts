@@ -179,6 +179,12 @@ export const api = {
     }),
 
   // Admin Auth
+  adminLogin: (email: string, password: string) =>
+    request<{ success: boolean; token: string; admin: { email: string; role: string } }>('/api/auth/admin/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+    }),
+
   adminRequestOtp: (email: string, password: string) =>
     request<{ success: boolean; message: string }>('/api/auth/admin/request-otp', {
       method: 'POST',
