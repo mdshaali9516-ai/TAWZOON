@@ -113,18 +113,10 @@ export const BkashBalanceButton: React.FC<BkashBalanceButtonProps> = ({
           <span className="text-[11px] sm:text-xs font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-0.5 animate-pulse">
             <span>লোড হচ্ছে</span>
           </span>
-        ) : isShowingBalance ? (
+        ) : (
           <div className="flex items-center animate-in fade-in slide-in-from-left-1 duration-150">
             <span className="text-xs sm:text-sm font-black text-[#009245] dark:text-emerald-400 tracking-tight whitespace-nowrap">
               {formattedBalance}
-            </span>
-          </div>
-        ) : (
-          <div className="flex items-center">
-            <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 tracking-tight whitespace-nowrap">
-              {!isEmployeeAuthenticated
-                ? (lang === 'bn' ? 'ব্যালেন্স' : 'Balance')
-                : (lang === 'bn' ? 'ব্যালেন্স' : 'Balance')}
             </span>
           </div>
         )}

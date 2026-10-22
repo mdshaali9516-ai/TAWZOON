@@ -20,6 +20,9 @@ import {
   Heart,
   Download,
   Monitor,
+  Moon,
+  Sun,
+  Palette,
 } from 'lucide-react';
 import { SearchInputWithImage } from './common/SearchInputWithImage.js';
 import { BkashBalanceButton } from './common/BkashBalanceButton.js';
@@ -214,7 +217,7 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[500] bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 transition-colors shadow-xs">
+    <header className="fixed top-0 left-0 right-0 z-[500] glass-header transition-colors">
       
       {/* Top Notification Announcement Bar (Slimmer & Sleeker) */}
       {showPromo && (
@@ -313,7 +316,7 @@ export const Navbar: React.FC = () => {
                   setPublicCategory('all');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="flex items-center gap-2 text-left group focus:outline-none cursor-pointer shrink-0"
+                className="flex items-center gap-2 text-left group focus:outline-none cursor-pointer shrink-0 animate-brand-breathe"
               >
                 {/* Brand Logo - Subtle Rounded Squircle (হালকা রাউন্ড শেপ) */}
                 <img
@@ -325,15 +328,15 @@ export const Navbar: React.FC = () => {
                   }}
                 />
 
-                {/* Brand Title: TAW in dark slate, ZOON in vibrant green */}
-                <div className="flex items-center min-w-0">
+                {/* Brand Title with smooth breathing opacity animation */}
+                <div className="flex items-center min-w-0 animate-brand-breathe">
                   {brandName.toUpperCase().startsWith('TAWZOON') ? (
-                    <span className="text-sm sm:text-lg font-black tracking-tight uppercase leading-none">
+                    <span className="text-base sm:text-xl font-black tracking-tight uppercase leading-none">
                       <span className="text-slate-900 dark:text-white">TAW</span>
                       <span className="text-[#009245]">ZOON</span>
                     </span>
                   ) : (
-                    <span className="text-sm sm:text-base font-black tracking-tight text-slate-900 dark:text-white group-hover:text-[#009245] transition-colors uppercase leading-tight truncate max-w-[90px] sm:max-w-[200px]">
+                    <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white group-hover:text-[#009245] transition-colors uppercase leading-tight truncate max-w-[110px] sm:max-w-[200px]">
                       {brandName}
                     </span>
                   )}
@@ -429,7 +432,7 @@ export const Navbar: React.FC = () => {
                       <Heart className={`w-4 h-4 ${isOrdersActive ? 'fill-[#009245]' : ''}`} />
                       <span>{lang === 'bn' ? 'পছন্দ' : 'Favorites'}</span>
                       {wishlistItems && wishlistItems.length > 0 && (
-                        <span className="min-w-4 h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center leading-none">
+                        <span className="min-w-4 h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center leading-none animate-badge-pulse">
                           {wishlistItems.length}
                         </span>
                       )}
@@ -450,7 +453,7 @@ export const Navbar: React.FC = () => {
                 >
                   <ShoppingCart className="w-4 h-4" />
                   <span>{lang === 'bn' ? 'কার্ট' : 'Cart'}</span>
-                  <span className={`min-w-4 h-4 px-1 rounded-full text-[10px] font-black flex items-center justify-center leading-none ${
+                  <span className={`min-w-4 h-4 px-1 rounded-full text-[10px] font-black flex items-center justify-center leading-none animate-badge-pulse ${
                     isCartActive ? 'bg-amber-400 text-slate-900' : 'bg-[#009245] text-white'
                   }`}>
                     {cartItems.length}
@@ -459,11 +462,9 @@ export const Navbar: React.FC = () => {
               </nav>
             )}
 
-            {/* 3. Right Action Group: Desktop Download Button (PC only) + Balance Pill (Reseller only) + Bell (with count) + Avatar (with green circle border) */}
+            {/* 3. Right Action Group: Balance Pill + Bell + Avatar */}
             <div className="flex items-center gap-1.5 sm:gap-2.5 lg:gap-3 shrink-0">
               
-
-
               {/* Balance Button - Only visible for authenticated reseller account, hidden in Admin view */}
               {isEmployeeAuthenticated && activePortal !== 'admin' && (
                 <div className="shrink-0 animate-in fade-in duration-200">
@@ -482,10 +483,10 @@ export const Navbar: React.FC = () => {
                 >
                   <Bell className="w-5 h-5 sm:w-5.5 sm:h-5.5" />
                   
-                  {/* Dynamic Unread Notification Badge */}
+                  {/* Dynamic Unread Notification Badge with Smooth Pulse Animation */}
                   {unreadCount > 0 && (
                     <>
-                      <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-[#e31b23] text-white text-[9px] font-black flex items-center justify-center shadow-xs border border-white dark:border-slate-900 leading-none">
+                      <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-[#e31b23] text-white text-[9px] font-black flex items-center justify-center shadow-xs border border-white dark:border-slate-900 leading-none animate-badge-pulse">
                         {unreadCount > 99 ? '99+' : unreadCount}
                       </span>
                       {/* Subtle live indicator pulse */}
@@ -674,8 +675,8 @@ export const Navbar: React.FC = () => {
                            setLang('bn');
                            showToast('ভাষা পরিবর্তন করে বাংলা করা হয়েছে');
                          }}
-                         className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
-                           lang === 'bn' ? 'bg-[#009245] text-white' : 'text-slate-600 hover:text-slate-900'
+                         className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all cursor-pointer ${
+                           lang === 'bn' ? 'bg-[#009245] text-white' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                          }`}
                        >
                          বাং
@@ -686,11 +687,53 @@ export const Navbar: React.FC = () => {
                            setLang('en');
                            showToast('Language changed to English');
                          }}
-                         className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
-                           lang === 'en' ? 'bg-[#009245] text-white' : 'text-slate-600 hover:text-slate-900'
+                         className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all cursor-pointer ${
+                           lang === 'en' ? 'bg-[#009245] text-white' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                          }`}
                        >
                          EN
+                       </button>
+                     </div>
+                   </div>
+
+                   {/* 4. Theme Switch (English label 'Theme', Moon & Sun icons) */}
+                   <div className="p-2 rounded-xl bg-slate-50 dark:bg-slate-700/50 flex items-center justify-between">
+                     <span className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-200">
+                       <Palette className="w-4 h-4 text-[#009245]" />
+                       <span>Theme</span>
+                     </span>
+                     <div className="flex items-center gap-1 bg-white dark:bg-slate-800 p-0.5 rounded-lg border border-slate-200 dark:border-slate-600">
+                       <button
+                         type="button"
+                         onClick={() => {
+                           setTheme('light');
+                           showToast('White theme activated');
+                         }}
+                         className={`p-1.5 px-2.5 rounded text-[10px] font-bold transition-all cursor-pointer flex items-center justify-center ${
+                           theme === 'light'
+                             ? 'bg-[#009245] text-white shadow-xs'
+                             : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                         }`}
+                         title="White Mode"
+                         aria-label="White Mode"
+                       >
+                         <Sun className="w-3.5 h-3.5" />
+                       </button>
+                       <button
+                         type="button"
+                         onClick={() => {
+                           setTheme('dark');
+                           showToast('Dark theme activated');
+                         }}
+                         className={`p-1.5 px-2.5 rounded text-[10px] font-bold transition-all cursor-pointer flex items-center justify-center ${
+                           theme === 'dark'
+                             ? 'bg-[#009245] text-white shadow-xs'
+                             : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                         }`}
+                         title="Dark Mode"
+                         aria-label="Dark Mode"
+                       >
+                         <Moon className="w-3.5 h-3.5" />
                        </button>
                      </div>
                    </div>

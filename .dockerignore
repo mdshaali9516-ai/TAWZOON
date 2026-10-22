@@ -1,0 +1,10 @@
+node_modules
+.git
+.github
+.aistudio
+data/*.backup*
+data/*.bak*
+data/*.pre_*
+*.log
+bun.lock
+bun.lockb

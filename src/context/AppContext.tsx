@@ -124,7 +124,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [theme, setThemeState] = useState<'light' | 'dark'>(() => {
-    return (localStorage.getItem('tawzoon_theme') as 'light' | 'dark') || 'light';
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('tawzoon_theme') as 'light' | 'dark' | null;
+      if (saved === 'dark') return 'dark';
+    }
+    return 'light';
   });
 
   useEffect(() => {
@@ -137,7 +141,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const setTheme = (newTheme: 'light' | 'dark') => {
     setThemeState(newTheme);
-    localStorage.setItem('tawzoon_theme', newTheme);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('tawzoon_theme', newTheme);
+    }
   };
 
   const toggleTheme = () => {

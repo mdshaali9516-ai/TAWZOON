@@ -32,11 +32,13 @@ const app = express();
 const isDevContainer = Boolean(process.env.NGINX_PORT);
 const isProduction = process.env.NODE_ENV === 'production' || !isDevContainer || Boolean(process.env.K_SERVICE);
 
-// In AI Studio environment (both dev and deployed containers), Nginx listens on 8080 and proxies to 3000.
-// Node server binds to DEFAULT_APP_PORT (3000) or Cloud Run's PORT (8080) when running directly.
+// In AI Studio environment (both dev and deployed/published containers), Nginx listens on 8080 and proxies to 3000.
+// Cloud Run injects PORT=8080 into the environment, but Nginx is already bound to 8080 in the container!
+// Therefore, the Node application server must always bind to port 3000 (or DEFAULT_APP_PORT if explicitly overridden).
+// If process.env.PORT is 8080, binding to it causes a fatal EADDRINUSE conflict with Nginx and crashes Cloud Run deployment.
 const PORT = process.env.DEFAULT_APP_PORT 
   ? parseInt(process.env.DEFAULT_APP_PORT, 10) 
-  : (process.env.PORT ? parseInt(process.env.PORT, 10) : 3000);
+  : (process.env.PORT && process.env.PORT !== '8080' ? parseInt(process.env.PORT, 10) : 3000);
 
 // Real-time SSE Manager for Live Admin & Reseller updates
 const realtimeClients = new Set<Response>();

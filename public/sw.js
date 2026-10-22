@@ -2,7 +2,7 @@
  * TAWZOON NEXUS — Progressive Web App Service Worker
  */
 
-const CACHE_NAME = 'tawzoon-nexus-v2';
+const CACHE_NAME = 'tawzoon-nexus-v3';
 
 const PRECACHE_ASSETS = [
   '/',

@@ -1,71 +1,71 @@
 {
   "brandSettings": {
-    "faviconUrl": "",
+    "faviconUrl": "/favicon.png",
     "heroHeadlineBn": "আধুনিক জীবনের প্রিমিয়াম পণ্য ও স্মার্ট মার্কেটিং",
     "promoBannerActive": true,
     "heroHeadlineEn": "Curated Premium Products & Empowered Commerce",
     "promoBannerTextBn": "বিশেষ অফার: নতুন সিজনের ট্রেন্ডিং গ্যাজেট ও ফ্যাশন কালেকশনে আকর্ষণীয় রিওয়ার্ড!",
     "heroSubheadBn": "ফ্যাশন, অত্যাধুনিক গ্যাজেট ও লাইফস্টাইল পণ্য সংগ্রহ করুন সহজে। রিসেলার ও মার্কেটারদের জন্য নির্ভরযোগ্য প্ল্যাটফর্ম।",
     "brandDescriptionEn": "Premium dynamic product marketing & authorized reseller distribution network. Quality products delivered with excellence.",
-    "appName": "TAWZOON ",
+    "appName": "TAWZOON",
     "promoBannerLink": "#shop",
     "heroSubheadEn": "Explore refined collections across fashion, cutting-edge gadgets, and lifestyle essentials with authentic guarantees.",
     "brandDescriptionBn": "প্রিমিয়াম প্রোডাক্ট মার্কেটিং ও অনুমোদিত রিসেলার নেটওয়ার্ক প্ল্যাটফর্ম। সাশ্রয়ী ও মানসম্পন্ন পণ্য সবার দোড়গোড়ায়।",
     "promoBannerTextEn": "Exclusive: Explore new trending gadgets and seasonal fashion with authorized affiliate rewards!",
-    "logoUrl": "data:image/jpeg;base64,/9j/2wBDAAkJCQkKCQoLCwoODw0PDhUTERETFR8WGBYYFh8wHiMeHiMeMCozKScpMypMOzU1O0xXSUVJV2pfX2qFf4Wurur/2wBDAQkJCQkKCQoLCwoODw0PDhUTERETFR8WGBYYFh8wHiMeHiMeMCozKScpMypMOzU1O0xXSUVJV2pfX2qFf4Wurur/wgARCAKKAooDASIAAhEBAxEB/8QAHAAAAwEAAwEBAAAAAAAAAAAAAAECAwQFBwYI/8QAGgEAAwEBAQEAAAAAAAAAAAAAAAECAwQFBv/aAAwDAQACEAMQAAAA8uY+bx0xiTGhMYgBIY0KgEMakY0mDJGMQDSTbBNtSm2pRVJQ6YpLaUO2LN20oNAWZoBmtAM1oN5LVN5LWXWZaHC0Tea0RWatOoGNwVI5KQ5VDqBptDG5m03KpDQ02hgJUBDTG2mIYJMGIBpDBDBkjGkMakpMQNpKhpDbUJ00k6alOmol2xQ9BTD0anN6NLM1BZGqDJbIeK2TeS1TrGd5bynVO8lonWa0lvNWnWatO4VJ1KpDlUhyqmqQ02lSbSabQ0NDQACcg2xpiYNIaaTAE2mk2mS2mk2qUjVCGVMjKUjKUjpqFTpSqdKJqqmIqqUy7tLM1aWT1AyWwGBsBgt5bwneW8Z2l1itZq8p1l1lOsO81c1cK5dRNzVzNIqRocqlVSA2gG0mm0CGJg0AEsBsGA00hgk2mJtNSwpIaZLpUpGWpTKmSlRJacw6KUFlTBTpQqqpmbq5mLu0ZvRqczVoxNwMDcDjTykziTyYb48ciKfHjkZ1eM6zV4zrFXlOsvTKdJq850irhVLuVSdKaTamh1A0NKk3KY2gBiYENMptNS6mhJppMATpNIpUpGNS6mlLpUobVqSlUyUUodq5zLKmCzSYNDWFN1Uyqq5nN66J4Ps9x9MdxxBcI5MznguRLfGz5WdVxI5WVvjZ8nK648b53eMbRWmU6RWmcaxWmcaxVxFqrhMdymm0milNJsmpbSadCaAAHLTGNMTASpppMGpYAqaaTY1DpUpdTSh3NzJRSh2qnN2rnN6LSJei0zh2XEutPsHp8r9T9zyfR97oe32XZ6tEu9XFMXU9B9rXNyeScL2L4zy/C+Ljm8fk8fjZcrHWuLlysdb4+e+elYZ7Z3plGudaRGkPTONJvTObmtIVS7maVUppDlVLpANqalsQDABoAY0xMBJ1NJNzRLaaTqaUuppS6TUVSqYdzah3NTFXNzm9J0iK1jXNVa0zzrnL1jXs4vfi9n6pLovHssvW/kvH8cOX0vTzTbPL2r7r8u97ev6OfQfQd3okaKK+T+J9Q+X+c+e+Oy5WD8DjZcnHa+LlvlreGe2Wl5RrnWucaRVxnpFaxGkVpM0qqE1VyqkaTTtJy2k06E0AAOWmMaYmAk6mhFTSltNJ3FqXU0odKlLpVMVU1Od1NqKuNIzvSNc500jXOK3z+7V/Rd+z3vsp+T7X86c3NHTPXDkOx7P7/l8/5fuu404/N6nrvqJiPivcfPe29L2vuij2fo+m4PafN/JcXzfV/U/Mr5LjY8jHqx42PJw204+e+Wl4xrnd5xpD0zz1zvXObmtYm4q5mpu1NIczSdymNyqlsTQwAcVLKbTJYAqaaRU0pppqXU0pdKlLpVMOlSiqmpi6mlnememca6Z65xprnplHYe0/Bei+l9E0df2+t5H5V3PV+d5NdrwPvsOTveXjyPO8LTSdJFGsBhzOJOu3pymvqPucPPvR/MvA4uT87y8/G+e63PXL0/Nww5OOuvHy2y1rPPXOrzz1zrTPPXO9c5ub0zm5q81SrSZpOoVS6Sc1STQxNDABw1RQ1RIAKmmk6mlLqaUNqknScxVTSiqmlNXFTndxcxWuekRrpnpnGumXaZHq3eQ/f+0r4z7HyfDHx3SORx+dyPTfhvt+Dx+Xvw98eHl3xrS2iIQ8nnR6RzOn7f6f7s859E+J5cvieZ87zvmfm986z7vNnLTLTTHLbLW8s9Iq889Yq8s9YvTKbm9c5uLuFUvSFU1Upp3KqXUqpdCabASJpMZUsTaYnSakpNJ0hTVTSiqmpmqlqKqamauLWdXFzF6Z3E66ZaZxr9t8P61p2fVEnsfUvwn3P84cPF0HJy5PF5v0H0/Qd1x+PydeLZzcu+Lcm6wBXOaD7n6P4z7P6D7Oeh73Lft/OOvK7bwvnL4/2XPfL55n6txNtPMMvoOh5+LHPbPQyjXO9Mo0irym400iLmtM5ub0ibmrmal2pqXSmk2k0MTBy0xjTE2mKmmpbTSpzSmmmotpzDqbUu4uYqpqYupqIvTLSY0vO850938h9n7vcpJd/tcT83e/fnbz/Nrk8Tncfn/S9hp3GXn9Pf1HY6v4qvQufr0+Y8r0/TXp827D7o16eh79HV6NEu9W0A0AIAWPmvp3knmcnQ8D1ToPK8H4WOfxOjh42e+W+uMaxprlGkaaRNTWkxcXczUu0ql1KadIEMAHLTGNMTaBW5olualOppS7mlDpOYdzSmqipm6ms86rkfYl/E6ek9s9vJK9r7WtfgPRtq7vZko136jpPsnM9R2ljaTTYmAhoAYJMAAQDTGAAAAABPh/uHjWHP8ALeteA/UeH53rvx/1XZ8WnivE9U8x7/G4kax0zlnrnrrnFxppMXNaTNS7U1NVKadJMGgAipp2NMlg0mwE6TU01Sh1NTNUnMVU1MOpuJfc9P7e+nve1D0voWA2hoAAAYAAACATQAAgAYAACAAEADYAAAAIF5L615fjh49yMNfL8X6T1TxHv/OXsHl33/zGGvwuXIx9fycstst98o0jTXOam9JVS6mamrkadSANABFTTsaYm01NNMmgal0mpdzUxTVRDtOZdJxG36W8F/QHT7FAdnqAAIYCGAgAaABAIAGCAYkFKQKU8QOaumzDvT5Hqg9DPJpD1xoExAHnfonwuWXhO2e3leHvyuNyuXk7v6X4zuOLLosOVxvTjHLfLo2xy2z12ym4vWZqauZuXcpqqSAaACRN02gKaammmTTTU1U0oqpqJdKoi6m4gauY+79l899C7/omC362JBROAck6yA7Q+Z6oPu15f1QeyPwLqA/RPF/O/DD9Hdf+bcg/QXT+LIPV+k+CQfU8b55B2/VRISMDb9KdH9+HLExDQD+Q+u+azj88a5a+T8/yeXw+ZzcnM7vpOz4uLreL2/Vd2vHy3x698ctstds40jTWJqauZqXcpqrSAaACGDt1NEjTFTTU01Sl1NTFVNTF1NxFUqjNtb5nvG3bfKet9VXW+Lqq9S6j4KEfV8L56Q7frMIClEhc5oKmEy1CC1AFqQKUgAkDQAvZOm9mDXnZ7gxMTaAfSd3wJX5h1y18j53kczh8zn5OZ2PW9hy+dt0n0Pz99OGWufoa4ZbZa7ZRpnptE1NaTNRVpNVcgDAAhp1TaaTqaJKmknU0oqpqZdTcxVxpnndTUZ19H879+t/XxnrfS+C/Efp38wjUZwjSM5Zc5QGs5gWoApSA0IGIBgAAAhsF9h1P6MDbsFyAKABoFQgGmB+VNHPj/Pcjl8Pl4cfO5/X83l87tvm/p/mY142W2Hp75Za5bb556Z6bTFTWkzU1cplXKaGgBy0U6c0J1NKW01LqbmXSpQ6VRFaRpGdUryzfsHkPvuvf34Hpe9PjXsvCD8oxzuoHeSAalgxAAIGLINp+95weZL2HsQ8LX6I7JH5m5f6e3D82dp+guQHU99WgqrixEc1cCYnsV0fHyz+kPlOBlj93fWdn3935i4fbdR5ng8jl8LlYcfP5nB5nL53f/N9zwed9Thtj6vVllrjtvnFxprE1NaTNTVymqtIBoAcg6Y00OptQ6TJdKph3FzLubjOtI0jOrm8s+V+jfD/dOv2mI7fUEwPLfLv1D0Q/CuX7Pqjyf5f9D/n1nxgAIGB2PX/Sh+jjl/K+Xzd7HyGfg+R9bj8vGOH0vF+fyjDv8OihYdtl1UmPaZddJHMwxky1nGiL7npvWPc+i7DSX9B9H+d/nvrPkvM8Pfk8XkYcXO5nA5nN5/aZrfkj53LTL1OzLLXLfbOLjTWJqL0U1LuU1VyANANy02yppJ1NKaaamqmlFVNzFXGkZ1pN5ZVpGmWfonqnxX2vp/TAG/UADOPyEHXXqAvyr+mfy8HCVAS2gf3nn/rAe1fC/afA/KeJK4+fz3znIy4+Wq5GWEbTtnlOq0iI1WizVrQzTWkZeg93sdt3+XI+k+rpNN+FfFfe/Aef4+/I42/Pwc3lcHl4cPY9h1Pb8OHy2WmXp9ueWmW+053GmsTU3opadTNTVoAaAHLTplzSl1NKW1UzVTSirmpitI0zzu5vPKtI7DE907aa9v6wApoQm0IJVgfH/m73TwoJVZA80BPu/g36RD63zH0Pyz5D5rl58WOLxOTHHWq2nI0WkxNmkwmaKE3bnn793b+kZ8z6T6+rRdsQHjnm3qXlfD5W+/G25+Dmcnh8nDj53bdJzuTj6vi9p1HZ6M53n1aRFxppM1NXKcu0nNWgGJANNNtsal1NKXU1M1SpRVzUZ3pGkZ1pGmOV/WfKekm3pw17P1BNSgEDYgG1QeH+WfY/DgsUwdTQYfq78q/sAPnvOPQfmPnvA6DL6jR83x2f3eu2/nXY/XfLcHBjMqOBkzVXWJW2/sfX/Q/QfXVqn0dAAAAHmPj/ALR4vxeZrthrhwcnkcXfLl5nM6/l83Hr0X0Hz19sxcd2sTUXpM1FWTUVSTl0Jp0AAgG6aal0mpdTUzdTSzu4vOL0jSMtLjTHLT2fxn9DbejzgPU95S0ACTAAoXUC/L/T8nijYgLcgdx+rvzV+lwvre1yF1lcwT4vC7DzPzfO4HVXn4nySlzpSlOtH6J0Xp/tfT6bq+70AAAQAmg+H8K978E5PP01x0w8/fbj65Ycvk8LkY8vbfNfS/MRqpc9/RMudLlOapS1VymihNNoAYAynNqW01LpVM1c1OdXGkZ6aZ6Z53rnpjh3Hv8A457J2+8Au700hIaAYDA+K+18jDwxIBiYNzQekfoPxT2wVABGG/w3Fz9f8hrl838bnnphpBhBtvfbdb7T6nvcrmTr6fsNoBoAGgAEHzX52/SX5r5eHW8tMPP12w0yx5HI4u+fP2fV8uMjqpc9/UkTpRLmqSadKal0JoaAGmnRTmpmmqUu4uYq87mLuLjPTTPTPPTTLbDH1D0b5b6j1fp2I36UmkCABpg/AP0B+Vh/KgANMATD9AeofEfcCA+dwjh+f7cH5P4+cXwb5L4pHV1Nx6X2+p3H0scj2PoG0MYgGIChAAIOB+Xf1Z+Uufj10y05vO00y0jPbbDXPn5emHLxjoULv60mrqU5qhOW0mnQmmxNDTTB1LU25pTVxcxVTcxV56RnppGmWV8jDv8AFe48lHt/WMQwQkAADQyfxz+qfyemhAMQAzsw/UPfcfjxOHmvI6L5T5R8VcGPPeRn19Ijtunt7n1TPne19GU1dgAAgGIBgAABX5P/AFf+WMOXj6Zac3nXpnU5bbcfbPHkdj1nZ4YfNgu/uE1TUtU1LHUjVNAigAJpMbaam2qUVU1EVU1Od6Z6xGlxeeOv3XwvrS6PvRP1vpBCYAITAABnnn5w9m8YTokB2vog4v6D5Hfofn3I+M+Y+Y04ccfn8ozcdPQpOXrtxPcfjPo/U9/6nf5e9t/pF86SvoV8+Jd+dApO/OgEvoK6DvunZgtdK/Mv6Z/N+PP0GuWnL5ujmpy01x1jLfmcLlZcvF4HbdRv3NBvSmppqaTpJqmk0UJoBpgUmldTUxdTU5u5qYvTPTPPS4vPLb3fw79GbelYj0PaATAQhiGMTD82+fdv06btfdBwvf8AftAXx3L838DwThxnw+G4J21IJvQkm6ZJTusgW9cYS5d8JxHPvrqiew0670S+vvPquFzPoPpqEXdfn39A+EZYfEaZ6cvmW5qc71x2jLbk8Xk582nSfQ/P10CZ1bSqVOFUtpNVSTRQmITTB0mTVTcw7m5iqm4zvSNM86udM8vpfcvKfVe33mC6+8QgAEMEw4vK+RD8t1XrifX+16c0J6HmeT+P5Mdas/K+dczG+lwovSplXVSldNSU6UpuyAdvMDSsfpnt23o+PYet7+uud3dCGHintXkGWPml56cnl3Sqc61y1nLXk8fkZc3Z/LfW/LK8wO3qSaqpmk3KaqkqRSAQMpIpWoLVzBRpGa0Vxm9FrnkaLXLP1r7T5P6z1vqGhbdACBiAYgH5r6Tmjyv0rkWE8TnfLY5/BdD9Vj5HhfMR9LlR83H0eV18/Pe5t9Idtmzqjsc6fAXMgOMa5ikWYamHYD5nsfG7j0PZvkRrppTTBgMXlXqvmeefkOmenH5N3NTlemes568jDfLm7LqO04uU9KNeh3ymrpTU0JVLpJopADqpqJdxairiojS87jPSs7nPXTGs89747zj0z0r83+zd3t/VEHb6lKQKJAokZRLBiEOWg4WPY5hwDnIOCueg6+exQdcdgB1y7FB1i7NB1h2YPqzswOsvsAMd6oHSYqaGNyA/PfQfiojwzTPXh8irnSMXrO0ZVtiox7PjceYOHO093TitYq4m1dSmOoGNyMGOSS6ipnSsrnPVw1GrzqI0rJytFBKp5pV9J2nwqrb0nmeTxpt7RzvBovf9E9l+Yo01/WGv5K51X+pj809hV/oQ8N7N16+eY9k6+7Xy3Pp90uNynUjkAAEMCRgIoZJQEqwIdIEMBiAYkB8n9X8JEeLbyed429cHAOzx6/l1UnY8yMsXoo5Mo1nR4xtGmmUazemS0TrObmrkabycN6aVlSnV51Ma1lSnSsqmdbyuc7qLmLqbiG3pOcVrpMcY5lSuCuytLqp7uk/n4+jB/MZ/VJ38nl9hNX8dn9hnWnyOv0mN68Hn8fHTbv8AsPisr29L5/kOd6+6dj+dorX9P8/8nVV/rBfl/tHX6MPAu0q/aV5T2Lfop8b2dV35wuYMVcQOd+ee2855uWo33y5sOdnWeHPvr6jm55xGZ8lYFG0RLdxKu6lTdOHNWSJ0ITfHqHe9uGp0cMm6zqZ0rNqdbxpRtWNRG94VOfJvjVGfKvi1OfMviXEcy+HcZ83ThXM82uJUzy3xrmeQYUlpIDWest8fPlRVcTPmRdcHLsIu+uy7KK06zPtIvXqs+1mteoz7iK06eO4iteojuId9PvzprRcLmIfFvYmc6ppKilBSoinLJokaolMpSNuVLqkpqmknTJG8XLeraBU5aVuGTdQ1OlZ0o0rKpnSsqUa1i1O9Y1Mb1hUxyL41znyb4tTHLri1McuuJUxy64lTPMfFEuUuOByFgD0WaZUqXTgmqUk1alxVqWVcxcVaVJ1CtNxOidZrSSpVpuCkCBNskYyEOkk6pSm6JQwSdORDYgeRNVo3IKnLSblitxSm6zanR52pqsmLV5Up1rGlOtY1M7VjSjasKmN647U8l8dqeTXGajk1xiVyXxwXIMAW5gg2WSHrORVXMJ1UzLu1CqqUy6ogbpTLqiZKpJNslN3KQNJOglOqSTbSBtIG0kNiTbSBsQGTlvRiBUJg6hk00JU4aVuGLQhk6ECWjzaWryanWsaJ2Mmp2eNStawand4MWzxanZ4iWxiBsZAamIzVZg9Fmm7mU3agbpSiqUpuiE3SSdNSh0Sm6JQ6kTbSBgkOkkNoQ2kNghgJFMQECZY0CblhQmJuQVkMVuKSolpU5BU5BW4aVuRTbhishit5tLQgFpWTS0M2LQzA0MwWhmD0UAWpQUkm6ITdkA6UjYJNskGIQ2kDaQNkgNIbaENpDYIGCQ2IAEDaQEuWUxMAAGJiYgTaApyxUIU05ApyJWSxU4YrIaWikFoQ0qcAW4BWSJWQwshipSBZIFKQdSJjQm2SNskG0IBCKYkDEm2hDYkNoABDYhDaEDEDaQAgGADkAbExAAMAAATAE3LBtAqAExMTE0MTENNJuWJtCKExMQk2gTEA3LBgCAAQgbSGNCKBDGACAGk5bABgIBCGxAwBiTQwAEnI2gGAAADQAf/EACcQAAEDAwQCAwEBAQEAAAAAAAEAAhEDBAUGEBIgBzATFEBQFRZg/9oACAEBAAECAPXEeyIiFEREREREREREREREREKIjtEbxHSFER+qFEKIiIiIiIiIiIiIiI3iP5sKFEICIiIiIiIiIiIiIiIiOkfz43gCIiIiIiIiIiOMQREREIjcj+WNohARERAAAHHjx48ePHjx48SIIiCIII/njqEAAEBEAAARx4xHHjx4lsFpbEQRBBEEbHufcPwDsNhsEAAgAIAADQAI4xx48ePEt4lsFpaRBBBBB3O52Ox/QO49IEAAAAABoAAaABEcePHjx4lpYWkEEEEEEQQiiEUfxD3juNwAAEAAAAGhoAEcQA3jx48ePHiWlpaWkEEIggghFHYohH3j8A3G42GwAQAAAAAAAAAAaymzGjDPxL6HDhxILS0tIIIIIIIKOxCKKP7R0HUIIIAAAAAAAAAAAC3tbPSlDTlOgpTqdfB3el7mxLCCCHAgggggogogoo7FHY/tHQbBBABBBBAAAAAAU6eN0rb2foDq1DJaffTLSHAhwIKIKKKKKKKKOx7H8Q7DcIIIIIIIIIAIIAICyssRgkUTf6ovPIb/ACHS8j2PkG2utgnrL4ipTcCCHBwKKKKKKKKPQ+k+8ekIIbBBBBBAAAAAWNni8XtmM9m9W1LoNDG0hRxOZwWe2cHPzVjUaQQ4OBBRRBRRRR6FHc/kHUbDYbBBBBBBAABAAU6eCw+2otQ5PKhrW2dha6Xp4I4mvpy1ZY3ai9BqX1s4EOTgUQUQUUUUUUUUUUeh/ENhuEOo2CCCCCCCCaNKYrbM5PN5QBrcPh6FANA4kVGaV3ybflyTHgpwcHIggogoooooooo/nHUIIbDoEEEEEEEFY2ttQ211mWhoxdhRpNAAEEOWLqsRVemaratZhRTk5FFFFFFFFFFH9Q2Gw3Gw3CCCCCCCC0dZbZO6zVw0NbgbVqamobFOVJ7TtlUK14nIopwciiiiiiiiiiij0P5B0G4QQQQQ2CagggmrA2m2srolooUmNaWkGeRc4k2VRTqxorCo5FFFORRRRRRR2KKKPoPpHcdBsENggggggggggsTahTPkS7AYMPTBaWuDuXIuLicK9Fa2pfNZVySSinIoooooooooo9Dudj6R3G4Q2HQbDYIIIILRlsFK13ctDBgmAgtcHB3IuLp029FakofLTr10SUQQUUQUUUUUdj0O5/ENgghsNwgggggggggdJW206jrtDBhWhwIcHcuReXctMVUVUptwFDRVDR9PRjNJXOjsng3Agoogoooooooo9D+IdhuEEEEEEENmCyoKcjWyD2pixaDg4OBlrWY5mAp6XxmFAXLtVZeYO7sHNIIIIKKKKKKKKOx9o6jsOo2CCCG2nrSdtTVaj2uoULDDUtL0dJM0nT07TxraUewrPZMXN/petQc1wIKIKKKKKKP5BsNhsOoQQQAAaBoi0FMWxtcjiKGhaGFDPyOXktmns5a3dxa5PTFRjgUUUUUUUdj6R7AhuNxvaWlroanoCloelpWlj2tnl+ly8nNasDmrevRus/gqjSiiiiijufxjcIbjphcVjcZuR+1y8msamHC5m1uGVc/aOBBRRRR/OOgQ6BaMx38IryWAmpixOVtLvVdNwKIIKPQ7H8wQ6UaVvS/NKmZmZ6+RmBNTExYu/wA3XeCCiiiiiijsfUOw3CGwQ3C0vbj8MzMyiauSOedn36sr+QavkvTGtOuv2NATEwU1aioHIooooooo7H8A3CGwQ6aAt+/PmpmUQ+//AN52cr6qqa9r+RK/kavrqrqw6pq5+rWLQLOx0zgx11w0JqYmKmsaqjXApyKKKOx/EEOoQ3C8fW23LmiX3QzX+1X1NU1vV1/X8iV9dVdVnVVbP1KvHaZmdiuGktMUGddXNQTExU1buydNyKKKKKOx/EENwhsOmmLXIZyvq+tr6rr+trmrqt2pqudqViCSSSS6ZmZmVO73aK0pQpNHXUrE1MTFTVFZUORRTkUUUUUUfUOwQ3CCHShRo09Y4Njy4uLi4uLuRcXF0kzMz6C7RGlqFJje2UaE1MTExUVkGuRTk5FFHYoo+4bBDYIIIIb6Wtlw15g+RcXFxcSXF0zJPs0hpmjRYwDs8ENTFTTFRNYPRTk5FFFFHY+4bjcIIIIILQFttqPCV2FxJJcXzMzPraNPYKxsmMDfRctamKmmKkaAenJyKKKO5/CEOgQQQQWgrbfyTgSinVJnvJf8vz/P9gVqVrSwFtonDYZjAN5nlIIWWY1MTEw0zjnVmOTk5FFHc7n0DqNgggggAgggtO22+Sx+Rs3v2Lm9nUx4zZ4wpeL6Xjqloijpxlh9cW9Oi2nydem/ORdkn5h2dfqKvqjF1QtRhqaqZYaaoOyzSnJyKKO52PpG42CCCCCCCCACtKFNvTyLpOnopnj1njOl4wz+G64Ck2l8Zca7r92VOZfnHZx2bfljkzk3Xrrhzy8v56dxtMBauYE1MNM0zROYBRRRRRR2O59A2CG42GwQQQQWk7bq5tW1FBtFtLWlz10NQpNv7guKKJJLi4uLuZfz5FxcxtjZWduEFrsBNTEwsNE5JrkUUUUUUUUdj6BsOgQQ2CCCCC0Db9q1PgGzmavQLxfRm9dyLi8vLy8uLi7lMzITxiMawbeQQEC0sLDTNYORRRRRRRRR2PpCCHUIIIIIILQ9t2ILQM/Wv3bkl3iWjcm8qmoajqheXl5cXEzMzNzX03g6bBv5JDU1NTCwsdagkoooooo7HY+kdggggggggsJb9pcI1xWc47EqofFdDIOqVjUNQvLy4u5ciZmZqVtKYSkwDfyaAgWlhYWGwq3TCiiij0PrHQIIIIIIIILHW/UdI8l10U5+1ZePqGbqF5qF/PlymZmZlqwGKpU2jp5Pa1BNLSwsNJ2YBRRRRR3Ox9I3CCCCCCCCCC0dQ3PfyXclVH711pqhqioWEmsbp19/o0xMzJNNlnZ2do1vXyeAgmppaWGmcuCSiiij7BsNgggggggggggtAUPQNtZ3VWp0+O3ZqXBt0l/yLdIDSTdLXeKurnckKqMLiGNHbyUwIJqamlhpm+RRRR7H0DqEEEEEEEEE0aLtvQE+pl7rrp6hSD2vofD8QpXtfJX5R2JJua+ldPMYB28iAIIJpaWljkUdij1PoHUIIIIIIIIJoxtDY99R3F4/roGhTCe3hwua+YyRRRRTnOraRwNJjR2K14EEE0gtLDYIoo9Cj7xsEEEEEEFhqA9A28iVi7o1eLaLNyK1bN5Qoool1Rq09h6VNo9GsGIIIIFpYbWrf0+h2PvG4QQQQTVoqh0PQbeVrvq1eJKDd3uzeWeSinvc5jbKysbNrR6dStCCCCBaWmmcwEdz7huEEEEEEEE1aBoerypddQvFdEb5jK16xJNSsSnNwWGY31ZRrUEEEEE0sOUH4huNggggggmrSNv6QtaXnbx9QG2XyV3dOc59SqSq1bSunKbAPVVa1BBBBBNTFcD8A6BBBDYIIIKky2o7ntVq3dXoU5act1kr6/vnOqVHvJJfU0hgKVMD101UaEEEEE1NNIfgCGwQ2GwQQQTVp236HtrC6eejGWGOosvbvJ5FzqtZziSeWnMJQptb0mZ60lkWBBBBBBNOPJb0PpGw3CGw2CaggmrQtt6vKVz0a3FYrTen7m5zGSc+pWJJJVjYY2zY0dJmZkHemdQsCCGwTU1UXZNnQ+0bDcIIIIJq0FQ9Xl673a3A4DC4Sc1l3PqVSSSimYrCsZnRqMak/wCj/wCg/wCg/wB//e/3f9z/AG7bN701q1oQQ2Camqmsu33jYIIbBBBBBBNWmrb1eTLnZrdOaYxmLY3NZirWfUJJJKKO08uQeHioKgqir8rH4LHDemtdUwghsE1NVNZIdj6wgghsEEEEFbUqTPS1aiu01ultI2dkxmay9zdOeTJJJPWZ5cuQfyFTT+FosG7F5DAQQQQTU1MVw3qUfSNggggggggggtK2x9V/cktGktFULZjM1lLy9c4kmSZmZlTMzMyDprC0abevkoBBBBBNTUxU2DqUfWNhsEEEEEFoG2Hq19csbpTQ1Gi1uUv8jkCSSSSSZmZ2mdpkLTmFoUmAIbleUAEENggmpisjUZ0PtCAAAAAAAA0LQ9XlI6U0PTpBt7eZfKlEEEQfaFhcPbW7GgdCvKgCCGwQTUxW5yjOh9YQAAQAAAQQTVo13qfTFMBahwDtFnRB0OdDHQx0SdFnR50idKHTB04cCcKcWbE25aXYvGY+wYxoHUrygAgggggmpqoHNM9o2CGwQQQQQQIOhsl7iqlE0vi+H4fhND4Pg+D6/wBf631vrfX+v9f67bdjAB2K8nsCCCCCaGpqpHLv94QQQ2kEEHlzoXWC1OpmZnaepBbx48ePHhw48OPDhw4fH8fx8A0AdivI4CCCADQORrUa9zU4lpERHqCCCkEGeXLlyD7XVbNet8is8j0/IrNe09X0s0ypw6T6IiIiIiIjvJWvw0NAbJruunXDDSpcSCCCCCFBEbyEEEDsCDO0Rx48S0tLS0t4NFLIs1RS15S8ks8oUvJ7PItLW1PUVO7DSPzeTbwE1XXDq4dTsKdgBsUUUUdyj2BBBBmZBGwQQAaGfGKXwfX+t9X6f0TYGwOPNgbE2JtDbG3+CnVpZ6nrRnkRnk2l5QpeS6evqWraOUai310xq7OGryZbU7Rjvk58uUkkkklFFFHtIIIIMyCCCCCCCCCCCggAA3hw+P4vh+A25tTaOtHWTrI2RszaG1NuaJpGkw0c1S1nT8iM8oUvKVHyZS19R1VSyEBl5f6s1wKTaQQPIODw/ny5ciZlSTJM9QQVMyCCCCCCCHBwcHBwcHB4eHcuQO8cSwsLDTNI0jRNE0TQNA25tjbG3NuaJpGmWcKVc5cuBBBBBkEGZmZmZmZklTPSdgVIIMgggg8g4ODg8ODw8PDw8PD+Ydy5cpKKKIIILS0tLS0sLCwsNM0zSNE0DQ+H4fi+Phw4gAdpU+sdwhsCDIIIIcHBwcHB4eHh4eHh/Pnz5ci6ZJJRRRRRR2IiIiIjjERER0mZlE+4HYKZkGZBBBBBBBDg4ODg4ODg7ly5cuXLlMkySTJKJR98zMqZlTPvCBmZmZBmZkEEO5BwcHB3IO5cuXLly5cuXLlyJkmZmZmUTMqZ6zMqffPeVMqZmZBBmeUh3IO5cuXLly5cuXLly5cpJmZJlTMzMzMqZRPtmfZKmdpkEGQZmZ5cuXLly5cuXLly5cpmZmZmZmZ2mZmZU/wpmZmZmZmZnlMzy5cpnlymZmZmZmZUzvMz/GmZlTMzMzMzMzMzMzMzMzMzKmZ6Sp9s9B6p9kzvMqZmZmZmZmZUzO87z2n+TO87yplTMzMzM953n3z++ZU7SpmZ6SpnaZ3mf/FzM9J/mj+cfy//xABNEAACAQICAwgNCQUIAgMAAAABAgMABAUREjFSECAhMDJBUXEGExRAUFNhcoGCkZKxIiMzYnOhorLBQkODk8IVJCVEYJTR4kWQNGNk/9oACAEBAAM/AP8A2EljkoJPk4avX5FpMfUNYkf8nLWILrtJfdp4zk6Mp+sCP9FzXEgjhjZ2PMozq6kyaeVYhsj5RrDIMiYjK3S5zqGIZRRIg6FAG4dxHBDoCDzEZ1hs+uBVPSnyTTDM2svqvVzbNoTxMh+49R/0MzkBQSScgBUkujLeEonixVtaRiOGJY1HQOKimQpIgdTrBFFNKW1zZeeM1kSCP9Bz3c6Qwxlnb7h0mrfD1DkCSfnfeYPZEq0/bZNiIadBCRBZJ1yyVihOaC2X1CaxEcuC1k95Kw+5OjdW8kB2wRItW13EJraZJYzqZTmN3KtHqNLcBpoQBKNY5mogkEZEHIj/AEDPeTpBCmbN7AOk1Bh0GhGM3PLfnY7tnhSfOHTmIzWNau70mMy/I2IzklTS8pyBsjgG8PNV9hc4kjc+XyirbGINNMllUfLTd0lIrI5UGBuYx54/0AzuqqpLMQABrJNLhtsNIAzOAZG3Y8LiMUJUzsvoQbRqW7mkIkY6RJZzyn3bm7fRgiLdJ5h1mkGRuZyTspWGoP8A44PnEmrDLLuSOrOTPtZeM+0VfYBdx3C8MQbhI1VFfWsNxEc0kXPd0JMxqagQQeEHgIrued0HJPykP1T4fBJvZV4ASsQ+LbseGWUk7DN9SJtMamu7iQFyxLkyNtHda9btsuawA+lvIKihjWOJAqDUBvVZWVgCCMiDqIo2rXNlpExZiSL4Fd3OAvzoQdwS2+mOVEc/VOvw9JdXUMCcqRgOrpNJbwRxIMlRQAOrdL3DxpyYiUTz903t0kWpBwuehaSNFRFCqoyAG/7VfwHaJU+tuh4nXpUiiCQdYNKTk3JYEHqNFHdDrUkH0eHc5J7xh9RN0WdjPPsITRnvGBOYT72PCTuiCyEhHy5jperxHa5o32XB9hr5K7pgxG5T6xI6m4dzSdJNtRn1jgPh3uPC7aLUxTSbzm3RBYIm0Sx6kGdF3Z21sST6dwyOiDWxAHpoIqoupQAPRxPbbWB9qNTu9qvopOaSL70NeWu2Wz9MbBvQ3AfDndeIWsHM8g0vNHCd5+6GwPxnd0r63+qS59UZ8Vp2EPkzX2HdzsIJxrim/ONzOYRk8EilPSdXhzTvJ7k6ok0R1vvO237KPGn8A0d35+V9mL8xA4rStZU2ZTu9vwS/TnEOmOtDnWfDnRVlYHhUgj0UBIxXktk69TDPw32jCUkOuZ2fdABJ1CjcYizHoJ98k7uUNy/S6L8TxWctxH5jbqyxvGwzV0ZT1MMqxt5Hjiwy4YK5XSKECuyF+Vbxx9cgq/MEAnuI1ZE0TogtVvrkupWrCVHIkfrc1ZSAmCWSI+8KvcPJMiacfNInhZmIVRmSch1mltra3t11RRqnsG72mwu5diCQ1p3sx6CF9g3crEnanb8KjfO3JVm6hnV9JyLSU9a5fGsSbXEE63FXR5c6DqBNLYSPJ24uWXIjIAUtL0cQsqMpFWt6ZXs2EMyuyvEeTpLV1ZydruIijfceo+FO6sYs0yzVZO2H1KJJO6I8DvT0hU95hWnLI+05NAc4q4mOUUEsnmIW+FYo9jAq2EwOnITpjR1msXblJGnr1P8AvLhPVUmrcfSTyt1ZLWGprjLn6zE1Yx5aFtGPVpBqUegZUOO/sTspmzz7muo4nkA1q/J06tL23VZ0SeCQAq44QQeejkZrB9NPFmnjdkdCrDWpGRHhA7j9uu7l0IyRY19Y5mmPNTt5KyTNmyq2xK1NtcNJoFlb5B0T8muxm3/8cH89nesKt+CDDrVPNiWlUAAZDvXgojGLR9q1p8MftM2bWjnhXnQ7S0CiSwSho3GasOEEVYYogS5iAfmccBHUavLQM8Pz8X1R8oeC7m7l7XbQPK+ygzrF5ADNJBD+OgPpb9vUjrCk5bTydbVgsWqyQ+dmasYPoraFOpAKy1d+cFf3zDn/APofclwyTQfN7Vz8pNk7S1FNFHNDIHjcZqwp0yGsdFQ3sUl5aIBOgzdB+34Jnxa9W3i4F1yPsJVnhkAgtogq855yeknwGP8ADH+1G7PhkuXC9u5+XH+q1DcQpPC4eNtRoqQQeEUtriNwsYyjfKROp/BAssIilIHbbkdtfwJnZYeeieTeT4dLpJ8qJuXGdRqG7hWaB9JG9oPQazktJemNk90+B2mljiXW7hB6xypYoIo11IoUegZeBM8Itjs3I3s9jLpxnNTy0OphUF9hcNxCc9CYAg610hqPgfujHsOXZk0/cGfe5NaIzY5Dy8FYXCAZcStE65VrCP2LwSeSJHk/KDVovJtL9/4BQfjK1DHy7UJ5ZrmCOrOPgEuFL1zySn8CVBkMr6H+FZyP+dq7I8dxuK2gih7iQ53DmMAhN9ngPmXMW+0oL2Pag0h1xkN4H08UuZ/FQADrc8cayXSJyHl4Kw2Jc5cStE86VBWClDoXglfoiR5Pyg1ABmllfP8AwdAe2QrUEWu3ij+2vIY/gWq1TXd4Sv8AFlnP4Fq35sSH8Gx/WV60tV1ij+iCCppNVrcv9teyn7k0au35OH2C+V42lP4yaxv93cRQ/ZQRpWOSgh8Vu+oSkVNMc5ZpHP1nLfGl6BuXWJ3sVlZppyOfQANbHyCrbBrKO2gGZ1ySc8j77S7HLz1D+KuHeg3MSnU+aH1xo0RmDrHgbQwyec65Z/yb+0QBpb2BPOlUVg2o3wc9EYaT8oNWi6rS9kPSISo9r6NQxa7dE+2uoY/1arVNd7hcf8aWf8i1a8+KfyLEt98r0DqucUf0QQVJJqtLp/tr6X4Jo1cOc1wzDx5XR5j7ZGNY5qinih+xgiSsen+lxe8P8UippTnLNI/nMW+NKOYUOJlkkS3gQvNIwUKNZJ1KKiwazGYD3coBnk/oWtEb7S7HMT+yrhO9KMjjWrA+ytC9uVGrthI6jw+Bu5cDw6M+J0z1v8qrKxuoLWZ1WWVC6abiNSFO0asE4O6bEfxi5/AKtkACXiepbu/5iKULopJeN5qRRVO+qC4f7S6b4IBV0/JsrQeVw8p/Gaxf9iWKL7OFFrGpeXil0fIJCKllOcksj+cxb40uyO8tADLlnUOijYRi/vE/vj8hfFJQUDg3+ngWJr020lcO+zlhk24Iz6QNE/DwK088UK65HVB6xypYoo0XUigDqAo4xhDJAud5ATLB17NaSBu+Qi6TDqHTTTOmLXyfWto2/OaA4jtmGX67VtJ96mtXUN9pWdo+y0kZ+5h4FFxjtgNhzJ7go7hwnFjcwplbXpLjoSX9vvgAFm5I+/yU+NTi9u0PcMTZBfGts0FAAGQy4lWimUjlRMPaK0Tl0cG+08NnGxJG/tzU+BdLELy42IQg62O7FjOE3VkxAlI0432JByakilkikQo6MVdTrVlORG8y7yzz4cgBmT0Cp+yC/EYDJZwnOWT9POaoLWCKCCIRxRqFRRqAHFZ1oXM6bMrj2Md92yC6j27d8utflfp4FEeGyzeOnP4d4ILsYrCg0LkhJvP3eijxSbQ9tR7QqPp+6l5g1DZ++mbkpn1ZmsRl+jsp382JjXZDLyMKufSgWuya6dI3thBGzDSd3WrTCrGGztkyRBwk63Y62PF6q7XiuIps3cw/Gd8BPDnqLBT1NwUUd0OtWK+zwJ3NgtjFz9pBPrby2xOwurGcZxTRlfKp5mHlBqewu7i1uF0ZYZCj9Y/Q0WPk3QNZFaWejw5DM5cwG+ea4hhTlOQo62OQrFf317ap77143FPchrCxy767/BXY6nKink65a7HItWGRHzyzVhEP0eG2q9US1CnIiRfNUDcHRQHNWXNSLrdR1mrRddxF7wq05pQeoE1BsynqRqTxMn4R8TUaawg65UFQeMtv5haoF/fRehHNaCaSuXPRoBfiTV1PZxS3SBJHzOiOYc2dcIorj+Lj/wDU++I4RrHCK0cQuctTNpj1xpeAzcXMEA1yyqnvHKgiKBqAA9A3t7fdpxLDItOXkTptDbrsml1wxJ50q1jbcu7tU9Z2q6b6TFE9WI1afvcSn9WOrTAhe2tu8j5tCheTLzyN8J+yTCoum6ioMAemkHPUQqBdYP3CrZedfS4q3Gx7SfgKiGph6EJpfr+hFFNzCX3gPgKlP7DemRqn2I/TpN8TU/MIx1IKvOacjqAFXJ1zy+8alOuRz1sd4uizuckXWaa9nF9MvzSH5pdoislArhFaHZNivllDe1Rv83tZNu3UelCV8BifHbPPVHpSe6N8GVlI4CKCMQBQoVmQAK7fiNx9a8mPoT5A33b+yyz+p21/dSsgKcMoR2AJZjkctZpm1sx6zx5dsgQODMk6gOmnxm8EMea2cJzkekhRERQqqoAA1ADc4RWXZPe+bF+Tfaq0rG3fYldPeAbwHnc31zsBY9+Dw7qxxySnVGjOepRnRlukz1iMMetyWO94RXbsdup/F2jfjetCN26FJr50DoQceWIAGZNTXVwmG2eTO5+dfmGX6LUNjaxwRDgGsnWzHWTvMuyRztW0e/7Zht2uwY5B6Don4+AxDhHbfHTM2/zFcO4bfsexaQa+5yg65DoVp3tweYPoj1eDeAVwE9ANZjF5/sY60bSU9K5e2s7ibzsvZx72yrFEC11NkFUcJUN+ppcOts5MjcyZGVv6RWW8yxq1fatN/wBsSeLxkEi+nLMfDwH3NhVlDlkVhTiliwWNOeW6QehAXouzMeck+3dy3Mo36q0MAnl8beP+Ba0YAOl1H61pO7dLE8dHaQ90SgE6okP7TdJ8gqXS/tS9BM8vDEG1qNqshWW8/wAQw1+m2ffhJ4WOoOM67TcTRbEjL7D4BNzfWcHjJkX0E1kMhxQiisoOiGaX4IN3LgG782fKRRh7FsMG2Hk9967XB1K7ewccgV5ZWyiQZsfgB5TUmN3nd92mVpEcoo+Ziv8ASKy33DhUn2y781lfzNzSBJPfUHwD27G4X5oo3fi88Ulh8XDBF8X3OZd58lR5Sa7mwTC4di0hH4aYW8iqCT2sDIfWNS7BFaOtlHWwqIa5U9tQD94PQDUA52PoqLYepXhEzxmNG5GlrfygdG+MjaIIHOSdQA1k1Lj9+lpAWSygOcj/AK+c1RW8MUMSBI0UKijUAN/nZYR9tJ+Tf8IrNbKXphKHrjb/AIPgHhvrnzI+L7pxm+YHXdy5dSfIFa1Xema4toRrdgvvNlQRFQalGj7OCrrEpIXS6CQrrTRJOlQ/auz6Eq357ib2KKsOd5z61YWNcMh63NYUP8mp6yTWC2yOxsoQkfLbR4SeZBUlzK0j5DmCjUoGoDeliAASScgKmuZ48KsRpzStlKw1dWeytW+F2cdtCPK787tzseIzwexfZvB96HiNPDUbxVx90i/9fAIgwaFvGs0nFCOOSQ8lELHqUZ00lz9YrpHrc6W+7q7JcHg6bqH46VcGdBlINAE8FChuLAhVWCvo6RY6o12jRupAqZiCPkKfvY+U742qKkYJupRkgHCUDf1HmoYXbGSYA3cwHbDsDYHE59jfmXcPEdssL9OiJZB6jDwATwDXXctjaw7ESL7BxXc3Y7jEo5XcxT+Z8ig91MRq0sh1Dg33b+y606IxK/sSshuZ7q28YOWbtwIvSa7e7QxPpJpZyv4xv+BvcqS3i7olAPDlGm2w/QVJI4xi+BMr8MCn89AcTp9i959R4j+PiNOXtXNKjx++pHgDunFLGHamQnqBzPFiDsdTbnuI/Ymb1pEk85z3ubKPKK7djt5PsWp/G9cG8jgjaRzwD2k9ApjpxK3zzjKQj9hdgb3opAGkkOUaDNz+g8pp8dvTe3ceVlC2ikfM52KAHFB+xfFfss+I7XLFJsOG9hoQ3t1GNSzOB1Z9/wCni5lOqGE8WqQ4bbfUml/o33Dn0An2Cs0xef7GPeKilmICgZkminCDk5B7UuwNs0SSScyd0LRamdgoqTHL+OytyVtIjpSyfFus6lqG2gighjCRRqFRRzDi9Pscxhem1k4n+9rJ42GN/wAOR7/yhvLjbdUHqji1bH3gGqGCFP6998mQ9CH7+Cv8Bnm8ddneRqh54wckXxjD+kVJNI8kjaTscyd3mX27hJqe4njw2zXTnlbKQj4dQ56gwuzjt4uE65H23rLi9PCMVTatZfyGuBeocRpW1hL0CSI+qdIfHv8A7RgdrtSZyH1jxXDQu+yLE5QcwbqQDqQ6G++akPlUfrRg7EsLG3pye++7HGkiB8kX6Qj8g8pqS5lMj8HMqjUo6BuBRmTRbyDdMCgJmZ5OBAOEqDz9Z5qGGQdunUG7mA0/qDYrIcZp212m1Cw9oIr5KjycRp4XJ0xXCN6HBU9/F2VBrYgDrNCC2ghGpI1QeqOKWGC4mbVFE7nqQZ00tw7scy3yj1twnffMdbn7hXc2BYTBzpZw/lB3BAhjRwHK5s2wvTRuHAXMRLnoA/E+U7gXXRY5ndjhjMsnDzKu0akeRcXvRm7cMCn89ZAcbmWHStaEsibLsPYeI07W+j2rdmHXGQ3f3dOM2EZ1CXSPUnFi17FsZl5zBoL1yHRrN2Pl3rOwVRmanxW8gsLGNpXJ+U2oAc7HoUVoKijUqhR1AZULZMhkZG5K/qfIKad2jRyyaWbvttuaPANdEnM7qAFnbJBwk1Jjd53ZcJlZQtkE2zsVkBwcd8v0V2vEb9Nm6mHsc8QO6YlbU5KHqcaNFGKnWpIPo7908Tmn8TD978WIOxyCHx94Pwb0sch1knUBV5jNyLKwX5OuSU8AA6WqzwW2EUAzc5GWU8qSo7aEu/UqjWx6BTyPJHp5u3BIRzDYG5zLvZscvktYCVgT5UknQKhtLeK3hQJFGoVV4/5wVoY/jCdF7N97cQVZWGsEEeigmI3YGoyFh1N8rv3QsLqc65Z/yDi07fhNmniXlPr7wtnzAaydQFXmOzmGAFLZCO3TEVZYVaJa2kWimtieFnO0xqOCNpJGCoozJqQvkpykIyUeLU/1HcJ4Bq3s14mXd1lboRwmWUBj6BnVlhNqsMV9hrNrkczkF2qBf81hv+4NQD9/h3+5/wCtW/j7D/cf9atfH2P+4/61a+Psv9xVr4+z/n1a+Ps/59W3jbT+fVv421/n1b7dr/OqDxlr/OqGe7jtVUO7ZkmNtIKBznefOLWXZNi/2/E/OwSeMt09qZr+nfvc2C2UfOYtM9bnPixP2V3aDVAiQ7ueZJyUazV3j8wOTQ2Eb/Lk2j0L0tVrYW0VtawrHEg4FHxPSTQUZkgADMk0Blofwl2jtmmZmd2JJOZJ5zWl1d5OXRVUs7nJEGtjQs4gTkZnyMjfoPIN588vXQj7KsRG0I3/AAcTpWlo+xJIntyYd+GeaGFdcjqg9Y5UEiSNdSqAOoDLis2FG+xzFLrxt3Kw6tLc5yclHPU2MulxdgxWK+9LUNtDFDDEscca6KIoyCjcjRGQHOJTkctcjbIp5pGlkObGie8gg021Z5Ac7GjABdXK/wB5cavFqaCjefOx+eKy7KZfr20PE6eHXA2Hjf79E/HvwXGOWQ5oyZfcHFpZ4df3bnIQWssnurRJzOs0MtJuBfvNPfmK/wATQi21wwbdJGoVVAAAAAGQAHMNxIEeFH0SB86+yD+yPKaa4k0jwAcCLsis+8goLuclGs00pjxG6Ty28WyNs1oje5MvWKyx+Btq04ntkNzHtwOPSBmPh35neXk+xEEHWx4vuXsQxTpm0IffoDJmGvkqNbUc47/Fo831w236vWjuC0iKoR20qTmdSLtGmuZMgToAkjPWSdbHvPWScgNZo4lKt5cx/wB0jPzSH941Zb//ABTDT02z8SBImerSAPpoxyOh1qxX2HLvsRYTLLzyzt+Hi5Dg+EWkKabz3h+Rt6FLYaF9iIEl5rVNaw1luJZwlzkXPIXpP/AprmSRFk0lLZu+2f8AgVnRo0e8Hxm54c1som+W22dkUkaIiqFVQAqjUAOYVlv/AJ/CX+pLxPDWhfz/AFmD+8M++w2Cx/UlkB4uNyjMillz0SQCVz15HmoDUN3+1HEpu50ATRMa5aNQH/OTD1FqPmv5fcFHmxFv5dTc2Je2M1dc2JJ7jViA1YhF7HrFua+g/HWNjVdQH12rHxqlgP8AENdkQ54j/FFdkviYz/FSuyUf5UHqdK7JBrsG9qV2RDXh8vsWsfGvDZ/crHF14bcfyjWLDXh8/wDKasQGuyl/lvV2Ndq460ar3F7gW6xmKEHOaXI5AVBZwRQQJoRoMlHEcFZ2uESdE0nE5MKAmgfbgH4SR32iS3Fg55fzkfeAz1bwUKFDoodFCh0UKHRQ6KHRQ6Nzrryncy4jgrPCMMfouR96cTw1pTQLswj7yT33LbzRzROVkjYMrDmIqzxZUjZ1iuhrjJ+9PBmn2NwtsXUO/ApRWlKqg9fkFdvmeTp1dQ4B35kQQciKxy0AVL52QahIA9Y2OULZ/Uq8HLsYD1FlqH95hp9WWsJP0lrdJ7rV2OPrnnj86I12MyasVhHnhlrBpvosUs26pVqKX6OWN/NYH4U2yfAWfYlJ9tD+ejuqKUV5aJ56kkbRQFj5K7XHkeFm5R/Tv00aamp6en6DT0einU5qSD5OCsUhy7Vf3SebK4rsmi1Yxdel9KuyqPXfLJ58SVj6fSQWcnqFauf32EQ+pLVgfpcLuV811auxw8sXcXXFXYvL/wCTCeejrWATfR4vZnrkAq0l+juoH82RTTEZgE9VHo72zyFCPDLGy8bP90VAUo3CaZzkuZPQOGriThbJB5ddQJwuS58uqlUZKoA6B36KFChQ6KXopeil6KXopTzUvRS9FDoryUeim6Kfop+inHNTdFEc1XcP0dxMnmuy/Csfg+jxa8X+KTXZVFqxSRvPRGrslHLNrJ1xViY+mw21fqLpUP77B39SasFb6SzvU9x67F5Nd3NH58LV2My8nGLYeeSlYXP9DiNo/VMlafJIbqOdMNanjFRTNIwVEBOZ4Bwc9Li2LySxnOCIdqiommY5DM1I+shR5at14XJc+wVGgyRQo8ngYbgoUKFChQoUtL0UvRS9FL0UOih0bppqamFN0V5Klj4Y5HQ/VYj4VjcH0WKXidUzV2UxasXmPnhXrsmTlS28vnxVio+lw20fqLpUX77B29SasDf6S0vY/deuxaTXeyR+fC9djc3Ixi19Z9CrCf6G+tpPNlQ0SOAE9VSHUjH0VhuGxmW/u4oV2WYaRqXFQ1lhwZLTU7amkpjrNRjXw0BqGW8PhIUN4KFChQoUKFDdNGmo0a8gq6h4YriVPNcr8Kxdl0GxK8K9BmenclnJYnWScz/oEcSKFChQoUKH+lh/7nP/xAA0EQACAQIDBQYGAQQDAAAAAAAAAQIDEQQQEhMhMDFRBSAyQEFhFCIzQlJxgRUjQ1BgkbH/2gAIAQIBAT8A49y5cuXLl8rl/ON9+5cuXLly5f8A0Fy5cuXLly5fK/cXm2xsuXLly5cuJiZfy77txsbGy5c0z9ISGprmmjUahSExMTzQvKPJjGxsbKcJ1JWgrlPAxVnN3fQjSpw8MEsmkyphKNTnBJ9UV8JUpO8XqiKQmJiyWSF5N5MY2NmHw8q0ukFzZCnCnFRgrIqV4QelJykOrVfOSj7JG1mvvZHFtP5rNEJxnFSi7plaGqDtzKjTldc/UixMTFmhZLjvuMY2U6cqtRQX8shCMIqMVZIr1ZJqnB2bV2+iEoxiVsQouy3slUm+cmKUl6swFd69DfPLtOLo4h25S3ooz1xTIsiLNeSeTyYxmBpaabm+ciUlGLk+SRFtxc5eKTuyvV0x3c3uQ86MtFSEukll2zSvGFTo2mYVtTcX6kSIskLJeTYxlnJpL1diMVGMYr0VjFP+04+smkSlZFWWqf6Q1lbKlLVThLrFGPp7ShNdLM0OLUughCyQhC8i8mMZhYaqy9t+WKfz04/tk2PfKXdwcr0IeysTjqhKPVNDw03uUGU8HXsk4nwVZK9kxOzcXua5oTExCELybGYGO6U8sTvqL2iSi2KjVk3aEuZHB139lv2xdn1HzkkLs5fdNiwFBc7sp04U4qMFZd3H0HKKqQ8SKdb/ALI1EyLExCFxXkxijOXhi2fDVn6JftiwU3zmkUaeygo3vlpi3eyuW4df6bMVh7t1Ibp/+lOvHlUun1RCTVt90+TIsQhcRjyZShtJpenNiSSslbyNf6UiRiaCk9Ud0jDVpKezfUgxCzXCYxjMIt0n7+Sr/TkSJk0lUjL1TKb3ERCyXCYxjKCtSj7+Sqq9OS9mPkTKqumUJXjF9UIQhC4DyeTGRWmKXReSkrxkvYfIkVVuMK7wS6XREQuIxjKa1VYL38o0SRUW4wrs5L3IiELhsYzCq9VvouNriubHVpLnUiPE0F/kiSx2GjzqIfaOH/JshLVFSs1dXsyXN/skioihurSXUiIQuExjJMwS+Wcur4PaWPeDhGSSbkyXb1d+GKQ+2cZLk0j+p4uXObPi8XLnVkbau/8AJIvUfOcjS3zZosdnYBO1WpHd6LKp45ftkiaF8taL92iAhC4TGMkzDRtSjwe35XnTh0QoEaZGmRpigKJpMFhNrNSl4UJKKSXJZVfqSJImipual0aZAQhcJjGc3bqRWmKXRcHtX+5jJLokiNIVJCgjSJFihQlXqJLwrmynTjTgoxWdb6kiRJFaF4tFB6qcH1SEIQu+8mMkUVqrwXvfhV8BWqV5zt4ndEezKvq0Ls1+siuoQk4Q325sSEiEJTkoQMPQjRgkufr3K31GNEkTRhfBbo2hC4LGMZIwUb1JS6LiY7F7JOnB/M+bEhFn6K7fIweG2UdUvE+7X8a/QxomjDbpSj7piFwWMYyRgo2puXV8PG4uNCn1m+SNUpycpNttiErK7MHhuVSa/S71fxIYySKW6r+0IQuCxjJmHjppQXtfhYnEQw9Jzl/C6sq1qmIqOcmU4tkYJGGobSSk1uQkkkl3q/2jGNHKrCXvYXBeTGSLamo9XYS4NWpClCU5uySu2YrEzxNW78K5Ip0yMUilSdWaS5epCChFRXfr8ojGMnu39CIuExkihHVXj7b+C2km27JGOxTxFS0PAmU6Vt7EiKv62KNShSglqPi6XU+LofmPG0F958fh/wAz+o4b8yjWhWi5Qd1fKt4UPJk1dMoO8I/q3BeTGSMHG85y6K3Bx+MdWTpU38idm0QppCQkJFjSOCHSHRRQwbrTta0VzZCEacFCCsllW8P85MZIwz+Rro3ku+xjGSMJG1Jvq+Bj8Y7ujTe9+JohBJJISEhISLFixYhSdSVl/JTpxpxUYrOr4GPJkjDv55IQu+2NjY2SZQtsofrv19pspKFlJ7k+guz6vW75tiwFVCwVU+EqI+FqdD4ep0NhU6GxqdDZT6CpTbSsU6apxsu5U8DHkyRSdq6900IXfYxjQ0YWqtOiT3rl5afgeTY5DbKcXtk3ySYmJl+7YaLDQ0aTSJzXKchVKq+8Vefq0Ku/VIVddDbQNrDqbSPVGqPVcWo7QkXbNnJmzjHxNDlD0VxCYhd2w0WGhoaHldmpmtm0kbWRtmKuxVxVhVn+Qqz/ACFWfVCrM23sbVG0iKcepddcmypJS/Q5JckOU362NJpNIkLgWLFhoaNI4jiOA4Gk0lslcTYmKTFJmoUjUajUai+VkaTSaSxYsWEuFYsWGjSaRxNI4mk0ljSWEhLh2LFi3DsWLFhosWLGk0mk0mk0mk0iRYsWLZWLZ28lYsWLFixYsWLFixYsWLFixYsW81bKxYsWLFi3/Jf/xAAzEQACAQMBBgMHAwUBAAAAAAAAAQIDBBESBRAgITFRMDJhExQiQEFScSMzQhVDU2KBUP/aAAgBAwEBPwDwG+HJkyZMmTUajUZMmRMyZExPjXyDZkbGzI5Go1Go1Go1Go1CkZMiYmJ/KtjY2ZGxsbGzJkyZMmRMyJiYnuTF8kxsbGxjY2N8GTJkyZMmRMTExMTE/EfEx72xsbGzI2ZNMhUKz6Upv/jJUqsPNCS/KFIyJ7kxMTExMTFvW5cb4WMY2Nje5mShb1riemEG+7+iLfZNGGHVbk+yIUKNNYjTijERwgyts+2reanFPuuTLvY86Kc6Lco9vqhMT3JiEJiF4j3PgYxj3MZY2M7qeXmNNdX3KVKnRgoU4qMUVrmEHpinKXZEq9WXWSiuyR7acf7jIXzi/jxJEJxqRUovKYzadjFqVaksSXmiJiEJiYhCELeuN7nue5jGPc2W9CVzWjCP/X2RSpQpQjCCwksFzWaapQeJNZb7IwoRwi4u1BuMeciVetPrNiqVI81Nmyrxup7Kb67q7xNrui7oqlXkl5XzQtyExMiIQheC97GMYxjGM2Tb6KLqtfFNkpKMXJ9EjLalOXmk8sua3s6cmuvRDe+3n7OtSn2khdC+5RjL1wX61wjP6xYhCEIiIQtyFxvexjGMe5kIuc4xXWTSRCCpwhBdIpIun+lJd2kTZeyy4rgRbz10KUu8Ey8jqoT9OZP44yj3WCIhbkIQtyELje9jGMY9zNm0tdzF/SKb3Xj8i9Wyci7eaq9Fw7NnrtKXomicVKEo900e6Vn0hIeyrqVR4glHOU2x7IuksrD9EycKlKThUg4sTEIQhCELje97mMYxjNk08QnU7tJbrx5nFdkSg2VrW5nVeilJrC54IbKu5fxSIbErPzTSIbDh/Oq2Q2Rax6pyKNGnRgoU46YrhvKVOpBa4porbPnHMqL1R7fVCIsQhCF4D3MYxjGQoVqnkg2LZtzL6JEdkTfmmkW1BUKUaaecbnCLeXFZEkvDuf2X+URq6XzZO3oXK+NYl9JIr287apok8p84yEIQheA973stKCrVcPyrmxRUUklhL5G5/ZkSKVx7N6ZeUvcTt9XXS00yLIiFuXC9z3vezZsMQlPu/kq/OlP8EmVGQrzSnSfOMk8ejIMiyIhC43uYxje6yhpoQ9efyVXnSmvRkioOWmpF+qEsSaIkRCELge57mMYyPNpEIqMIx7JL5KSzGS9GTKhVG8yUu8UyJEQhC4WPcxjGWsddeEfXPylRYbKhVIc6dN+jREiIQhcLGMYxjZsyGqtKXZeM2l1Y6tNdZxHXor+aJXttHrUwS2hbr+efwyEtcYyw1lZ5lVYnP8sqIqooc6bXZ5IkRCELiYxjGM2ZDFKU+78G5uFb09bWSW2JfSBLa9Z9EkS2pcP+SRK/un/cHdV3/ckOtVfWpIc2+rb3bL2em1Vqrkui3V1+rP8ALJlVFv5px7rJEiIQhcL3sYxllDRQgu6z4O2Z4pwj3Znj2bYOtNTmvhQkopJLCW65X6svyTRURS5Vo+uURIiEIXAx7mMYyC1TS7vBGKjGMV0SS8HbU/1YR7IyN78GCys5V6i5cinTjSgoRXJb7pfqsmioiXwyUl9GYWeQhCFxMYxjJFlDXcwXZ58K+sa9zXlOMeXRMjsas+rSI7G7yReUKFBuEXmQkYKNCVWajFFrbwoU0kuf14Lv9wkTRViU+cIP0QhCFwsYxjGSNlQzUnPsseJtC9jQptLzMlOVSTlJ5b3Rg5NJLmywtFRgpS8z4bzzoaJonEoftpdm0IQhcLGMYyQzZcMUJS+6Xh3VzC3puTfMr1p16jnL/iIpsjDuWFml+pNfhcV4ucH6DRJE0W/8o8C4WMYxjGWcNFCEfTPhVasaUHOTL27nc1G8/CnyIQciMEkWNp7SeuS+FCSSSS4rteUZJE0UuVX8rgXCxjGMkQi51IR7tISSSS8GUlCLlJ4SNo3rrzcYv4EQhnmyKLa3lWmu31ZCEacVGPHdeVDGSR0nF+vgsYxjJFjDXcQ9MvwW0llm0r91JOlTfwohDuJFKnrkkW8qFGCipo96ofej3uh9575b/ee+23+Q99tv8hSq06sXKEspPG65/bRIZJEyLzGL7rwGMYxjNlw+OpPskvB2lf8AWjSf5ZGIkJCMGkcB0x0i1sXXqdoLqynThShGEFhJYS3XH7RIZImUJZpR9MrwGMYxjZs6Gmjn7m34G0L1UoulTfxvqxJt5fUSEt+DBg0lG3lWmorp9WUqcKUFCKwlvrftMkMkTLSXKcez42NjY2NjY2WmPd6ePtXHV9p7N+zxq+mSWza85OUpLLP6XW7o/p1U/p9VHuFU9xqnudU90rdj3Wt9pG2quSWCjSjSgkuCr+1IkMkTLZ4qyXdcbGMYxocWWFwvZqlN4a6fLVPJIkMkxxk+iKdNwqan2FJCZnhaGhoaMGEYRGrUXSo0RuKq/mRuqn1kmK6f1SFcr6oVxTFWp9xVYP8AkjVF9JLxajxTk/Qep9EKhJ9R0aUFmckiVelHlCLY5uTbYmxMTMie5oaGhoaGhjyNscpdzXLue1n3Z7ep9zFc1PuFd1F9RXsxXzFfEb71I33+wrz/AGQrv8CuV2FWgKrDuKpD7jK7rdyXUrTU+WcRQ5xXSJOdR9HhDhlnszQKIkJCQlwNDQ0NDQ4jiOI4jiYMb0zJk1MU2KrLuKtLuKvIVxIVwxXArlDrpjnE1RG0PdgwYEhISMcGBjQ0NDiOI4jiOA4DiOJpMGNyEIQheBgwJGDBgxxNGBowYHEcRxHEcBwHA0Gg0Gg0GkURIwJGBISMGDAkYMbsGPBwYMGBowOJpNJpNJpNJpNJpNJpMGDBgwYMGDG7G7Hh43Y34MGDBgwNGDBgwYMGDBgwYMcGODHj4MGDBgwYMGDBgwY3YMcOP/Bx4y4f/9k=",
+    "logoUrl": "/logo.png",
     "heroBannerImage": "/images/hero_tawzoon_nexus_1790244695106.jpg",
     "updatedAt": 1792255972653,
     "heroSlides": [
       {
-        "titleLine3En": "In One Place",
-        "ctaBn": "পণ্যসমূহ দেখুন",
-        "titleLine2En": "Daily Needs",
-        "image": "/uploads/prod_1790786987131_ef98ea36.png",
-        "subheadEn": "Carefully curated, premium, and authentic products delivered with trust",
-        "titleLine1En": "Everything For Your",
-        "subheadBn": "নির্বাচিত, মানসম্মত এবং নির্ভরযোগ্য পণ্য এখন আরও সহজে",
-        "titleLine2Bn": "প্রয়োজনের সবকিছু",
-        "category": "all",
         "ctaEn": "Explore Products",
-        "id": 1,
-        "titleLine1Bn": "আপনার প্রতিদিনের",
+        "subheadEn": "Carefully curated, premium, and authentic products delivered with trust",
+        "titleLine3En": "In One Place",
+        "titleLine2En": "Daily Needs",
+        "subheadBn": "নির্বাচিত, মানসম্মত এবং নির্ভরযোগ্য পণ্য এখন আরও সহজে",
+        "titleLine1En": "Everything For Your",
+        "tagEn": "QUALITY ASSURED PRODUCTS",
         "titleLine3Bn": "এক জায়গায়",
+        "image": "/uploads/prod_1790786987131_ef98ea36.png",
+        "category": "all",
+        "titleLine2Bn": "প্রয়োজনের সবকিছু",
+        "ctaBn": "পণ্যসমূহ দেখুন",
         "tagBn": "গুণগত মানের পণ্য",
-        "tagEn": "QUALITY ASSURED PRODUCTS"
+        "titleLine1Bn": "আপনার প্রতিদিনের",
+        "id": 1
       },
       {
-        "titleLine1En": "Modern Lifestyle",
-        "category": "gadgets",
         "tagEn": "SMART GADGETS & TECH",
+        "category": "gadgets",
         "titleLine2En": "Smart Tech &",
-        "tagBn": "স্মার্ট গ্যাজেটস ও টেক",
-        "subheadEn": "Explore cutting-edge audio, smart wearables, and essentials",
-        "ctaEn": "Explore Gadgets",
-        "subheadBn": "স্মার্ট ওয়াচ, হেডফোন ও প্রিমিয়াম গ্যাজেট এখন বিশেষ অফারে",
-        "titleLine3En": "Accessories",
         "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1000&auto=format&fit=crop&q=80",
+        "titleLine3En": "Accessories",
+        "tagBn": "স্মার্ট গ্যাজেটস ও টেক",
         "ctaBn": "গ্যাজেট দেখুন",
-        "titleLine3Bn": "এক্সেসরিজ",
-        "titleLine1Bn": "আধুনিক লাইফস্টাইলের",
+        "ctaEn": "Explore Gadgets",
+        "titleLine1En": "Modern Lifestyle",
         "id": 2,
-        "titleLine2Bn": "সেরা টেকনোলজি ও স্মার্ট"
+        "titleLine2Bn": "সেরা টেকনোলজি ও স্মার্ট",
+        "titleLine1Bn": "আধুনিক লাইফস্টাইলের",
+        "subheadEn": "Explore cutting-edge audio, smart wearables, and essentials",
+        "subheadBn": "স্মার্ট ওয়াচ, হেডফোন ও প্রিমিয়াম গ্যাজেট এখন বিশেষ অফারে",
+        "titleLine3Bn": "এক্সেসরিজ"
       },
       {
-        "image": "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=1000&auto=format&fit=crop&q=80",
-        "id": 3,
-        "subheadEn": "Apparel, travel gear, and household essentials designed for living",
-        "category": "shop",
+        "titleLine1Bn": "মার্জিত ও আকর্ষণীয়",
+        "ctaEn": "Explore Collection",
+        "titleLine2Bn": "নতুন ফ্যাশন ও লাইফস্টাইল",
+        "titleLine3Bn": "পণ্য সম্ভার",
         "titleLine1En": "Refined Quality &",
-        "ctaBn": "কালেকশন দেখুন",
+        "category": "shop",
         "titleLine2En": "Trendy Seasonal",
+        "subheadEn": "Apparel, travel gear, and household essentials designed for living",
+        "tagEn": "PREMIUM FASHION & HOME",
         "subheadBn": "দৈনন্দিন পোশাক ও হোম ডেকোরে সেরা মান ও সাশ্রয়ী দাম",
         "titleLine3En": "Collection",
-        "tagEn": "PREMIUM FASHION & HOME",
+        "image": "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=1000&auto=format&fit=crop&q=80",
         "tagBn": "নতুন ট্রেন্ডি কালেকশন",
-        "titleLine3Bn": "পণ্য সম্ভার",
-        "titleLine1Bn": "মার্জিত ও আকর্ষণীয়",
-        "titleLine2Bn": "নতুন ফ্যাশন ও লাইফস্টাইল",
-        "ctaEn": "Explore Collection"
+        "id": 3,
+        "ctaBn": "কালেকশন দেখুন"
       }
     ],
     "campaignAiEnabled": true,
@@ -6770,6 +6770,15 @@
   ],
   "auditLogs": [
     {
+      "id": "audit-b5076f4d",
+      "action": "ADMIN_LOGIN_UNAUTHORIZED_ATTEMPT",
+      "actor": "invalid@test.com",
+      "target": "ADMIN_PORTAL",
+      "newValue": "Rejected invalid admin email or password",
+      "ip": "127.0.0.1",
+      "timestamp": "2026-10-21T12:20:05.190Z"
+    },
+    {
       "id": "audit-a8b8368d",
       "action": "ADMIN_LOGIN_UNAUTHORIZED_ATTEMPT",
       "actor": "test@example.com",
@@ -7464,11 +7473,11 @@
       "ip": "116.204.140.23"
     },
     {
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "ip": "116.204.140.23",
       "id": "audit-05f80f90",
       "actor": "mdshaali9516@gmail.com",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "action": "BRANDING_UPDATED",
       "timestamp": "2026-10-08T03:50:38.498Z",
       "target": "SYSTEM_BRANDING"
@@ -7476,12 +7485,12 @@
     {
       "ip": "116.204.140.20, 169.254.169.126",
       "id": "audit-061f079d",
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "actor": "mdshaali9516@gmail.com",
       "target": "SYSTEM_BRANDING",
       "timestamp": "2026-09-30T11:24:15.190Z",
       "action": "BRANDING_UPDATED",
-      "previousValue": "TAWZOON NEXUS"
+      "previousValue": "TAWZOON"
     },
     {
       "timestamp": "2026-10-05T11:27:17.642Z",
@@ -7511,13 +7520,13 @@
       "action": "EMPLOYEE_REGISTERED"
     },
     {
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "timestamp": "2026-10-08T03:52:59.722Z",
       "id": "audit-09a6fbfc",
       "ip": "116.204.140.23",
       "actor": "mdshaali9516@gmail.com",
       "action": "BRANDING_UPDATED",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "target": "SYSTEM_BRANDING"
     },
     {
@@ -7539,10 +7548,10 @@
       "action": "CATEGORY_CREATED"
     },
     {
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "actor": "mdshaali9516@gmail.com",
       "timestamp": "2026-10-07T04:20:52.140Z",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "ip": "116.204.140.31, 169.254.169.126",
       "action": "BRANDING_UPDATED",
       "id": "audit-0afb8674",
@@ -7879,16 +7888,16 @@
       "action": "BRANDING_UPDATED",
       "actor": "mdshaali9516@gmail.com",
       "target": "SYSTEM_BRANDING",
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "timestamp": "2026-09-30T11:21:21.500Z",
       "id": "audit-256fcbdd",
       "ip": "116.204.140.20, 169.254.169.126",
-      "previousValue": "TAWZOON NEXUS"
+      "previousValue": "TAWZOON"
     },
     {
       "timestamp": "2026-09-30T10:20:41.565Z",
-      "previousValue": "TAWZOON NEXUS",
-      "newValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
+      "newValue": "TAWZOON",
       "target": "SYSTEM_BRANDING",
       "id": "audit-26552ba4",
       "action": "BRANDING_UPDATED",
@@ -7974,8 +7983,8 @@
       "id": "audit-2c0c7eb6",
       "ip": "116.204.140.20, 169.254.169.126",
       "timestamp": "2026-09-30T11:24:15.508Z",
-      "previousValue": "TAWZOON NEXUS",
-      "newValue": "TAWZOON NEXUS"
+      "previousValue": "TAWZOON",
+      "newValue": "TAWZOON"
     },
     {
       "timestamp": "2026-10-08T04:19:37.524Z",
@@ -7996,12 +8005,12 @@
       "newValue": "Admin authenticated via OTP verification"
     },
     {
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "timestamp": "2026-09-30T11:24:26.850Z",
       "actor": "mdshaali9516@gmail.com",
       "id": "audit-311372b9",
       "action": "BRANDING_UPDATED",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "ip": "116.204.140.20, 169.254.169.126",
       "target": "SYSTEM_BRANDING"
     },
@@ -8227,9 +8236,9 @@
       "ip": "116.204.140.31, 169.254.169.126",
       "actor": "mdshaali9516@gmail.com",
       "target": "SYSTEM_BRANDING",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "action": "BRANDING_UPDATED",
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "timestamp": "2026-10-07T04:20:34.727Z"
     },
     {
@@ -8245,11 +8254,11 @@
       "actor": "mdshaali9516@gmail.com",
       "action": "BRANDING_UPDATED",
       "target": "SYSTEM_BRANDING",
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "ip": "116.204.140.19, 169.254.169.126",
       "timestamp": "2026-10-07T05:01:34.646Z",
       "id": "audit-4f5e487f",
-      "previousValue": "TAWZOON NEXUS"
+      "previousValue": "TAWZOON"
     },
     {
       "ip": "116.204.140.17, 169.254.169.126",
@@ -8297,8 +8306,8 @@
       "ip": "116.204.140.24, 169.254.169.126"
     },
     {
-      "previousValue": "TAWZOON NEXUS",
-      "newValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
+      "newValue": "TAWZOON",
       "ip": "116.204.140.19, 169.254.169.126",
       "actor": "mdshaali9516@gmail.com",
       "id": "audit-5580cbfd",
@@ -8329,11 +8338,11 @@
       "timestamp": "2026-10-04T16:47:48.948Z",
       "actor": "mdshaali9516@gmail.com",
       "target": "SYSTEM_BRANDING",
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "action": "BRANDING_UPDATED",
       "id": "audit-57afa83f",
       "ip": "116.204.140.17, 169.254.169.126",
-      "previousValue": "TAWZOON NEXUS"
+      "previousValue": "TAWZOON"
     },
     {
       "target": "রাকিবুল হাসান",
@@ -8384,10 +8393,10 @@
     {
       "action": "BRANDING_UPDATED",
       "target": "SYSTEM_BRANDING",
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "actor": "mdshaali9516@gmail.com",
       "id": "audit-593a6e69",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "ip": "116.204.140.23",
       "timestamp": "2026-10-08T03:53:16.828Z"
     },
@@ -8456,12 +8465,12 @@
     },
     {
       "actor": "mdshaali9516@gmail.com",
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "action": "BRANDING_UPDATED",
       "timestamp": "2026-09-30T10:20:41.878Z",
       "target": "SYSTEM_BRANDING",
       "id": "audit-61e0ef3e",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "ip": "116.204.140.30, 169.254.169.126"
     },
     {
@@ -8585,11 +8594,11 @@
     {
       "target": "SYSTEM_BRANDING",
       "action": "BRANDING_UPDATED",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "actor": "mdshaali9516@gmail.com",
       "id": "audit-6fe85238",
       "ip": "116.204.140.20, 169.254.169.126",
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "timestamp": "2026-09-30T11:27:09.078Z"
     },
     {
@@ -8639,14 +8648,14 @@
       "actor": "mdshaali9516@gmail.com"
     },
     {
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "actor": "mdshaali9516@gmail.com",
       "id": "audit-73eb0c66",
       "ip": "116.204.140.28, 169.254.169.126",
       "action": "BRANDING_UPDATED",
       "timestamp": "2026-09-30T16:49:48.013Z",
       "target": "SYSTEM_BRANDING",
-      "newValue": "TAWZOON NEXUS"
+      "newValue": "TAWZOON"
     },
     {
       "id": "audit-746169bb",
@@ -8697,12 +8706,12 @@
     {
       "id": "audit-78a05735",
       "action": "BRANDING_UPDATED",
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "ip": "116.204.140.28, 169.254.169.126",
       "actor": "mdshaali9516@gmail.com",
       "target": "SYSTEM_BRANDING",
       "timestamp": "2026-09-30T16:49:47.713Z",
-      "previousValue": "TAWZOON NEXUS"
+      "previousValue": "TAWZOON"
     },
     {
       "timestamp": "2026-10-08T03:59:44.962Z",
@@ -8710,9 +8719,9 @@
       "ip": "116.204.140.23",
       "actor": "mdshaali9516@gmail.com",
       "action": "BRANDING_UPDATED",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "target": "SYSTEM_BRANDING",
-      "newValue": "TAWZOON NEXUS"
+      "newValue": "TAWZOON"
     },
     {
       "target": "ADMIN_PORTAL",
@@ -8734,8 +8743,8 @@
     },
     {
       "timestamp": "2026-09-30T11:24:25.627Z",
-      "newValue": "TAWZOON NEXUS",
-      "previousValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
+      "previousValue": "TAWZOON",
       "actor": "mdshaali9516@gmail.com",
       "target": "SYSTEM_BRANDING",
       "id": "audit-7cdc0351",
@@ -8748,15 +8757,15 @@
       "ip": "116.204.140.21, 169.254.169.126",
       "timestamp": "2026-10-05T12:45:24.891Z",
       "id": "audit-7d1b53de",
-      "previousValue": "TAWZOON NEXUS",
-      "newValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
+      "newValue": "TAWZOON",
       "actor": "mdshaali9516@gmail.com"
     },
     {
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "actor": "mdshaali9516@gmail.com",
       "timestamp": "2026-10-07T03:27:10.635Z",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "action": "BRANDING_UPDATED",
       "target": "SYSTEM_BRANDING",
       "id": "audit-811d97e8",
@@ -8890,13 +8899,13 @@
     },
     {
       "action": "BRANDING_UPDATED",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "timestamp": "2026-09-30T11:32:37.860Z",
       "ip": "116.204.140.20, 169.254.169.126",
       "actor": "mdshaali9516@gmail.com",
       "target": "SYSTEM_BRANDING",
       "id": "audit-89953a53",
-      "newValue": "TAWZOON NEXUS"
+      "newValue": "TAWZOON"
     },
     {
       "actor": "mdshaali9516@gmail.com",
@@ -8918,10 +8927,10 @@
     },
     {
       "timestamp": "2026-09-30T11:21:21.182Z",
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "actor": "mdshaali9516@gmail.com",
       "target": "SYSTEM_BRANDING",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "action": "BRANDING_UPDATED",
       "ip": "116.204.140.20, 169.254.169.126",
       "id": "audit-8c4de6e5"
@@ -8945,23 +8954,23 @@
       "target": "রাকিবুল হাসান"
     },
     {
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "timestamp": "2026-09-30T11:40:28.340Z",
       "action": "BRANDING_UPDATED",
       "ip": "116.204.140.24, 169.254.169.126",
       "target": "SYSTEM_BRANDING",
       "id": "audit-8f08685d",
       "actor": "mdshaali9516@gmail.com",
-      "previousValue": "TAWZOON NEXUS"
+      "previousValue": "TAWZOON"
     },
     {
       "action": "BRANDING_UPDATED",
       "target": "SYSTEM_BRANDING",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "actor": "mdshaali9516@gmail.com",
       "id": "audit-8fc33e0f",
       "ip": "116.204.140.28, 169.254.169.126",
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "timestamp": "2026-10-05T02:55:15.041Z"
     },
     {
@@ -9003,11 +9012,11 @@
     {
       "ip": "116.204.140.24, 169.254.169.126",
       "id": "audit-93a72df7",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "actor": "mdshaali9516@gmail.com",
       "target": "SYSTEM_BRANDING",
       "action": "BRANDING_UPDATED",
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "timestamp": "2026-09-30T11:40:28.656Z"
     },
     {
@@ -9056,8 +9065,8 @@
       "timestamp": "2026-10-05T14:59:32.781Z"
     },
     {
-      "previousValue": "TAWZOON NEXUS",
-      "newValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
+      "newValue": "TAWZOON",
       "timestamp": "2026-09-30T11:32:38.173Z",
       "id": "audit-9af6f143",
       "ip": "116.204.140.20, 169.254.169.126",
@@ -9132,8 +9141,8 @@
       "target": "SYSTEM_BRANDING",
       "timestamp": "2026-10-08T03:50:18.557Z",
       "action": "BRANDING_UPDATED",
-      "previousValue": "TAWZOON NEXUS",
-      "newValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
+      "newValue": "TAWZOON",
       "ip": "116.204.140.23",
       "id": "audit-a2e07447",
       "actor": "mdshaali9516@gmail.com"
@@ -9178,10 +9187,10 @@
       "timestamp": "2026-10-05T02:55:39.623Z",
       "target": "SYSTEM_BRANDING",
       "id": "audit-a6b2ccaf",
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "action": "BRANDING_UPDATED",
       "ip": "116.204.140.28, 169.254.169.126",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "actor": "mdshaali9516@gmail.com"
     },
     {
@@ -9266,22 +9275,22 @@
       "newValue": "Verification code generated and sent to email inbox"
     },
     {
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "id": "audit-ad923416",
       "ip": "116.204.140.20, 169.254.169.126",
       "actor": "mdshaali9516@gmail.com",
       "timestamp": "2026-09-30T11:30:23.762Z",
       "action": "BRANDING_UPDATED",
       "target": "SYSTEM_BRANDING",
-      "newValue": "TAWZOON NEXUS"
+      "newValue": "TAWZOON"
     },
     {
       "timestamp": "2026-10-04T16:47:46.943Z",
       "id": "audit-ae63a7e2",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "ip": "116.204.140.17, 169.254.169.126",
       "target": "SYSTEM_BRANDING",
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "actor": "mdshaali9516@gmail.com",
       "action": "BRANDING_UPDATED"
     },
@@ -9478,10 +9487,10 @@
       "ip": "116.204.140.31, 169.254.169.126",
       "id": "audit-c038a483",
       "timestamp": "2026-10-07T04:20:51.742Z",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "target": "SYSTEM_BRANDING",
       "actor": "mdshaali9516@gmail.com",
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "action": "BRANDING_UPDATED"
     },
     {
@@ -9541,10 +9550,10 @@
     {
       "id": "audit-ca23cf9f",
       "timestamp": "2026-10-08T03:44:59.549Z",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "ip": "116.204.140.24",
       "target": "SYSTEM_BRANDING",
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "actor": "mdshaali9516@gmail.com",
       "action": "BRANDING_UPDATED"
     },
@@ -9569,11 +9578,11 @@
     {
       "target": "SYSTEM_BRANDING",
       "action": "BRANDING_UPDATED",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "actor": "mdshaali9516@gmail.com",
       "timestamp": "2026-09-30T11:27:09.521Z",
       "id": "audit-cf203c68",
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "ip": "116.204.140.20, 169.254.169.126"
     },
     {
@@ -9590,7 +9599,7 @@
       "newValue": "TAWZOON ",
       "ip": "116.204.140.23",
       "id": "audit-d03985ad",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "target": "SYSTEM_BRANDING",
       "actor": "mdshaali9516@gmail.com",
       "action": "BRANDING_UPDATED"
@@ -9642,11 +9651,11 @@
       "target": "ADMIN_AUTH"
     },
     {
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "actor": "mdshaali9516@gmail.com",
       "action": "BRANDING_UPDATED",
       "target": "SYSTEM_BRANDING",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "timestamp": "2026-10-08T03:45:15.942Z",
       "id": "audit-d652a8d6",
       "ip": "116.204.140.24"
@@ -9666,8 +9675,8 @@
       "actor": "mdshaali9516@gmail.com",
       "action": "BRANDING_UPDATED",
       "ip": "116.204.140.20, 169.254.169.126",
-      "previousValue": "TAWZOON NEXUS",
-      "newValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
+      "newValue": "TAWZOON",
       "target": "SYSTEM_BRANDING",
       "id": "audit-db76c984"
     },
@@ -9776,7 +9785,7 @@
       "ip": "116.204.140.24, 169.254.169.126",
       "target": "SYSTEM_BRANDING",
       "actor": "mdshaali9516@gmail.com",
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "action": "BRANDING_UPDATED",
       "newValue": "TAWZOON "
     },
@@ -9873,11 +9882,11 @@
       "action": "ADMIN_LOGIN_SUCCESS"
     },
     {
-      "previousValue": "TAWZOON NEXUS",
+      "previousValue": "TAWZOON",
       "actor": "mdshaali9516@gmail.com",
       "target": "SYSTEM_BRANDING",
       "action": "BRANDING_UPDATED",
-      "newValue": "TAWZOON NEXUS",
+      "newValue": "TAWZOON",
       "id": "audit-f381afef",
       "ip": "116.204.140.31, 169.254.169.126",
       "timestamp": "2026-10-07T03:13:44.773Z"
@@ -11362,13 +11371,2319 @@
       "actor": "sdfd@gmail.com"
     },
     {
+      "action": "EMPLOYEE_UPDATED",
       "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "target": "Ali (B)",
+      "timestamp": "2026-10-16T03:34:08.420Z",
+      "id": "audit-0175f437",
+      "ip": "116.204.140.19, 169.254.169.126"
+    },
+    {
+      "newValue": "Total: ৳800 | Comm: ৳320",
+      "id": "audit-019ea343",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "target": "ORD-207374",
+      "timestamp": "2026-10-18T11:07:46.248Z",
+      "actor": "B",
+      "action": "SALE_RECORDED"
+    },
+    {
+      "timestamp": "2026-10-17T12:15:33.432Z",
+      "action": "EMPLOYEE_UPDATED",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "Ali (B)",
+      "id": "audit-03c51348",
+      "newValue": "Updated marketer profile details",
+      "ip": "116.204.140.17"
+    },
+    {
+      "ip": "116.204.140.17",
+      "id": "audit-045c921d",
+      "timestamp": "2026-10-17T13:11:10.120Z",
       "target": "ADMIN_PORTAL",
       "newValue": "Admin signed out",
-      "timestamp": "2026-10-13T02:27:18.962Z",
-      "id": "audit-8d0ec42e",
-      "action": "ADMIN_LOGOUT",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "ADMIN_LOGOUT"
+    },
+    {
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_UPDATED",
+      "timestamp": "2026-10-16T03:19:01.838Z",
+      "newValue": "Updated marketer profile details",
+      "target": "Ali (B)",
+      "id": "audit-05149638",
       "ip": "116.204.140.28, 169.254.169.126"
+    },
+    {
+      "ip": "116.204.140.20, 169.254.169.126",
+      "id": "audit-051be4a6",
+      "action": "SALE_RECORDED",
+      "actor": "Ali (B)",
+      "timestamp": "2026-10-17T13:39:56.610Z",
+      "target": "ORD-733533",
+      "newValue": "Total: ৳800 | Comm: ৳315"
+    },
+    {
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-05388683",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "target": "Ali (B)",
+      "timestamp": "2026-10-16T03:22:30.089Z",
+      "action": "EMPLOYEE_UPDATED",
+      "newValue": "Updated marketer profile details"
+    },
+    {
+      "timestamp": "2026-10-16T04:39:29.380Z",
+      "newValue": "Updated marketer profile details",
+      "id": "audit-05943a55",
+      "action": "EMPLOYEE_UPDATED",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "Shah Ali (A)"
+    },
+    {
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "id": "audit-05bd227d",
+      "target": "Ali (B)",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "newValue": "Admin reset employee password",
+      "timestamp": "2026-10-17T06:20:42.240Z"
+    },
+    {
+      "timestamp": "2026-10-19T15:50:03.757Z",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "id": "audit-08cf1242",
+      "newValue": "Admin authenticated via OTP verification",
+      "target": "ADMIN_PORTAL",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "ADMIN_LOGIN_SUCCESS"
+    },
+    {
+      "newValue": "Updated marketer profile details",
+      "action": "EMPLOYEE_UPDATED",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-0bf502c2",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "target": "Ali (B)",
+      "timestamp": "2026-10-17T13:39:07.207Z"
+    },
+    {
+      "ip": "116.204.140.27, 169.254.169.126",
+      "id": "audit-0c142766",
+      "timestamp": "2026-10-16T04:10:41.436Z",
+      "action": "EMPLOYEE_UPDATED",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "target": "Ali (B)"
+    },
+    {
+      "target": "Shah Ali (A)",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "action": "EMPLOYEE_UPDATED",
+      "id": "audit-0ceef8f1",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "timestamp": "2026-10-17T13:39:06.977Z"
+    },
+    {
+      "action": "ADMIN_OTP_DISPATCHED",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Verification code generated and sent to email inbox",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "id": "audit-0d7bb20a",
+      "target": "ADMIN_AUTH",
+      "timestamp": "2026-10-17T06:41:21.076Z"
+    },
+    {
+      "actor": "mdshaali9516@gmail.com",
+      "action": "ADMIN_OTP_DISPATCHED",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "id": "audit-0d947d3b",
+      "newValue": "Verification code generated and sent to email inbox",
+      "timestamp": "2026-10-20T05:06:30.090Z",
+      "target": "ADMIN_AUTH"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "timestamp": "2026-10-16T06:13:11.709Z",
+      "id": "audit-10278996",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "Shah Ali (A)",
+      "newValue": "Updated marketer profile details"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "id": "audit-124cc30e",
+      "newValue": "Updated marketer profile details",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "target": "Shah Ali (A)",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-16T03:29:12.765Z"
+    },
+    {
+      "timestamp": "2026-10-16T17:27:40.564Z",
+      "target": "ADMIN_PORTAL",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Admin authenticated via OTP verification",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "id": "audit-125cdcb0"
+    },
+    {
+      "id": "audit-13dd38b2",
+      "previousValue": "Selling: ৳800",
+      "target": "Premium Printed Cotton Katuwa",
+      "ip": "116.204.140.31, 169.254.169.126",
+      "timestamp": "2026-10-21T10:49:30.298Z",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Selling: ৳800",
+      "action": "PRODUCT_UPDATED"
+    },
+    {
+      "id": "audit-140cab44",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "action": "SALE_RECORDED",
+      "newValue": "Total: ৳800 | Comm: ৳320",
+      "actor": "B",
+      "timestamp": "2026-10-18T10:52:40.526Z",
+      "target": "ORD-668996"
+    },
+    {
+      "timestamp": "2026-10-16T03:22:30.441Z",
+      "target": "Reseller C",
+      "newValue": "Updated marketer profile details",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "id": "audit-147a6f74",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_UPDATED"
+    },
+    {
+      "target": "Reseller C",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-15418a0e",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "timestamp": "2026-10-16T04:30:20.046Z",
+      "newValue": "Admin reset employee password"
+    },
+    {
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Admin reset employee password",
+      "target": "Shah Ali (A)",
+      "timestamp": "2026-10-16T04:38:05.644Z",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "id": "audit-1739e055",
+      "ip": "116.204.140.20, 169.254.169.126"
+    },
+    {
+      "timestamp": "2026-10-16T03:12:35.254Z",
+      "target": "Shah Ali (A)",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "id": "audit-178ea6e8",
+      "newValue": "Updated marketer profile details",
+      "action": "EMPLOYEE_UPDATED"
+    },
+    {
+      "id": "audit-196c7df8",
+      "timestamp": "2026-10-16T04:13:51.354Z",
+      "newValue": "Updated marketer profile details",
+      "ip": "116.204.140.27, 169.254.169.126",
+      "target": "Shah Ali (A)",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_UPDATED"
+    },
+    {
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Admin reset employee password",
+      "target": "Shah Ali (A)",
+      "timestamp": "2026-10-16T02:51:39.089Z",
+      "id": "audit-1a5c4c62",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "ip": "116.204.140.28, 169.254.169.126"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "newValue": "Updated marketer profile details",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-1ade3f01",
+      "target": "Shah Ali (A)",
+      "timestamp": "2026-10-16T03:19:01.521Z"
+    },
+    {
+      "id": "audit-1b0bd566",
+      "timestamp": "2026-10-16T05:38:05.956Z",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "target": "Ali (B)",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "action": "EMPLOYEE_UPDATED"
+    },
+    {
+      "newValue": "Verification code generated and sent to email inbox",
+      "ip": "116.204.140.27",
+      "action": "ADMIN_OTP_DISPATCHED",
+      "id": "audit-1bdc1ec4",
+      "timestamp": "2026-10-17T12:01:44.685Z",
+      "target": "ADMIN_AUTH",
+      "actor": "mdshaali9516@gmail.com"
+    },
+    {
+      "action": "ADMIN_OTP_DISPATCHED",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "id": "audit-1e5e9da5",
+      "timestamp": "2026-10-16T18:06:33.156Z",
+      "target": "ADMIN_AUTH",
+      "newValue": "Verification code generated and sent to email inbox"
+    },
+    {
+      "timestamp": "2026-10-16T03:22:20.208Z",
+      "id": "audit-1e7517a5",
+      "newValue": "Updated marketer profile details",
+      "target": "Ali (B)",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_UPDATED"
+    },
+    {
+      "action": "SALE_RECORDED",
+      "newValue": "Total: ৳800 | Comm: ৳320",
+      "actor": "Ali (B)",
+      "timestamp": "2026-10-17T06:56:07.136Z",
+      "target": "ORD-301153",
+      "id": "audit-1e7ce83d",
+      "ip": "116.204.140.17, 169.254.169.126"
+    },
+    {
+      "target": "Reseller C",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-1ed1bc6c",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "newValue": "Admin reset employee password",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "timestamp": "2026-10-16T04:38:14.505Z"
+    },
+    {
+      "timestamp": "2026-10-16T02:54:02.167Z",
+      "newValue": "Updated marketer profile details",
+      "action": "EMPLOYEE_UPDATED",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "target": "Ali (B)",
+      "id": "audit-1f8a7e11"
+    },
+    {
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "timestamp": "2026-10-16T03:34:08.109Z",
+      "target": "Shah Ali (A)",
+      "action": "EMPLOYEE_UPDATED",
+      "id": "audit-2448d650",
+      "ip": "116.204.140.19, 169.254.169.126"
+    },
+    {
+      "timestamp": "2026-10-17T05:29:01.661Z",
+      "id": "audit-25369cb5",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "newValue": "Admin reset employee password",
+      "target": "Ali (B)",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_PASSWORD_RESET"
+    },
+    {
+      "ip": "116.204.140.19, 169.254.169.126",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "newValue": "Admin authenticated via OTP verification",
+      "id": "audit-259232db",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "ADMIN_PORTAL",
+      "timestamp": "2026-10-20T10:16:26.476Z"
+    },
+    {
+      "newValue": "Updated marketer profile details",
+      "action": "EMPLOYEE_UPDATED",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "Shah Ali (A)",
+      "id": "audit-25e867b1",
+      "timestamp": "2026-10-16T04:12:20.876Z",
+      "ip": "116.204.140.27, 169.254.169.126"
+    },
+    {
+      "id": "audit-25ed4c5c",
+      "ip": "116.204.140.31, 169.254.169.126",
+      "target": "Shah Ali (A)",
+      "newValue": "Admin reset employee password",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "timestamp": "2026-10-16T05:34:54.327Z"
+    },
+    {
+      "timestamp": "2026-10-16T04:40:01.314Z",
+      "target": "Shah Ali (A)",
+      "newValue": "Updated marketer profile details",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_UPDATED",
+      "id": "audit-26253c42"
+    },
+    {
+      "timestamp": "2026-10-16T04:38:57.735Z",
+      "target": "Ali (B)",
+      "id": "audit-2663c12c",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "newValue": "Updated marketer profile details",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_UPDATED"
+    },
+    {
+      "newValue": "Admin reset employee password",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "timestamp": "2026-10-16T04:38:13.990Z",
+      "target": "Reseller C",
+      "id": "audit-26874aeb",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.20, 169.254.169.126"
+    },
+    {
+      "target": "Ali (B)",
+      "timestamp": "2026-10-16T03:12:34.915Z",
+      "id": "audit-2aa3315f",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "newValue": "Updated marketer profile details",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_UPDATED"
+    },
+    {
+      "action": "EMPLOYEE_STATUS_CHANGED",
+      "actor": "mdshaali9516@gmail.com",
+      "previousValue": "SUSPENDED",
+      "timestamp": "2026-10-16T02:52:21.833Z",
+      "target": "Ali (B)",
+      "newValue": "APPROVED",
+      "id": "audit-2ab9dc54",
+      "ip": "116.204.140.28, 169.254.169.126"
+    },
+    {
+      "target": "ADMIN_PORTAL",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-17T05:06:13.029Z",
+      "newValue": "Admin authenticated via OTP verification",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "id": "audit-2ad1c4dc"
+    },
+    {
+      "timestamp": "2026-10-21T10:49:01.412Z",
+      "newValue": "Verification code generated and sent to email inbox",
+      "ip": "116.204.140.31, 169.254.169.126",
+      "target": "ADMIN_AUTH",
+      "id": "audit-2b792c1a",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "ADMIN_OTP_DISPATCHED"
+    },
+    {
+      "newValue": "Updated marketer profile details",
+      "target": "Shah Ali (A)",
+      "ip": "116.204.140.27, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-16T04:12:07.186Z",
+      "id": "audit-2bff45c4",
+      "action": "EMPLOYEE_UPDATED"
+    },
+    {
+      "action": "EMPLOYEE_REGISTERED",
+      "newValue": "Status: PENDING, Reference: TN-REF-23344",
+      "actor": "shahalinexus@gmail.com",
+      "timestamp": "2026-10-17T17:11:43.091Z",
+      "target": "C",
+      "id": "audit-2dee1c56",
+      "ip": "116.204.140.20"
+    },
+    {
+      "timestamp": "2026-10-16T04:32:08.877Z",
+      "target": "Shah Ali (A)",
+      "newValue": "Updated marketer profile details",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-2e08728f",
+      "action": "EMPLOYEE_UPDATED",
+      "ip": "116.204.140.20, 169.254.169.126"
+    },
+    {
+      "target": "ORD-618441",
+      "actor": "Reseller C",
+      "id": "audit-2e857c8d",
+      "timestamp": "2026-10-17T12:19:07.163Z",
+      "ip": "116.204.140.17",
+      "action": "SALE_RECORDED",
+      "newValue": "Total: ৳600 | Comm: ৳120"
+    },
+    {
+      "target": "Shah Ali (A)",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-2ee0f925",
+      "newValue": "Admin reset employee password",
+      "timestamp": "2026-10-17T06:56:57.810Z",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "action": "EMPLOYEE_PASSWORD_RESET"
+    },
+    {
+      "timestamp": "2026-10-16T03:23:27.280Z",
+      "target": "Ali (B)",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_UPDATED",
+      "id": "audit-2f9354d3",
+      "newValue": "Updated marketer profile details",
+      "ip": "116.204.140.28, 169.254.169.126"
+    },
+    {
+      "target": "Reseller C",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "action": "EMPLOYEE_UPDATED",
+      "timestamp": "2026-10-17T12:20:36.628Z",
+      "id": "audit-300b846a",
+      "ip": "116.204.140.17"
+    },
+    {
+      "target": "ADMIN_PORTAL",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-21T11:28:26.602Z",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "id": "audit-30e78383",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "newValue": "Admin authenticated via OTP verification"
+    },
+    {
+      "newValue": "Updated marketer profile details",
+      "target": "Shah Ali (A)",
+      "timestamp": "2026-10-16T05:37:30.159Z",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-336fb32e",
+      "action": "EMPLOYEE_UPDATED"
+    },
+    {
+      "timestamp": "2026-10-16T04:38:19.396Z",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "id": "audit-33b7e572",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "Reseller D",
+      "newValue": "Admin reset employee password"
+    },
+    {
+      "target": "Ali (B)",
+      "timestamp": "2026-10-16T04:11:04.998Z",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-33fb94b4",
+      "action": "EMPLOYEE_UPDATED",
+      "ip": "116.204.140.27, 169.254.169.126",
+      "newValue": "Updated marketer profile details"
+    },
+    {
+      "id": "audit-3418c020",
+      "action": "EMPLOYEE_UPDATED",
+      "ip": "116.204.140.31, 169.254.169.126",
+      "timestamp": "2026-10-16T06:22:43.076Z",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "target": "Ali (B)"
+    },
+    {
+      "id": "audit-35aa3e35",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "Shah Ali (A)",
+      "ip": "116.204.140.31, 169.254.169.126",
+      "newValue": "Updated marketer profile details",
+      "action": "EMPLOYEE_UPDATED",
+      "timestamp": "2026-10-16T05:35:41.258Z"
+    },
+    {
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "id": "audit-35e977e8",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.31, 169.254.169.126",
+      "newValue": "Admin authenticated via OTP verification",
+      "target": "ADMIN_PORTAL",
+      "timestamp": "2026-10-21T10:49:07.592Z"
+    },
+    {
+      "timestamp": "2026-10-16T02:50:54.668Z",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Admin authenticated via OTP verification",
+      "target": "ADMIN_PORTAL",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "id": "audit-35efffc8"
+    },
+    {
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-17T13:02:08.162Z",
+      "target": "ADMIN_PORTAL",
+      "newValue": "Admin authenticated via OTP verification",
+      "ip": "116.204.140.17",
+      "id": "audit-374551c2"
+    },
+    {
+      "timestamp": "2026-10-18T10:41:06.675Z",
+      "newValue": "Total: ৳800 | Comm: ৳320",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "id": "audit-380e7f1a",
+      "target": "ORD-141217",
+      "actor": "B",
+      "action": "SALE_RECORDED"
+    },
+    {
+      "newValue": "Verification code generated and sent to email inbox",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-16T04:31:05.134Z",
+      "target": "ADMIN_AUTH",
+      "id": "audit-38844b82",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "action": "ADMIN_OTP_DISPATCHED"
+    },
+    {
+      "target": "Ali (B)",
+      "newValue": "Admin reset employee password",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-38dfff6b",
+      "timestamp": "2026-10-20T10:16:42.369Z",
+      "action": "EMPLOYEE_PASSWORD_RESET"
+    },
+    {
+      "newValue": "TAWZOON ",
+      "previousValue": "TAWZOON ",
+      "target": "SYSTEM_BRANDING",
+      "timestamp": "2026-10-17T12:16:45.877Z",
+      "id": "audit-3b706ade",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.17",
+      "action": "BRANDING_UPDATED"
+    },
+    {
+      "timestamp": "2026-10-21T11:52:56.487Z",
+      "id": "audit-3db2980c",
+      "action": "ADMIN_OTP_DISPATCHED",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "target": "ADMIN_AUTH",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Verification code generated and sent to email inbox"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "id": "audit-415c425b",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "target": "Ali (B)",
+      "timestamp": "2026-10-16T04:39:29.666Z"
+    },
+    {
+      "newValue": "Admin reset employee password",
+      "id": "audit-42ebc295",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-17T06:11:20.958Z",
+      "target": "Ali (B)"
+    },
+    {
+      "target": "Reseller C",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_UPDATED",
+      "id": "audit-42ebddb4",
+      "timestamp": "2026-10-15T05:07:00.163Z",
+      "newValue": "Updated marketer profile details",
+      "ip": "116.204.140.31, 169.254.169.126"
+    },
+    {
+      "timestamp": "2026-10-17T06:14:06.627Z",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "id": "audit-435016da",
+      "action": "PUBLISH_TO_WEBSITE",
+      "newValue": "Published 5 products and 3 categories to live website",
+      "target": "Live Website",
+      "actor": "mdshaali9516@gmail.com"
+    },
+    {
+      "target": "Ali (B)",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "id": "audit-43d60070",
+      "action": "EMPLOYEE_UPDATED",
+      "timestamp": "2026-10-16T03:23:48.662Z"
+    },
+    {
+      "timestamp": "2026-10-17T17:18:14.006Z",
+      "action": "EMPLOYEE_REGISTERED",
+      "id": "audit-442e8b29",
+      "actor": "editportfolio.editor@gmail.com",
+      "target": "d",
+      "ip": "116.204.140.20",
+      "newValue": "Status: PENDING, Reference: 123456"
+    },
+    {
+      "action": "SALE_RECORDED",
+      "actor": "B",
+      "timestamp": "2026-10-18T10:37:21.076Z",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "id": "audit-45b6fa90",
+      "newValue": "Total: ৳800 | Comm: ৳320",
+      "target": "ORD-664613"
+    },
+    {
+      "previousValue": "TAWZOON ",
+      "target": "SYSTEM_BRANDING",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-17T16:52:51.982Z",
+      "action": "BRANDING_UPDATED",
+      "id": "audit-4633fcec",
+      "newValue": "TAWZOON ",
+      "ip": "116.204.140.27"
+    },
+    {
+      "actor": "mdshaali9516@gmail.com",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "newValue": "Admin authenticated via OTP verification",
+      "target": "ADMIN_PORTAL",
+      "timestamp": "2026-10-17T05:42:26.892Z",
+      "id": "audit-46db912a",
+      "ip": "116.204.140.19, 169.254.169.126"
+    },
+    {
+      "newValue": "Total: ৳800 | Comm: ৳318",
+      "target": "ORD-952624",
+      "timestamp": "2026-10-17T13:15:11.182Z",
+      "ip": "116.204.140.31, 169.254.169.126",
+      "id": "audit-48a629b8",
+      "action": "SALE_RECORDED",
+      "actor": "Ali (B)"
+    },
+    {
+      "ip": "116.204.140.20, 169.254.169.126",
+      "id": "audit-48d5fe8a",
+      "action": "ADMIN_OTP_DISPATCHED",
+      "timestamp": "2026-10-21T11:28:22.835Z",
+      "newValue": "Verification code generated and sent to email inbox",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "ADMIN_AUTH"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "timestamp": "2026-10-17T12:52:11.813Z",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "id": "audit-4989d245",
+      "target": "Ali (B)",
+      "ip": "116.204.140.31, 169.254.169.126"
+    },
+    {
+      "timestamp": "2026-10-16T06:12:30.540Z",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-4aecef13",
+      "newValue": "Admin reset employee password",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "target": "Reseller C"
+    },
+    {
+      "target": "Reseller C",
+      "id": "audit-4c2b6c8b",
+      "ip": "116.204.140.31, 169.254.169.126",
+      "timestamp": "2026-10-17T12:52:12.516Z",
+      "newValue": "Updated marketer profile details",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_UPDATED"
+    },
+    {
+      "target": "Reseller C",
+      "id": "audit-4e73b786",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "newValue": "Updated marketer profile details",
+      "timestamp": "2026-10-16T04:39:22.148Z",
+      "action": "EMPLOYEE_UPDATED",
+      "actor": "mdshaali9516@gmail.com"
+    },
+    {
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-16T18:02:15.223Z",
+      "target": "Ali (B)",
+      "newValue": "Updated marketer profile details",
+      "id": "audit-4f237d38",
+      "action": "EMPLOYEE_UPDATED",
+      "ip": "116.204.140.20, 169.254.169.126"
+    },
+    {
+      "newValue": "Total: ৳800 | Comm: ৳320",
+      "target": "ORD-782730",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "id": "audit-51616011",
+      "timestamp": "2026-10-17T06:42:17.235Z",
+      "actor": "Ali (B)",
+      "action": "SALE_RECORDED"
+    },
+    {
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-534aaeb7",
+      "ip": "116.204.140.31, 169.254.169.126",
+      "target": "ADMIN_PORTAL",
+      "timestamp": "2026-10-17T13:15:37.292Z",
+      "newValue": "Admin authenticated via OTP verification"
+    },
+    {
+      "ip": "116.204.140.27",
+      "id": "audit-562abf5c",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "timestamp": "2026-10-17T12:06:25.349Z",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Admin reset employee password",
+      "target": "Reseller C"
+    },
+    {
+      "actor": "mdshaali9516@gmail.com",
+      "target": "ADMIN_AUTH",
+      "newValue": "Verification code generated and sent to email inbox",
+      "ip": "116.204.140.28",
+      "timestamp": "2026-10-20T06:33:15.225Z",
+      "action": "ADMIN_OTP_DISPATCHED",
+      "id": "audit-567181fb"
+    },
+    {
+      "timestamp": "2026-10-16T04:39:40.786Z",
+      "id": "audit-568a47f0",
+      "action": "EMPLOYEE_UPDATED",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "target": "Ali (B)"
+    },
+    {
+      "id": "audit-57313110",
+      "newValue": "Verification code generated and sent to email inbox",
+      "target": "ADMIN_AUTH",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "timestamp": "2026-10-21T11:52:25.809Z",
+      "action": "ADMIN_OTP_DISPATCHED",
+      "actor": "mdshaali9516@gmail.com"
+    },
+    {
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "timestamp": "2026-10-17T13:04:20.276Z",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.17",
+      "id": "audit-575ada79",
+      "target": "Reseller C",
+      "newValue": "Admin reset employee password"
+    },
+    {
+      "newValue": "Verification code generated and sent to email inbox",
+      "action": "ADMIN_OTP_DISPATCHED",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "timestamp": "2026-10-20T13:27:46.737Z",
+      "id": "audit-5766cb81",
+      "target": "ADMIN_AUTH"
+    },
+    {
+      "timestamp": "2026-10-16T04:30:24.887Z",
+      "target": "Reseller D",
+      "newValue": "Admin reset employee password",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "id": "audit-57eed62b",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_PASSWORD_RESET"
+    },
+    {
+      "timestamp": "2026-10-17T16:51:18.058Z",
+      "ip": "116.204.140.27",
+      "id": "audit-58440223",
+      "action": "EMPLOYEE_DELETED",
+      "newValue": "Permanently deleted reseller account from system and cloud",
+      "actor": "mdshaali9516@gmail.com",
+      "previousValue": "01711223300",
+      "target": "Reseller C"
+    },
+    {
+      "action": "PUBLISH_TO_WEBSITE",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.17",
+      "id": "audit-5a2b210f",
+      "target": "Live Website",
+      "timestamp": "2026-10-17T12:16:51.332Z",
+      "newValue": "Published 5 products and 3 categories to live website"
+    },
+    {
+      "actor": "mdshaali9516@gmail.com",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "newValue": "Admin authenticated via OTP verification",
+      "timestamp": "2026-10-17T13:10:06.913Z",
+      "ip": "116.204.140.17",
+      "id": "audit-5ae1079d",
+      "target": "ADMIN_PORTAL"
+    },
+    {
+      "timestamp": "2026-10-17T13:10:18.175Z",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Admin reset employee password",
+      "ip": "116.204.140.17",
+      "target": "Shah Ali (A)",
+      "id": "audit-5b2cb757"
+    },
+    {
+      "timestamp": "2026-10-17T16:55:32.468Z",
+      "previousValue": "PENDING",
+      "action": "EMPLOYEE_STATUS_CHANGED",
+      "newValue": "APPROVED",
+      "ip": "116.204.140.27",
+      "target": "B",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-5c6f24b1"
+    },
+    {
+      "action": "SALE_RECORDED",
+      "actor": "B",
+      "newValue": "Total: ৳800 | Comm: ৳320",
+      "timestamp": "2026-10-18T11:16:57.021Z",
+      "target": "ORD-585563",
+      "ip": "116.204.140.31, 169.254.169.126",
+      "id": "audit-5d0a58d2"
+    },
+    {
+      "target": "ORD-454100",
+      "newValue": "Total: ৳800 | Comm: ৳320",
+      "timestamp": "2026-10-17T12:04:10.505Z",
+      "actor": "Ali (B)",
+      "action": "SALE_RECORDED",
+      "id": "audit-5d9c1e8f",
+      "ip": "116.204.140.27"
+    },
+    {
+      "target": "ADMIN_PORTAL",
+      "newValue": "Admin authenticated via OTP verification",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-5e57b743",
+      "timestamp": "2026-10-16T04:31:08.932Z",
+      "action": "ADMIN_LOGIN_SUCCESS"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "B",
+      "newValue": "Updated marketer profile details",
+      "id": "audit-5e602aed",
+      "ip": "116.204.140.27",
+      "timestamp": "2026-10-17T16:57:50.929Z"
+    },
+    {
+      "target": "ADMIN_PORTAL",
+      "newValue": "Admin authenticated via OTP verification",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "id": "audit-6072b1cd",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "timestamp": "2026-10-17T13:37:23.734Z"
+    },
+    {
+      "target": "Shah Ali (A)",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "id": "audit-60d60781",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-16T04:39:52.815Z",
+      "action": "EMPLOYEE_UPDATED",
+      "newValue": "Updated marketer profile details"
+    },
+    {
+      "id": "audit-6382f1ef",
+      "target": "Ali (B)",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "SUSPENDED",
+      "action": "EMPLOYEE_STATUS_CHANGED",
+      "timestamp": "2026-10-16T02:52:18.054Z",
+      "previousValue": "APPROVED"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "timestamp": "2026-10-16T03:28:22.624Z",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "Shah Ali (A)",
+      "newValue": "Updated marketer profile details",
+      "id": "audit-63f3d44e",
+      "ip": "116.204.140.28, 169.254.169.126"
+    },
+    {
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-16T18:03:10.344Z",
+      "newValue": "Admin reset employee password",
+      "id": "audit-644f0144",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "target": "Reseller C"
+    },
+    {
+      "newValue": "Admin reset employee password",
+      "id": "audit-65a2dffc",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "timestamp": "2026-10-16T06:12:25.846Z",
+      "target": "Ali (B)",
+      "actor": "mdshaali9516@gmail.com"
+    },
+    {
+      "ip": "116.204.140.19, 169.254.169.126",
+      "id": "audit-66a949bd",
+      "action": "SALE_RECORDED",
+      "timestamp": "2026-10-18T10:57:41.430Z",
+      "actor": "B",
+      "newValue": "Total: ৳800 | Comm: ৳320",
+      "target": "ORD-751522"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "id": "audit-66f2488b",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.27, 169.254.169.126",
+      "newValue": "Updated marketer profile details",
+      "target": "Ali (B)",
+      "timestamp": "2026-10-16T04:13:50.996Z"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-6b9a5731",
+      "timestamp": "2026-10-16T04:40:30.421Z",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "newValue": "Updated marketer profile details",
+      "target": "Shah Ali (A)"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "timestamp": "2026-10-17T12:20:36.409Z",
+      "newValue": "Updated marketer profile details",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-6e348556",
+      "target": "Ali (B)",
+      "ip": "116.204.140.17"
+    },
+    {
+      "timestamp": "2026-10-17T13:38:10.450Z",
+      "newValue": "Admin reset employee password",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "id": "audit-6ed72dae",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "target": "Shah Ali (A)"
+    },
+    {
+      "id": "audit-70b73d18",
+      "newValue": "Verification code generated and sent to email inbox",
+      "ip": "116.204.140.17",
+      "target": "ADMIN_AUTH",
+      "timestamp": "2026-10-17T12:12:23.196Z",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "ADMIN_OTP_DISPATCHED"
+    },
+    {
+      "newValue": "APPROVED",
+      "timestamp": "2026-10-16T04:39:09.906Z",
+      "action": "EMPLOYEE_STATUS_CHANGED",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-70c65f17",
+      "target": "Shah Ali (A)",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "previousValue": "SUSPENDED"
+    },
+    {
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "newValue": "Admin authenticated via OTP verification",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "ADMIN_PORTAL",
+      "timestamp": "2026-10-16T18:03:54.612Z",
+      "id": "audit-70d68a02",
+      "ip": "116.204.140.20, 169.254.169.126"
+    },
+    {
+      "id": "audit-727897ff",
+      "action": "EMPLOYEE_UPDATED",
+      "timestamp": "2026-10-16T06:22:42.767Z",
+      "ip": "116.204.140.31, 169.254.169.126",
+      "newValue": "Updated marketer profile details",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "Shah Ali (A)"
+    },
+    {
+      "id": "audit-736118fd",
+      "target": "ORD-585563",
+      "ip": "116.204.140.31, 169.254.169.126",
+      "actor": "B",
+      "timestamp": "2026-10-18T11:16:57.610Z",
+      "action": "SALE_RECORDED",
+      "newValue": "Total: ৳850 | Comm: ৳280"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-16T18:04:41.471Z",
+      "newValue": "Updated marketer profile details",
+      "target": "Shah Ali (A)",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "id": "audit-74e840f8"
+    },
+    {
+      "action": "SALE_RECORDED",
+      "actor": "Ali (B)",
+      "newValue": "Total: ৳900 | Comm: ৳410",
+      "target": "ORD-550960",
+      "timestamp": "2026-10-16T18:08:49.974Z",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "id": "audit-75894201"
+    },
+    {
+      "newValue": "Verification code generated and sent to email inbox",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "timestamp": "2026-10-16T17:27:36.528Z",
+      "id": "audit-768a7bd2",
+      "target": "ADMIN_AUTH",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "ADMIN_OTP_DISPATCHED"
+    },
+    {
+      "ip": "116.204.140.27",
+      "id": "audit-76943956",
+      "timestamp": "2026-10-17T16:51:06.084Z",
+      "newValue": "Permanently deleted reseller account from system and cloud",
+      "target": "Ali (B)",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_DELETED",
+      "previousValue": "01711223344"
+    },
+    {
+      "newValue": "Admin reset employee password",
+      "timestamp": "2026-10-17T06:41:34.310Z",
+      "id": "audit-78c83df5",
+      "target": "Ali (B)",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "actor": "mdshaali9516@gmail.com"
+    },
+    {
+      "newValue": "Admin authenticated via OTP verification",
+      "timestamp": "2026-10-16T18:06:42.379Z",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "id": "audit-7b0d9e31",
+      "target": "ADMIN_PORTAL",
+      "actor": "mdshaali9516@gmail.com"
+    },
+    {
+      "action": "ADMIN_OTP_DISPATCHED",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "ADMIN_AUTH",
+      "newValue": "Verification code generated and sent to email inbox",
+      "ip": "116.204.140.17",
+      "id": "audit-7bbc5ebe",
+      "timestamp": "2026-10-17T13:02:03.973Z"
+    },
+    {
+      "id": "audit-7fc540c0",
+      "timestamp": "2026-10-17T12:12:26.872Z",
+      "ip": "116.204.140.17",
+      "newValue": "Admin authenticated via OTP verification",
+      "target": "ADMIN_PORTAL",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "ADMIN_LOGIN_SUCCESS"
+    },
+    {
+      "action": "ADMIN_LOGOUT",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Admin signed out",
+      "timestamp": "2026-10-16T04:30:54.586Z",
+      "target": "ADMIN_PORTAL",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "id": "audit-80601b32"
+    },
+    {
+      "timestamp": "2026-10-17T17:12:46.627Z",
+      "newValue": "Total: ৳800 | Comm: ৳320",
+      "target": "ORD-606794",
+      "actor": "C",
+      "ip": "116.204.140.20",
+      "id": "audit-80727752",
+      "action": "SALE_RECORDED"
+    },
+    {
+      "id": "audit-81ad4eea",
+      "newValue": "Status: PENDING, Reference: TN-REF-39516",
+      "ip": "116.204.140.20",
+      "timestamp": "2026-10-17T16:55:22.930Z",
+      "target": "B",
+      "actor": "b@gmail.com",
+      "action": "EMPLOYEE_REGISTERED"
+    },
+    {
+      "action": "ADMIN_LOGOUT",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "ADMIN_PORTAL",
+      "id": "audit-81b34367",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "newValue": "Admin signed out",
+      "timestamp": "2026-10-17T06:56:59.908Z"
+    },
+    {
+      "ip": "116.204.140.28, 169.254.169.126",
+      "id": "audit-831ed084",
+      "timestamp": "2026-10-16T03:52:09.332Z",
+      "action": "EMPLOYEE_UPDATED",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "Ali (B)",
+      "newValue": "Updated marketer profile details"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-17T17:19:47.362Z",
+      "newValue": "Updated marketer profile details",
+      "target": "A",
+      "ip": "116.204.140.27",
+      "id": "audit-8345b0c4"
+    },
+    {
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "timestamp": "2026-10-17T16:50:19.470Z",
+      "id": "audit-852d0b9c",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.27",
+      "newValue": "Admin authenticated via OTP verification",
+      "target": "ADMIN_PORTAL"
+    },
+    {
+      "ip": "116.204.140.20, 169.254.169.126",
+      "id": "audit-85628ab7",
+      "target": "Shah Ali (A)",
+      "timestamp": "2026-10-16T18:05:47.086Z",
+      "newValue": "Updated marketer profile details",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_UPDATED"
+    },
+    {
+      "target": "A",
+      "actor": "a@gmail.com",
+      "timestamp": "2026-10-17T16:53:45.808Z",
+      "action": "EMPLOYEE_REGISTERED",
+      "newValue": "Status: PENDING, Reference: TAWZOON9516",
+      "id": "audit-856e6189",
+      "ip": "116.204.140.27"
+    },
+    {
+      "action": "EMPLOYEE_DELETED",
+      "timestamp": "2026-10-17T16:51:21.953Z",
+      "id": "audit-85aa4647",
+      "previousValue": "01700122333",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.27",
+      "newValue": "Permanently deleted reseller account from system and cloud",
+      "target": "Reseller D"
+    },
+    {
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "newValue": "Admin reset employee password",
+      "target": "Ali (B)",
+      "timestamp": "2026-10-15T05:07:51.696Z",
+      "ip": "116.204.140.31, 169.254.169.126",
+      "id": "audit-860e1322"
+    },
+    {
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "ip": "127.0.0.1",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-862e866f",
+      "timestamp": "2026-10-21T12:02:39.250Z",
+      "target": "ADMIN_PORTAL",
+      "newValue": "Admin authenticated via direct password login"
+    },
+    {
+      "newValue": "Total: ৳800 | Comm: ৳316",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "actor": "Ali (B)",
+      "timestamp": "2026-10-16T05:39:27.307Z",
+      "id": "audit-8642f923",
+      "target": "ORD-472058",
+      "action": "SALE_RECORDED"
+    },
+    {
+      "target": "Shah Ali (A)",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-86b3d001",
+      "newValue": "Updated marketer profile details",
+      "timestamp": "2026-10-16T04:32:15.026Z",
+      "action": "EMPLOYEE_UPDATED"
+    },
+    {
+      "timestamp": "2026-10-17T16:53:55.128Z",
+      "target": "A",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "APPROVED",
+      "action": "EMPLOYEE_STATUS_CHANGED",
+      "previousValue": "PENDING",
+      "ip": "116.204.140.27",
+      "id": "audit-8816bb80"
+    },
+    {
+      "id": "audit-8866b609",
+      "ip": "116.204.140.28",
+      "target": "ADMIN_PORTAL",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-20T06:33:19.108Z",
+      "newValue": "Admin authenticated via OTP verification",
+      "action": "ADMIN_LOGIN_SUCCESS"
+    },
+    {
+      "timestamp": "2026-10-17T12:03:33.230Z",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "id": "audit-89ae2498",
+      "ip": "116.204.140.27",
+      "target": "Ali (B)",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Admin reset employee password"
+    },
+    {
+      "id": "audit-8afe66b0",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "target": "Shah Ali (A)",
+      "action": "EMPLOYEE_UPDATED",
+      "timestamp": "2026-10-16T18:02:37.112Z"
+    },
+    {
+      "newValue": "Updated marketer profile details",
+      "target": "Reseller C",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-8ba3995a",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "timestamp": "2026-10-16T03:28:43.104Z",
+      "action": "EMPLOYEE_UPDATED"
+    },
+    {
+      "newValue": "Verification code generated and sent to email inbox",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "ADMIN_AUTH",
+      "action": "ADMIN_OTP_DISPATCHED",
+      "id": "audit-8ba5957a",
+      "timestamp": "2026-10-20T10:16:22.742Z",
+      "ip": "116.204.140.19, 169.254.169.126"
+    },
+    {
+      "action": "ADMIN_LOGOUT",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "target": "ADMIN_PORTAL",
+      "newValue": "Admin signed out",
+      "id": "audit-8d0ec42e",
+      "timestamp": "2026-10-13T02:27:18.962Z"
+    },
+    {
+      "newValue": "Admin reset employee password",
+      "timestamp": "2026-10-17T05:06:51.355Z",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "target": "Ali (B)",
+      "id": "audit-8e474d32",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_PASSWORD_RESET"
+    },
+    {
+      "timestamp": "2026-10-13T02:18:11.630Z",
+      "target": "ADMIN_PORTAL",
+      "id": "audit-8f4ad0c8",
+      "newValue": "Admin authenticated via OTP verification",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "ADMIN_LOGIN_SUCCESS"
+    },
+    {
+      "action": "EMPLOYEE_DELETED",
+      "timestamp": "2026-10-17T16:50:54.586Z",
+      "id": "audit-90229fad",
+      "previousValue": "01722439516",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Permanently deleted reseller account from system and cloud",
+      "ip": "116.204.140.27",
+      "target": "Shah Ali (A)"
+    },
+    {
+      "action": "ADMIN_LOGOUT",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Admin signed out",
+      "target": "ADMIN_PORTAL",
+      "timestamp": "2026-10-13T02:16:57.318Z",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "id": "audit-951a4412"
+    },
+    {
+      "newValue": "Admin reset employee password",
+      "target": "Ali (B)",
+      "timestamp": "2026-10-16T04:30:11.517Z",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "id": "audit-95e911b7",
+      "ip": "116.204.140.20, 169.254.169.126"
+    },
+    {
+      "target": "A",
+      "ip": "116.204.140.27, 169.254.169.126",
+      "newValue": "APPROVED",
+      "timestamp": "2026-10-13T02:12:37.472Z",
+      "id": "audit-972fc9e3",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_STATUS_CHANGED",
+      "previousValue": "PENDING"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "timestamp": "2026-10-16T06:14:06.507Z",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-98367cb2",
+      "target": "Ali (B)",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "newValue": "Updated marketer profile details"
+    },
+    {
+      "actor": "mdshaali9516@gmail.com",
+      "target": "Shah Ali (A)",
+      "id": "audit-985e7f74",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "action": "EMPLOYEE_UPDATED",
+      "timestamp": "2026-10-16T05:38:05.633Z",
+      "newValue": "Updated marketer profile details"
+    },
+    {
+      "id": "audit-995aa6d5",
+      "newValue": "Updated marketer profile details",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "action": "EMPLOYEE_UPDATED",
+      "timestamp": "2026-10-16T03:28:22.955Z",
+      "target": "Ali (B)",
+      "actor": "mdshaali9516@gmail.com"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "id": "audit-99c7e409",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "newValue": "Updated marketer profile details",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-16T03:28:36.232Z",
+      "target": "Ali (B)"
+    },
+    {
+      "target": "Shah Ali (A)",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-16T05:36:46.167Z",
+      "newValue": "Admin reset employee password",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "id": "audit-a0c3b413"
+    },
+    {
+      "actor": "mdshaali9516@gmail.com",
+      "action": "ADMIN_OTP_DISPATCHED",
+      "timestamp": "2026-10-17T05:42:23.440Z",
+      "target": "ADMIN_AUTH",
+      "id": "audit-a1fd10cf",
+      "newValue": "Verification code generated and sent to email inbox",
+      "ip": "116.204.140.19, 169.254.169.126"
+    },
+    {
+      "ip": "116.204.140.27",
+      "timestamp": "2026-10-17T12:01:48.235Z",
+      "id": "audit-a28bbc67",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "newValue": "Admin authenticated via OTP verification",
+      "target": "ADMIN_PORTAL",
+      "actor": "mdshaali9516@gmail.com"
+    },
+    {
+      "ip": "116.204.140.20, 169.254.169.126",
+      "action": "EMPLOYEE_UPDATED",
+      "id": "audit-a41a7625",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "target": "Ali (B)",
+      "timestamp": "2026-10-16T18:02:37.330Z"
+    },
+    {
+      "action": "ADMIN_OTP_DISPATCHED",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Verification code generated and sent to email inbox",
+      "timestamp": "2026-10-16T02:50:50.568Z",
+      "target": "ADMIN_AUTH",
+      "id": "audit-a4535309",
+      "ip": "116.204.140.28, 169.254.169.126"
+    },
+    {
+      "action": "SALE_RECORDED",
+      "timestamp": "2026-10-17T13:05:00.351Z",
+      "id": "audit-a486d007",
+      "actor": "Ali (B)",
+      "ip": "116.204.140.17",
+      "target": "ORD-455304",
+      "newValue": "Total: ৳800 | Comm: ৳318"
+    },
+    {
+      "timestamp": "2026-10-17T17:04:54.064Z",
+      "target": "ORD-575750",
+      "ip": "116.204.140.20",
+      "actor": "B",
+      "id": "audit-a4e99525",
+      "action": "SALE_RECORDED",
+      "newValue": "Total: ৳532 | Comm: ৳50"
+    },
+    {
+      "action": "SALE_RECORDED",
+      "timestamp": "2026-10-18T11:12:39.793Z",
+      "actor": "B",
+      "target": "ORD-104847",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "id": "audit-a6725f69",
+      "newValue": "Total: ৳800 | Comm: ৳320"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "newValue": "Updated marketer profile details",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-17T12:51:59.400Z",
+      "target": "Ali (B)",
+      "ip": "116.204.140.31, 169.254.169.126",
+      "id": "audit-a6c86131"
+    },
+    {
+      "ip": "116.204.140.31, 169.254.169.126",
+      "id": "audit-a730fdc7",
+      "action": "SALE_RECORDED",
+      "timestamp": "2026-10-18T11:15:51.835Z",
+      "actor": "B",
+      "target": "ORD-434307",
+      "newValue": "Total: ৳800 | Comm: ৳320"
+    },
+    {
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "id": "audit-a8989d98",
+      "newValue": "Admin reset employee password",
+      "timestamp": "2026-10-17T13:38:15.323Z",
+      "target": "Ali (B)"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-16T04:39:53.110Z",
+      "id": "audit-a8d91b71",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "newValue": "Updated marketer profile details",
+      "target": "Ali (B)"
+    },
+    {
+      "target": "Shah Ali (A)",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "action": "EMPLOYEE_UPDATED",
+      "id": "audit-a9e2722f",
+      "timestamp": "2026-10-16T04:38:57.412Z",
+      "ip": "116.204.140.20, 169.254.169.126"
+    },
+    {
+      "id": "audit-aa67446d",
+      "previousValue": "PENDING",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "target": "B",
+      "timestamp": "2026-10-13T02:18:15.349Z",
+      "newValue": "APPROVED",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_STATUS_CHANGED"
+    },
+    {
+      "ip": "116.204.140.19, 169.254.169.126",
+      "action": "SALE_RECORDED",
+      "newValue": "Total: ৳800 | Comm: ৳320",
+      "id": "audit-ac20d0d9",
+      "actor": "Ali (B)",
+      "target": "ORD-630322",
+      "timestamp": "2026-10-17T05:11:00.942Z"
+    },
+    {
+      "action": "ADMIN_OTP_DISPATCHED",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-17T12:21:06.689Z",
+      "newValue": "Verification code generated and sent to email inbox",
+      "id": "audit-ad18d9d9",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "target": "ADMIN_AUTH"
+    },
+    {
+      "target": "Ali (B)",
+      "timestamp": "2026-10-16T04:39:21.832Z",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "action": "EMPLOYEE_UPDATED",
+      "id": "audit-af4c82f8",
+      "ip": "116.204.140.20, 169.254.169.126"
+    },
+    {
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-af708bc9",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "target": "ADMIN_PORTAL",
+      "timestamp": "2026-10-20T11:27:48.204Z",
+      "newValue": "Admin authenticated via OTP verification"
+    },
+    {
+      "newValue": "Total: ৳800 | Comm: ৳320",
+      "timestamp": "2026-10-17T05:30:02.382Z",
+      "action": "SALE_RECORDED",
+      "actor": "Ali (B)",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "id": "audit-b0537d85",
+      "target": "ORD-951782"
+    },
+    {
+      "newValue": "Admin reset employee password",
+      "timestamp": "2026-10-16T04:30:06.420Z",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-b1212633",
+      "target": "Shah Ali (A)"
+    },
+    {
+      "timestamp": "2026-10-21T12:24:49.170Z",
+      "target": "ADMIN_PORTAL",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "id": "audit-b19cbb95",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "newValue": "Admin authenticated via direct password login"
+    },
+    {
+      "target": "ADMIN_PORTAL",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "id": "audit-b2607048",
+      "newValue": "Admin authenticated via OTP verification",
+      "timestamp": "2026-10-13T02:28:11.353Z",
+      "action": "ADMIN_LOGIN_SUCCESS"
+    },
+    {
+      "timestamp": "2026-10-13T02:28:15.039Z",
+      "id": "audit-b2b6d497",
+      "action": "EMPLOYEE_STATUS_CHANGED",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "previousValue": "PENDING",
+      "target": "B",
+      "newValue": "APPROVED"
+    },
+    {
+      "newValue": "Total: ৳800 | Comm: ৳320",
+      "timestamp": "2026-10-17T12:10:24.079Z",
+      "target": "ORD-695087",
+      "ip": "116.204.140.27",
+      "actor": "Reseller C",
+      "id": "audit-b4c2e045",
+      "action": "SALE_RECORDED"
+    },
+    {
+      "action": "ADMIN_OTP_DISPATCHED",
+      "id": "audit-b5799f04",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-13T02:28:06.542Z",
+      "target": "ADMIN_AUTH",
+      "newValue": "Verification code generated and sent to email inbox"
+    },
+    {
+      "action": "ADMIN_OTP_DISPATCHED",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "id": "audit-b7503aa5",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-17T05:06:09.726Z",
+      "newValue": "Verification code generated and sent to email inbox",
+      "target": "ADMIN_AUTH"
+    },
+    {
+      "newValue": "Updated marketer profile details",
+      "action": "EMPLOYEE_UPDATED",
+      "id": "audit-b7fdd178",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-16T06:16:49.508Z",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "target": "Ali (B)"
+    },
+    {
+      "id": "audit-b84cca26",
+      "action": "EMPLOYEE_UPDATED",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "target": "Reseller C",
+      "timestamp": "2026-10-16T03:22:20.460Z"
+    },
+    {
+      "ip": "116.204.140.31, 169.254.169.126",
+      "id": "audit-ba44e3c6",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "timestamp": "2026-10-16T05:34:59.437Z",
+      "target": "Ali (B)",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Admin reset employee password"
+    },
+    {
+      "ip": "116.204.140.17",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-badafbc6",
+      "newValue": "Admin reset employee password",
+      "timestamp": "2026-10-17T13:02:50.445Z",
+      "target": "Ali (B)"
+    },
+    {
+      "id": "audit-bafabbc0",
+      "newValue": "Updated marketer profile details",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "action": "EMPLOYEE_UPDATED",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-16T02:56:10.751Z",
+      "target": "Shah Ali (A)"
+    },
+    {
+      "timestamp": "2026-10-16T04:37:59.665Z",
+      "target": "Shah Ali (A)",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "id": "audit-bb251d9e",
+      "newValue": "SUSPENDED",
+      "previousValue": "APPROVED",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_STATUS_CHANGED"
+    },
+    {
+      "timestamp": "2026-10-16T18:06:11.413Z",
+      "action": "ADMIN_LOGOUT",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Admin signed out",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "target": "ADMIN_PORTAL",
+      "id": "audit-bb7cd6ac"
+    },
+    {
+      "timestamp": "2026-10-17T17:18:45.106Z",
+      "newValue": "APPROVED",
+      "target": "d",
+      "id": "audit-bbe93bfc",
+      "previousValue": "PENDING",
+      "ip": "116.204.140.27",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_STATUS_CHANGED"
+    },
+    {
+      "target": "Shah Ali (A)",
+      "timestamp": "2026-10-17T12:51:58.872Z",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_UPDATED",
+      "ip": "116.204.140.31, 169.254.169.126",
+      "newValue": "Updated marketer profile details",
+      "id": "audit-bd89220b"
+    },
+    {
+      "action": "ADMIN_OTP_DISPATCHED",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-bf1d6d39",
+      "target": "ADMIN_AUTH",
+      "newValue": "Verification code generated and sent to email inbox",
+      "timestamp": "2026-10-20T11:27:39.245Z"
+    },
+    {
+      "ip": "116.204.140.20, 169.254.169.126",
+      "timestamp": "2026-10-17T13:38:19.885Z",
+      "id": "audit-c0404938",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "target": "Reseller C",
+      "newValue": "Admin reset employee password",
+      "actor": "mdshaali9516@gmail.com"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.27, 169.254.169.126",
+      "timestamp": "2026-10-16T04:10:41.159Z",
+      "id": "audit-c066708b",
+      "target": "Shah Ali (A)",
+      "newValue": "Updated marketer profile details"
+    },
+    {
+      "action": "ADMIN_LOGOUT",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-c0f3178a",
+      "newValue": "Admin signed out",
+      "target": "ADMIN_PORTAL",
+      "timestamp": "2026-10-16T18:03:42.822Z"
+    },
+    {
+      "target": "Ali (B)",
+      "timestamp": "2026-10-16T03:23:17.742Z",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "action": "EMPLOYEE_UPDATED",
+      "id": "audit-c1c97e27",
+      "ip": "116.204.140.28, 169.254.169.126"
+    },
+    {
+      "newValue": "Verification code generated and sent to email inbox",
+      "id": "audit-c201ab47",
+      "target": "ADMIN_AUTH",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "timestamp": "2026-10-17T13:37:18.231Z",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "ADMIN_OTP_DISPATCHED"
+    },
+    {
+      "id": "audit-c259fc21",
+      "target": "Shah Ali (A)",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "timestamp": "2026-10-17T05:06:45.783Z",
+      "newValue": "Admin reset employee password",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "actor": "mdshaali9516@gmail.com"
+    },
+    {
+      "ip": "116.204.140.27, 169.254.169.126",
+      "id": "audit-c39e7812",
+      "action": "EMPLOYEE_UPDATED",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-16T04:11:16.397Z",
+      "target": "Shah Ali (A)",
+      "newValue": "Updated marketer profile details"
+    },
+    {
+      "id": "audit-c3ca3cbe",
+      "ip": "116.204.140.17",
+      "target": "SYSTEM_BRANDING",
+      "previousValue": "TAWZOON ",
+      "timestamp": "2026-10-17T12:16:50.845Z",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "TAWZOON ",
+      "action": "BRANDING_UPDATED"
+    },
+    {
+      "actor": "mdshaali9516@gmail.com",
+      "target": "C",
+      "newValue": "APPROVED",
+      "timestamp": "2026-10-17T17:12:07.219Z",
+      "previousValue": "PENDING",
+      "ip": "116.204.140.27",
+      "action": "EMPLOYEE_STATUS_CHANGED",
+      "id": "audit-c3f28c89"
+    },
+    {
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "id": "audit-c4c9abc5",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-17T06:24:56.978Z",
+      "target": "Ali (B)",
+      "newValue": "Admin reset employee password",
+      "ip": "116.204.140.17, 169.254.169.126"
+    },
+    {
+      "id": "audit-c4d3ba87",
+      "ip": "116.204.140.31, 169.254.169.126",
+      "target": "ADMIN_PORTAL",
+      "timestamp": "2026-10-17T13:13:30.132Z",
+      "newValue": "Admin signed out",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "ADMIN_LOGOUT"
+    },
+    {
+      "ip": "116.204.140.17, 169.254.169.126",
+      "timestamp": "2026-10-17T06:25:27.823Z",
+      "actor": "Ali (B)",
+      "target": "ORD-758567",
+      "id": "audit-c57969f6",
+      "newValue": "Total: ৳800 | Comm: ৳320",
+      "action": "SALE_RECORDED"
+    },
+    {
+      "actor": "mdshaali9516@gmail.com",
+      "target": "Ali (B)",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "id": "audit-c5cddac1",
+      "timestamp": "2026-10-16T03:29:13.054Z",
+      "action": "EMPLOYEE_UPDATED",
+      "newValue": "Updated marketer profile details"
+    },
+    {
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "newValue": "Admin reset employee password",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-17T13:38:26.106Z",
+      "id": "audit-c6291b26",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "target": "Reseller D"
+    },
+    {
+      "id": "audit-c89db363",
+      "target": "Shah Ali (A)",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-16T04:39:55.498Z",
+      "action": "EMPLOYEE_UPDATED",
+      "newValue": "Updated marketer profile details"
+    },
+    {
+      "action": "SALE_RECORDED",
+      "id": "audit-c913eca7",
+      "ip": "116.204.140.20",
+      "actor": "B",
+      "newValue": "Total: ৳800 | Comm: ৳318",
+      "target": "ORD-275954",
+      "timestamp": "2026-10-17T16:58:15.736Z"
+    },
+    {
+      "newValue": "Verification code generated and sent to email inbox",
+      "action": "ADMIN_OTP_DISPATCHED",
+      "ip": "116.204.140.31, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "ADMIN_AUTH",
+      "id": "audit-c9af3364",
+      "timestamp": "2026-10-17T13:15:28.286Z"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "id": "audit-ca7076a3",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "target": "Shah Ali (A)",
+      "newValue": "Updated marketer profile details",
+      "timestamp": "2026-10-16T18:02:43.215Z"
+    },
+    {
+      "timestamp": "2026-10-20T05:06:33.661Z",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-caf98b65",
+      "newValue": "Admin authenticated via OTP verification",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "target": "ADMIN_PORTAL"
+    },
+    {
+      "timestamp": "2026-10-16T06:12:20.419Z",
+      "newValue": "Admin reset employee password",
+      "target": "Shah Ali (A)",
+      "id": "audit-ccb1feff",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "action": "EMPLOYEE_PASSWORD_RESET"
+    },
+    {
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "target": "Shah Ali (A)",
+      "action": "EMPLOYEE_UPDATED",
+      "id": "audit-cda11fa6",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "timestamp": "2026-10-16T03:52:09.051Z"
+    },
+    {
+      "newValue": "Admin reset employee password",
+      "target": "Ali (B)",
+      "timestamp": "2026-10-16T04:37:57.357Z",
+      "id": "audit-cda15752",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "action": "EMPLOYEE_PASSWORD_RESET"
+    },
+    {
+      "target": "ORD-419496",
+      "newValue": "Total: ৳800 | Comm: ৳320",
+      "actor": "Ali (B)",
+      "timestamp": "2026-10-17T06:21:22.685Z",
+      "action": "SALE_RECORDED",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "id": "audit-ce8be462"
+    },
+    {
+      "target": "B",
+      "timestamp": "2026-10-13T02:28:00.254Z",
+      "newValue": "Status: PENDING, Reference: TN-REF-39516",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "id": "audit-d6fde331",
+      "action": "EMPLOYEE_REGISTERED",
+      "actor": "dfsd@gmail.com"
+    },
+    {
+      "timestamp": "2026-10-13T02:18:02.373Z",
+      "actor": "gthf@gmail.com",
+      "target": "B",
+      "newValue": "Status: PENDING, Reference: TN-REF-39516",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "action": "EMPLOYEE_REGISTERED",
+      "id": "audit-d87d9bfd"
+    },
+    {
+      "target": "ORD-923329",
+      "actor": "Ali (B)",
+      "timestamp": "2026-10-17T05:07:38.127Z",
+      "id": "audit-da847b8a",
+      "action": "SALE_RECORDED",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "newValue": "Total: ৳900 | Comm: ৳420"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "Reseller C",
+      "newValue": "Updated marketer profile details",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "timestamp": "2026-10-16T03:23:27.534Z",
+      "id": "audit-dbd7b715"
+    },
+    {
+      "timestamp": "2026-10-17T17:19:47.927Z",
+      "action": "EMPLOYEE_UPDATED",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "target": "B",
+      "ip": "116.204.140.27",
+      "id": "audit-dcb06242"
+    },
+    {
+      "timestamp": "2026-10-20T13:27:50.007Z",
+      "newValue": "Admin authenticated via OTP verification",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "id": "audit-ddca7263",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "ADMIN_PORTAL"
+    },
+    {
+      "action": "EMPLOYEE_UPDATED",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "Shah Ali (A)",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "timestamp": "2026-10-16T02:54:01.914Z",
+      "newValue": "Updated marketer profile details",
+      "id": "audit-de5566b6"
+    },
+    {
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-e11f4d78",
+      "newValue": "Admin reset employee password",
+      "timestamp": "2026-10-16T05:36:50.767Z",
+      "target": "Ali (B)"
+    },
+    {
+      "action": "ADMIN_LOGOUT",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Admin signed out",
+      "timestamp": "2026-10-16T02:52:48.675Z",
+      "target": "ADMIN_PORTAL",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "id": "audit-e201770e"
+    },
+    {
+      "action": "ADMIN_OTP_DISPATCHED",
+      "timestamp": "2026-10-16T02:53:40.963Z",
+      "newValue": "Verification code generated and sent to email inbox",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "ADMIN_AUTH",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "id": "audit-e3eb45ca"
+    },
+    {
+      "action": "ADMIN_OTP_DISPATCHED",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Verification code generated and sent to email inbox",
+      "target": "ADMIN_AUTH",
+      "id": "audit-e4dd8c17",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "timestamp": "2026-10-13T02:18:07.991Z"
+    },
+    {
+      "newValue": "Updated marketer profile details",
+      "action": "EMPLOYEE_UPDATED",
+      "timestamp": "2026-10-16T03:28:43.434Z",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-e60bf642",
+      "target": "Ali (B)"
+    },
+    {
+      "id": "audit-e642da31",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Admin reset employee password",
+      "timestamp": "2026-10-16T18:03:14.912Z",
+      "target": "Reseller D"
+    },
+    {
+      "timestamp": "2026-10-17T06:41:24.867Z",
+      "newValue": "Admin authenticated via OTP verification",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "id": "audit-e7fcdfa7",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "ADMIN_PORTAL"
+    },
+    {
+      "action": "ADMIN_OTP_DISPATCHED",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-e9342f7e",
+      "newValue": "Verification code generated and sent to email inbox",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "timestamp": "2026-10-16T18:03:51.270Z",
+      "target": "ADMIN_AUTH"
+    },
+    {
+      "id": "audit-e943c506",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "target": "Shah Ali (A)",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "newValue": "Admin reset employee password",
+      "timestamp": "2026-10-16T18:03:00.534Z"
+    },
+    {
+      "timestamp": "2026-10-16T02:01:03.909Z",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "target": "ADMIN_AUTH",
+      "id": "audit-e9764856",
+      "newValue": "Verification code generated and sent to email inbox",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "ADMIN_OTP_DISPATCHED"
+    },
+    {
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "timestamp": "2026-10-16T02:01:07.668Z",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "newValue": "Admin authenticated via OTP verification",
+      "id": "audit-e9b10cc2",
+      "target": "ADMIN_PORTAL"
+    },
+    {
+      "target": "Ali (B)",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "id": "audit-ec42ac4c",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-16T02:52:25.909Z",
+      "newValue": "Admin reset employee password",
+      "action": "EMPLOYEE_PASSWORD_RESET"
+    },
+    {
+      "newValue": "Updated marketer profile details",
+      "action": "EMPLOYEE_UPDATED",
+      "id": "audit-ed10df27",
+      "ip": "116.204.140.27",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-17T16:57:50.377Z",
+      "target": "A"
+    },
+    {
+      "ip": "116.204.140.28, 169.254.169.126",
+      "id": "audit-ed44abbb",
+      "timestamp": "2026-10-16T03:23:48.333Z",
+      "target": "Shah Ali (A)",
+      "newValue": "Updated marketer profile details",
+      "action": "EMPLOYEE_UPDATED",
+      "actor": "mdshaali9516@gmail.com"
+    },
+    {
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "id": "audit-eda24290",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "timestamp": "2026-10-16T18:03:05.742Z",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "Ali (B)",
+      "newValue": "Admin reset employee password"
+    },
+    {
+      "target": "ADMIN_AUTH",
+      "newValue": "Verification code generated and sent to email inbox",
+      "timestamp": "2026-10-19T15:49:51.629Z",
+      "id": "audit-ee3258ef",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "ADMIN_OTP_DISPATCHED"
+    },
+    {
+      "id": "audit-eed0fc1c",
+      "ip": "116.204.140.19, 169.254.169.126",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-17T12:21:10.268Z",
+      "target": "ADMIN_PORTAL",
+      "newValue": "Admin authenticated via OTP verification"
+    },
+    {
+      "timestamp": "2026-10-16T06:17:13.116Z",
+      "target": "Ali (B)",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "id": "audit-f0065758",
+      "action": "EMPLOYEE_UPDATED",
+      "ip": "116.204.140.20, 169.254.169.126"
+    },
+    {
+      "newValue": "Status: PENDING, Reference: TAWZOON9516",
+      "timestamp": "2026-10-13T02:12:27.065Z",
+      "action": "EMPLOYEE_REGISTERED",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "A",
+      "ip": "116.204.140.27, 169.254.169.126",
+      "id": "audit-f029a3d2"
+    },
+    {
+      "timestamp": "2026-10-16T18:05:47.332Z",
+      "target": "Ali (B)",
+      "actor": "mdshaali9516@gmail.com",
+      "newValue": "Updated marketer profile details",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "action": "EMPLOYEE_UPDATED",
+      "id": "audit-f29ef1c4"
+    },
+    {
+      "timestamp": "2026-10-17T06:55:36.890Z",
+      "id": "audit-f2e8e305",
+      "newValue": "Admin reset employee password",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "action": "EMPLOYEE_PASSWORD_RESET",
+      "target": "Ali (B)",
+      "actor": "mdshaali9516@gmail.com"
+    },
+    {
+      "target": "ORD-671589",
+      "newValue": "Total: ৳800 | Comm: ৳320",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "id": "audit-f3caebeb",
+      "actor": "Ali (B)",
+      "timestamp": "2026-10-17T06:13:22.512Z",
+      "action": "SALE_RECORDED"
+    },
+    {
+      "id": "audit-f3e9c7c7",
+      "ip": "116.204.140.28, 169.254.169.126",
+      "timestamp": "2026-10-16T02:53:44.589Z",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "ADMIN_PORTAL",
+      "newValue": "Admin authenticated via OTP verification"
+    },
+    {
+      "action": "ADMIN_OTP_DISPATCHED",
+      "timestamp": "2026-10-17T13:10:03.735Z",
+      "actor": "mdshaali9516@gmail.com",
+      "target": "ADMIN_AUTH",
+      "ip": "116.204.140.17",
+      "newValue": "Verification code generated and sent to email inbox",
+      "id": "audit-f441bdd4"
+    },
+    {
+      "target": "ADMIN_AUTH",
+      "id": "audit-f6f0588a",
+      "timestamp": "2026-10-17T16:50:15.214Z",
+      "ip": "116.204.140.27",
+      "newValue": "Verification code generated and sent to email inbox",
+      "action": "ADMIN_OTP_DISPATCHED",
+      "actor": "mdshaali9516@gmail.com"
+    },
+    {
+      "newValue": "Admin signed out",
+      "target": "ADMIN_PORTAL",
+      "ip": "116.204.140.27",
+      "id": "audit-f9249965",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-17T12:08:48.996Z",
+      "action": "ADMIN_LOGOUT"
+    },
+    {
+      "actor": "mdshaali9516@gmail.com",
+      "target": "SYSTEM_BRANDING",
+      "ip": "116.204.140.17, 169.254.169.126",
+      "previousValue": "TAWZOON ",
+      "id": "audit-faae83ed",
+      "action": "BRANDING_UPDATED",
+      "timestamp": "2026-10-17T06:14:06.301Z",
+      "newValue": "TAWZOON "
+    },
+    {
+      "action": "PUBLISH_TO_WEBSITE",
+      "actor": "mdshaali9516@gmail.com",
+      "id": "audit-fccc69cb",
+      "ip": "116.204.140.27",
+      "target": "Live Website",
+      "newValue": "Published 5 products and 3 categories to live website",
+      "timestamp": "2026-10-17T16:52:52.653Z"
+    },
+    {
+      "target": "ADMIN_PORTAL",
+      "actor": "mdshaali9516@gmail.com",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "timestamp": "2026-10-21T11:53:27.104Z",
+      "id": "audit-fd3cf296",
+      "newValue": "Admin authenticated via OTP verification",
+      "ip": "116.204.140.20, 169.254.169.126"
+    },
+    {
+      "action": "ADMIN_LOGOUT",
+      "id": "audit-fd9c7962",
+      "actor": "mdshaali9516@gmail.com",
+      "ip": "116.204.140.17",
+      "timestamp": "2026-10-17T13:07:27.564Z",
+      "target": "ADMIN_PORTAL",
+      "newValue": "Admin signed out"
+    },
+    {
+      "newValue": "Updated marketer profile details",
+      "action": "EMPLOYEE_UPDATED",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "timestamp": "2026-10-16T18:01:52.645Z",
+      "id": "audit-fdc04461",
+      "target": "Shah Ali (A)",
+      "actor": "mdshaali9516@gmail.com"
+    },
+    {
+      "id": "audit-ff17b7b8",
+      "ip": "116.204.140.20, 169.254.169.126",
+      "target": "Shah Ali (A)",
+      "newValue": "Updated marketer profile details",
+      "actor": "mdshaali9516@gmail.com",
+      "timestamp": "2026-10-16T18:02:14.999Z",
+      "action": "EMPLOYEE_UPDATED"
+    },
+    {
+      "actor": "mdshaali9516@gmail.com",
+      "target": "ADMIN_PORTAL",
+      "timestamp": "2026-10-21T12:08:01.614Z",
+      "newValue": "Admin authenticated via direct password login",
+      "id": "audit-ff213cdd",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "ip": "116.204.140.20, 169.254.169.126"
     }
   ],
   "adminSessions": [

@@ -96,7 +96,7 @@ export const UserBottomNav: React.FC = () => {
           className={`flex-1 flex flex-col items-center justify-center py-1 transition-all cursor-pointer ${
             isHomeActive
               ? 'text-[#009245] font-black scale-105'
-              : 'text-slate-400 hover:text-slate-700 font-medium'
+              : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-medium'
           }`}
         >
           <Home className="w-4.5 h-4.5 mb-0.5" />
@@ -191,7 +191,7 @@ export const UserBottomNav: React.FC = () => {
           className={`flex-1 flex flex-col items-center justify-center py-1 transition-all cursor-pointer ${
             isProfileActive
               ? 'text-[#009245] font-black scale-105'
-              : 'text-slate-400 hover:text-slate-700 font-medium'
+              : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-medium'
           }`}
         >
           <User className="w-4.5 h-4.5 mb-0.5" />
