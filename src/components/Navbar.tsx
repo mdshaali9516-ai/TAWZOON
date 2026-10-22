@@ -462,18 +462,7 @@ export const Navbar: React.FC = () => {
             {/* 3. Right Action Group: Desktop Download Button (PC only) + Balance Pill (Reseller only) + Bell (with count) + Avatar (with green circle border) */}
             <div className="flex items-center gap-1.5 sm:gap-2.5 lg:gap-3 shrink-0">
               
-              {/* App Download Button (Visible on all screens, triggers 1-click PWA install / download) */}
-              <button
-                type="button"
-                onClick={() => {
-                  window.dispatchEvent(new CustomEvent('trigger_pwa_install'));
-                }}
-                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-[#009245] hover:from-emerald-700 hover:to-[#007a3a] text-white text-[11px] sm:text-xs font-bold shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer shrink-0"
-                title={lang === 'bn' ? 'অ্যাপ ডাউনলোড করুন' : 'Download App'}
-              >
-                <Download className="w-3.5 h-3.5 animate-bounce shrink-0" />
-                <span className="font-bold whitespace-nowrap">{lang === 'bn' ? 'অ্যাপ ডাউনলোড করুন' : 'Download App'}</span>
-              </button>
+
 
               {/* Balance Button - Only visible for authenticated reseller account, hidden in Admin view */}
               {isEmployeeAuthenticated && activePortal !== 'admin' && (
@@ -672,56 +661,74 @@ export const Navbar: React.FC = () => {
                     <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                   </button>
 
-                  {/* 2. Admin Login */}
-                  <button
-                    type="button"
-                    onClick={handleAdminLoginClick}
-                    className="w-full p-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-700 hover:text-[#009245] flex items-center justify-between transition-colors cursor-pointer"
-                  >
-                    <span className="flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                      <span>{lang === 'bn' ? 'অ্যাডমিন লগইন' : 'Admin Login'}</span>
-                    </span>
-                    <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.2 rounded-md">
-                      {lang === 'bn' ? 'ম্যানেজার' : 'Admin'}
-                    </span>
-                  </button>
+                   {/* 3. Language Switch */}
+                   <div className="p-2 rounded-xl bg-slate-50 dark:bg-slate-700/50 flex items-center justify-between">
+                     <span className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-200">
+                       <Globe className="w-4 h-4 text-[#009245]" />
+                       <span>{lang === 'bn' ? 'ভাষা (Language)' : 'Language'}</span>
+                     </span>
+                     <div className="flex items-center gap-1 bg-white dark:bg-slate-800 p-0.5 rounded-lg border border-slate-200 dark:border-slate-600">
+                       <button
+                         type="button"
+                         onClick={() => {
+                           setLang('bn');
+                           showToast('ভাষা পরিবর্তন করে বাংলা করা হয়েছে');
+                         }}
+                         className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
+                           lang === 'bn' ? 'bg-[#009245] text-white' : 'text-slate-600 hover:text-slate-900'
+                         }`}
+                       >
+                         বাং
+                       </button>
+                       <button
+                         type="button"
+                         onClick={() => {
+                           setLang('en');
+                           showToast('Language changed to English');
+                         }}
+                         className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
+                           lang === 'en' ? 'bg-[#009245] text-white' : 'text-slate-600 hover:text-slate-900'
+                         }`}
+                       >
+                         EN
+                       </button>
+                     </div>
+                   </div>
 
-                  {/* 3. Language Switch */}
-                  <div className="p-2 rounded-xl bg-slate-50 dark:bg-slate-700/50 flex items-center justify-between">
-                    <span className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-200">
-                      <Globe className="w-4 h-4 text-[#009245]" />
-                      <span>{lang === 'bn' ? 'ভাষা (Language)' : 'Language'}</span>
-                    </span>
-                    <div className="flex items-center gap-1 bg-white dark:bg-slate-800 p-0.5 rounded-lg border border-slate-200 dark:border-slate-600">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setLang('bn');
-                          showToast('ভাষা পরিবর্তন করে বাংলা করা হয়েছে');
-                        }}
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
-                          lang === 'bn' ? 'bg-[#009245] text-white' : 'text-slate-600 hover:text-slate-900'
-                        }`}
-                      >
-                        বাং
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setLang('en');
-                          showToast('Language changed to English');
-                        }}
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
-                          lang === 'en' ? 'bg-[#009245] text-white' : 'text-slate-600 hover:text-slate-900'
-                        }`}
-                      >
-                        EN
-                      </button>
-                    </div>
-                  </div>
+                   {/* Professional App Download Button with Thin Border, Smooth Opacity Animation & Blue Install Pill */}
+                   <button
+                     type="button"
+                     onClick={() => {
+                       setProfileMenuOpen(false);
+                       window.dispatchEvent(new CustomEvent('trigger_pwa_install'));
+                     }}
+                     className="w-full p-2.5 rounded-xl text-xs font-bold text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800 border border-emerald-500/40 hover:border-emerald-500 shadow-2xs hover:shadow-xs flex items-center justify-between transition-all cursor-pointer group active:scale-98 animate-pulse"
+                   >
+                     <span className="flex items-center gap-2">
+                       <Download className="w-4 h-4 text-[#009245] group-hover:scale-110 transition-transform" />
+                       <span className="font-semibold tracking-tight">{typeof window !== 'undefined' && window.innerWidth < 768 ? 'APK Download' : 'PC App Download'}</span>
+                     </span>
+                     <span className="text-[9px] font-bold uppercase tracking-wider bg-blue-600 hover:bg-blue-700 px-2 py-0.5 rounded-md text-white shadow-3xs transition-colors">
+                       Install
+                     </span>
+                   </button>
 
-                  {/* 4. Logout / Login */}
+                  
+                   {/* 2. Admin Login */}
+                   <button
+                     type="button"
+                     onClick={handleAdminLoginClick}
+                     className="w-full p-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-700 hover:text-[#009245] flex items-center justify-between transition-colors cursor-pointer"
+                   >
+                     <span className="flex items-center gap-2">
+                       <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                       <span>{lang === 'bn' ? 'অ্যাডমিন লগইন' : 'Admin Login'}</span>
+                     </span>
+                     <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.2 rounded-md">
+                       {lang === 'bn' ? 'ম্যানেজার' : 'Admin'}
+                     </span>
+                   </button>
+
                   {(isEmployeeAuthenticated || isAdminAuthenticated) ? (
                     <button
                       type="button"

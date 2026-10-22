@@ -1,12 +1,12 @@
-# Implementation Plan - Website Header & App Download Button Fix
+# Implementation Plan - Move App Download Button into Profile Menu
 
-1. **Brand Logo Verification & Replacement**:
-   - Ensure the application header displays the correct custom brand logo configured in `brandSettings.logoUrl` or fallback cleanly without any placeholder branding.
-   - Remove any unwanted fallback titles/logos and use the exact brand assets.
+1. **Remove Header Download Button**:
+   - Remove the standalone "অ্যাপ ডাউনলোড করুন" button from the main header navigation bar so it's no longer loose in the header.
 
-2. **Header App Download Button**:
-   - Place a clean, compact, responsive button with the exact text **"অ্যাপ ডাউনলোড করুন"** in the website header right beside the profile icon / actions.
-   - Configure the button to trigger direct PWA installation or APK download action.
+2. **Add Professional Download Option inside Profile Menu**:
+   - Locate the profile dropdown menu in `Navbar.tsx`.
+   - Add a professional download item inside the profile menu (e.g. **"Download APK"** for mobile or **"PC App Download"** depending on device) with a bouncing animation badge/pill so users immediately notice it.
 
-3. **Verification**:
-   - Compile and lint the applet to ensure zero build errors.
+3. **Automatic Device Detection & Download**:
+   - On mobile devices, clicking it triggers mobile APK download / PWA install instructions or prompt.
+   - On desktop/PC, clicking it triggers instant desktop app download / PWA install.

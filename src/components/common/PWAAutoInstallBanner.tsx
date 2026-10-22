@@ -16,20 +16,7 @@ export const PWAAutoInstallBanner: React.FC = () => {
   const appName = brandSettings?.appName || 'TAWZOON';
   const logoUrl = brandSettings?.logoUrl || '/logo.png';
 
-  // Automatically show install prompt on entry if not running in installed/standalone mode
-  useEffect(() => {
-    if (isInstalled) {
-      setIsOpen(false);
-      return;
-    }
 
-    // Auto-prompt after 600ms on website entry
-    const timer = setTimeout(() => {
-      setIsOpen(true);
-    }, 600);
-
-    return () => clearTimeout(timer);
-  }, [isInstalled]);
 
   // Listen to custom global event from Desktop Navbar or other triggers
   useEffect(() => {
@@ -265,27 +252,7 @@ export const PWAAutoInstallBanner: React.FC = () => {
         </div>
       )}
 
-      {/* ============================================================== */}
-      {/* 3. PERSISTENT FLOATING QUICK DOWNLOAD BUTTON                   */}
-      {/* ============================================================== */}
-      {/* When the main prompt is closed, keep a sleek unobtrusive floating button */}
-      {!isOpen && hasDismissed && (
-        <div className="fixed bottom-16 right-4 sm:bottom-6 sm:right-6 z-[450] animate-in fade-in zoom-in duration-300">
-          <button
-            type="button"
-            onClick={handleInstallClick}
-            className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-full bg-gradient-to-r from-emerald-600 to-[#009245] text-white font-extrabold text-xs shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all cursor-pointer border border-white/20"
-            title={lang === 'bn' ? 'অ্যাপ ডাউনলোড করুন' : 'Download App'}
-          >
-            <Download className="w-4 h-4 animate-bounce" />
-            <span>
-              {isMobile
-                ? (lang === 'bn' ? 'অ্যাপ ডাউনলোড' : 'Download App')
-                : (lang === 'bn' ? 'ডেস্কটপ অ্যাপ ডাউনলোড' : 'Download PC App')}
-            </span>
-          </button>
-        </div>
-      )}
+
 
       {/* ============================================================== */}
       {/* 4. IOS SAFARI INSTRUCTION MODAL                                */}
